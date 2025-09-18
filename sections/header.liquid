@@ -404,15 +404,23 @@
 
   .header__row {
     position: relative;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
 
     /* will default to bg from its color scheme unless --header-bg-color is transparent */
-    background-color: var(--header-bg-color, var(--color-background));
+    background-color: var(--header-bg-color, white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    @media screen and (max-width: 749px) {
+      min-height: 60px;
+    }
   }
 
   .header__row--top:not(.divider--page-width),
   .header__row--top.divider--page-width .header__columns,
   .header__row--bottom {
-    border-bottom: var(--border-bottom-width) solid var(--color-border);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   @media screen and (max-width: 749px) {
@@ -467,10 +475,10 @@
   }
 
   .header__columns {
-    /* Three column layout */
-    --header-left: 1fr;
+    /* Three column layout for modern header */
+    --header-left: minmax(200px, 1fr);
     --header-center: auto;
-    --header-right: 1fr;
+    --header-right: minmax(200px, 1fr);
     --header-template-columns: var(--header-left) var(--header-center) var(--header-right);
 
     /* Mobile layout */
@@ -478,8 +486,18 @@
 
     display: grid;
     grid-template-areas: 'left center right';
-    grid-gap: var(--gap-xl);
+    grid-gap: 40px;
     grid-template-columns: var(--header-template-columns);
+    align-items: center;
+    padding: 0 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+
+    @media screen and (max-width: 749px) {
+      padding: 0 20px;
+      grid-gap: 16px;
+    }
 
     /* If menu is in center column */
     &:has(.header__column--center header-menu) {

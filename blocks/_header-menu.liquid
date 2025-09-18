@@ -168,15 +168,19 @@
   }
 
   .menu-list {
-    --menu-horizontal-gap: var(--gap-xl);
+    --menu-horizontal-gap: 8px;
     --menu-vertical-gap: var(--gap-xl);
 
     display: flex;
+    justify-content: center;
+    width: 100%;
   }
 
   .menu-list__list {
     display: flex;
-    justify-content: var(--grid-area-alignment);
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
   }
 
   .menu-list__list-item {
@@ -189,26 +193,62 @@
   }
 
   .menu-list__link {
-    font-family: var(--menu-top-level-font-family);
-    font-style: var(--menu-top-level-font-style);
-    font-weight: var(--menu-top-level-font-weight);
-    font-size: var(--menu-top-level-font-size);
-    line-height: var(--menu-top-level-font-line-height);
-    text-transform: var(--menu-top-level-font-case);
-    color: var(--menu-top-level-font-color);
-    transition: color var(--animation-speed) var(--animation-easing);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.4;
+    text-transform: none;
+    color: #333;
+    transition: color 0.2s ease;
     text-decoration: none;
     display: flex;
     min-height: var(--minimum-touch-target);
     align-items: center;
+    padding: 12px 16px;
+    border-radius: 6px;
+    position: relative;
 
     &:hover,
     &:focus {
-      color: var(--menu-top-level-font-color);
+      color: #007AFF;
+      background: rgba(0, 122, 255, 0.05);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #007AFF;
+      transition: all 0.2s ease;
+      transform: translateX(-50%);
+    }
+
+    &:hover::after {
+      width: 80%;
     }
 
     @media screen and (min-width: 750px) {
-      font-size: var(--menu-top-level-font-size-desktop);
+      font-size: 15px;
+      padding: 12px 20px;
+    }
+
+    @media screen and (max-width: 749px) {
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+
+    /* Active state for current page */
+    &.menu-list__link--active {
+      color: #007AFF;
+      font-weight: 600;
+    }
+
+    &.menu-list__link--active::after {
+      width: 80%;
     }
   }
 
