@@ -130,6 +130,7 @@ export class QuickViewDrawer extends DialogComponent {
     this.#initializeVariantPicker(productData);
     this.#initializeQuantitySelector();
     this.#initializeAddToCart(productData);
+    this.#initializeBuyNow(productData);
   }
 
   /**
@@ -155,7 +156,8 @@ export class QuickViewDrawer extends DialogComponent {
         ${variantOptions}
         
         <div class="quick-view-actions">
-          <div class="quick-view-quantity-cart">
+          <div class="quick-view-quantity-section">
+            <label class="quantity-label">Quantity</label>
             <div class="quick-view-quantity">
               <button type="button" class="quantity-btn quantity-minus" aria-label="Decrease quantity">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -169,13 +171,14 @@ export class QuickViewDrawer extends DialogComponent {
                 </svg>
               </button>
             </div>
+          </div>
+          
+          <div class="quick-view-buttons">
             <button type="button" class="quick-view-add-to-cart" data-product-id="${product.id}">
-              <span class="add-to-cart-text">Add to Cart</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="cart-icon">
-                <path d="M3 3h1.5l1.7 9.4a1 1 0 001 .8h8.4a1 1 0 001-.8L17.5 5H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="7.5" cy="16.5" r="0.5" fill="currentColor"/>
-                <circle cx="14.5" cy="16.5" r="0.5" fill="currentColor"/>
-              </svg>
+              <span class="add-to-cart-text">Add to cart</span>
+            </button>
+            <button type="button" class="quick-view-buy-now" data-product-id="${product.id}">
+              <span class="buy-now-text">BUY IT NOW</span>
             </button>
           </div>
         </div>
@@ -313,6 +316,19 @@ export class QuickViewDrawer extends DialogComponent {
   }
 
   /**
+   * Initializes buy now functionality
+   * @param {Object} product - The product data
+   */
+  #initializeBuyNow(product) {
+    const buyNowBtn = this.refs.drawerContent.querySelector('.quick-view-buy-now');
+    
+    buyNowBtn?.addEventListener('click', async (e) => {
+      e.preventDefault();
+      await this.#handleBuyNow(product);
+    });
+  }
+
+  /**
    * Handles add to cart action
    * @param {Object} product - The product data
    */
@@ -373,6 +389,54 @@ export class QuickViewDrawer extends DialogComponent {
   }
 
   /**
+   * Handles buy now action
+   * @param {Object} product - The product data
+   */
+  async #handleBuyNow(product) {
+    const buyNowBtn = this.refs.drawerContent.querySelector('.quick-view-buy-now');
+    const quantityInput = this.refs.drawerContent.querySelector('.quantity-input');
+    
+    if (!buyNowBtn || !quantityInput) return;
+    
+    const quantity = parseInt(quantityInput.value) || 1;
+    const selectedVariant = this.#getSelectedVariant(product);
+    
+    if (!selectedVariant) {
+      console.error('No variant selected');
+      return;
+    }
+    
+    // Show loading state
+    buyNowBtn.disabled = true;
+    const originalText = buyNowBtn.querySelector('.buy-now-text').textContent;
+    buyNowBtn.querySelector('.buy-now-text').textContent = 'Processing...';
+    
+    try {
+      const formData = new FormData();
+      formData.append('id', selectedVariant.id);
+      formData.append('quantity', quantity);
+      
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) throw new Error('Failed to add to cart');
+      
+      // Redirect to checkout
+      window.location.href = '/checkout';
+      
+    } catch (error) {
+      console.error('Error with buy now:', error);
+      buyNowBtn.querySelector('.buy-now-text').textContent = 'Try Again';
+      setTimeout(() => {
+        buyNowBtn.querySelector('.buy-now-text').textContent = originalText;
+        buyNowBtn.disabled = false;
+      }, 2000);
+    }
+  }
+
+  /**
    * Gets the currently selected variant
    * @param {Object} product - The product data
    * @returns {Object|null} Selected variant or null
@@ -403,11 +467,22 @@ export class QuickViewDrawer extends DialogComponent {
   #updateSelectedVariant(product) {
     const selectedVariant = this.#getSelectedVariant(product);
     const addToCartBtn = this.refs.drawerContent.querySelector('.quick-view-add-to-cart');
+    const buyNowBtn = this.refs.drawerContent.querySelector('.quick-view-buy-now');
     
-    if (selectedVariant && addToCartBtn) {
-      addToCartBtn.disabled = !selectedVariant.available;
-      const buttonText = addToCartBtn.querySelector('.add-to-cart-text');
-      buttonText.textContent = selectedVariant.available ? 'Add to Cart' : 'Sold Out';
+    if (selectedVariant) {
+      // Update Add to Cart button
+      if (addToCartBtn) {
+        addToCartBtn.disabled = !selectedVariant.available;
+        const addToCartText = addToCartBtn.querySelector('.add-to-cart-text');
+        addToCartText.textContent = selectedVariant.available ? 'Add to cart' : 'Sold Out';
+      }
+      
+      // Update Buy Now button
+      if (buyNowBtn) {
+        buyNowBtn.disabled = !selectedVariant.available;
+        const buyNowText = buyNowBtn.querySelector('.buy-now-text');
+        buyNowText.textContent = selectedVariant.available ? 'BUY IT NOW' : 'SOLD OUT';
+      }
     }
   }
 
