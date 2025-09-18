@@ -66,5 +66,10 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <!-- Quick View Drawer -->
+    {% render 'quick-view-drawer' %}
+    
+    <script src="{{ 'quick-view-drawer.js' | asset_url }}" type="module"></script>
   </body>
 </html>

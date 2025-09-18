@@ -1,0 +1,76 @@
+{%- comment -%}
+  Quick View Template
+  This template is used when fetching product data via AJAX for the quick view drawer.
+  It returns a minimal JSON representation of the product for efficient loading.
+{%- endcomment -%}
+
+{%- layout none -%}
+
+{%- liquid
+  # Prepare product data for quick view
+  assign product_json = product | json
+  
+  # Extract product images
+  assign product_images = product.media | map: 'preview_image' | map: 'src'
+  
+  # Prepare variants data
+  assign variants_data = ''
+  for variant in product.variants
+    assign variant_data = variant | json
+    if forloop.first
+      assign variants_data = '[' | append: variant_data
+    else
+      assign variants_data = variants_data | append: ',' | append: variant_data
+    endif
+    if forloop.last
+      assign variants_data = variants_data | append: ']'
+    endif
+  endfor
+  
+  if product.variants.size == 0
+    assign variants_data = '[]'
+  endif
+-%}
+
+<div data-product-json style="display: none;">
+{
+  "id": {{ product.id | json }},
+  "title": {{ product.title | json }},
+  "handle": {{ product.handle | json }},
+  "description": {{ product.description | strip_html | truncate: 200 | json }},
+  "vendor": {{ product.vendor | json }},
+  "type": {{ product.type | json }},
+  "price": {{ product.price | json }},
+  "price_min": {{ product.price_min | json }},
+  "price_max": {{ product.price_max | json }},
+  "compare_at_price": {{ product.compare_at_price | json }},
+  "compare_at_price_min": {{ product.compare_at_price_min | json }},
+  "compare_at_price_max": {{ product.compare_at_price_max | json }},
+  "available": {{ product.available | json }},
+  "tags": {{ product.tags | json }},
+  "images": [
+    {%- for image in product.images -%}
+      "{{ image | image_url: width: 800 }}"
+      {%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "featured_image": "{{ product.featured_image | image_url: width: 800 }}",
+  "options": [
+    {%- for option in product.options_with_values -%}
+    {
+      "name": {{ option.name | json }},
+      "position": {{ option.position | json }},
+      "values": [
+        {%- for value in option.values -%}
+          {{ value | json }}
+          {%- unless forloop.last -%},{%- endunless -%}
+        {%- endfor -%}
+      ]
+    }
+    {%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  ],
+  "variants": {{ variants_data }},
+  "url": {{ product.url | json }}
+}
+</div>

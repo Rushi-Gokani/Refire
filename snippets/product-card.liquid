@@ -225,4 +225,136 @@
   .product-card [data-available-count='0'] ~ svg {
     display: block;
   }
+
+  /* Quick View Enhancement Styles */
+  .card-gallery {
+    position: relative;
+  }
+
+  .product-card__quick-view-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .product-card:hover .product-card__quick-view-wrapper {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1.02);
+  }
+
+  .product-card__quick-view-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+  }
+
+  .product-card__quick-view-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .product-card__quick-view-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card__quick-view-btn svg {
+    transition: transform 0.2s ease;
+  }
+
+  .product-card__quick-view-btn:hover svg {
+    transform: scale(1.1);
+  }
+
+  /* Enhanced hover effect for card gallery */
+  .product-card .card-gallery {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  .product-card:hover .card-gallery {
+    transform: scale(1.02);
+  }
+
+  /* Image swap on hover - show second image */
+  .product-card .card-gallery slideshow-slides {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-card:hover .card-gallery slideshow-slides {
+    transform: translateX(-100%);
+  }
+
+  /* Ensure smooth image transitions */
+  .product-card .card-gallery slideshow-slide {
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card .card-gallery slideshow-slide:not(:first-child) {
+    opacity: 0;
+  }
+
+  .product-card:hover .card-gallery slideshow-slide:not(:first-child) {
+    opacity: 1;
+  }
+
+  .product-card:hover .card-gallery slideshow-slide:first-child {
+    opacity: 0;
+  }
+
+  /* Mobile adjustments */
+  @media screen and (max-width: 749px) {
+    .product-card__quick-view-wrapper {
+      position: static;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .product-card:hover .product-card__quick-view-wrapper {
+      transform: none;
+    }
+
+    .product-card__quick-view-btn {
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    .product-card:hover .card-gallery {
+      transform: none;
+    }
+  }
+
+  /* Ensure quick view doesn't interfere with existing styles */
+  .product-card .product-card__quick-view-wrapper + * {
+    position: relative;
+    z-index: 1;
+  }
 {% endstylesheet %}

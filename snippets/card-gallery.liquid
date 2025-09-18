@@ -240,6 +240,26 @@
       render 'slideshow', ref: 'slideshow', slides: placeholder_slide, slide_count: 1, attributes: 'disabled="true"'
     %}
   {%- endif -%}
+  
+  <!-- Quick View Enhancement -->
+  {% unless product == blank %}
+    <div class="product-card__quick-view-wrapper">
+      <button 
+        class="product-card__quick-view-btn"
+        type="button"
+        data-product-id="{{ product.id }}"
+        data-product-handle="{{ product.handle }}"
+        aria-label="Quick view {{ product.title }}"
+      >
+        <span class="product-card__quick-view-text">Quick View</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 3C4.5 3 1.73 5.61 1 8c.73 2.39 3.5 5 7 5s6.27-2.61 7-5c-.73-2.39-3.5-5-7-5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </button>
+    </div>
+  {% endunless %}
+  
   {{ children }}
 </div>
 

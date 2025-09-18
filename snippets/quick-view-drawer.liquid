@@ -1,0 +1,472 @@
+{%- doc -%}
+  Renders a quick view drawer that slides up from the bottom.
+  This component provides a quick way to view product details without leaving the current page.
+{%- enddoc -%}
+
+<quick-view-drawer id="quick-view-drawer">
+  <dialog
+    class="quick-view-drawer dialog-drawer color-{{ settings.popover_color_scheme }}"
+    ref="dialog"
+    scroll-lock
+  >
+    <div class="quick-view-drawer__backdrop" ref="backdrop"></div>
+    <div class="quick-view-drawer__content">
+      <div class="quick-view-drawer__header">
+        <button
+          ref="closeButton"
+          on:click="/closeDialog"
+          class="button button-unstyled quick-view-drawer__close"
+          aria-label="{{ 'accessibility.close_dialog' | t }}"
+        >
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+        <div class="quick-view-drawer__drag-handle"></div>
+      </div>
+      
+      <div 
+        id="quick-view-drawer-content" 
+        class="quick-view-drawer__body"
+        ref="drawerContent"
+      >
+        <!-- Content will be loaded dynamically via AJAX -->
+        <div class="quick-view-drawer__loading">
+          <div class="loading-spinner">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
+                <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+            <span>Loading product details...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</quick-view-drawer>
+
+{% stylesheet %}
+  /* Quick View Drawer Base Styles */
+  .quick-view-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    border: none;
+    border-radius: 20px 20px 0 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .quick-view-drawer::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
+  .quick-view-drawer[open] {
+    transform: translateY(0);
+  }
+
+  .quick-view-drawer[open]::backdrop {
+    opacity: 1;
+  }
+
+  .quick-view-drawer.dialog-closing {
+    transform: translateY(100%);
+  }
+
+  .quick-view-drawer.dialog-closing::backdrop {
+    opacity: 0;
+  }
+
+  /* Drawer Content Structure */
+  .quick-view-drawer__content {
+    background: var(--color-background);
+    border-radius: 20px 20px 0 0;
+    height: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .quick-view-drawer__header {
+    position: relative;
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quick-view-drawer__drag-handle {
+    width: 40px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    transition: background-color 0.2s ease;
+  }
+
+  .quick-view-drawer__close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+  }
+
+  .quick-view-drawer__close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+  }
+
+  .quick-view-drawer__close svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .quick-view-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Loading State */
+  .quick-view-drawer__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .loading-spinner svg {
+    color: var(--color-foreground);
+    opacity: 0.6;
+  }
+
+  .loading-spinner span {
+    font-size: 14px;
+    color: var(--color-foreground);
+    opacity: 0.7;
+  }
+
+  /* Product Content Styles */
+  .quick-view-product-content {
+    padding: 0 20px 40px;
+  }
+
+  .quick-view-product-header {
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    background: linear-gradient(to bottom, var(--color-background) 80%, transparent);
+  }
+
+  .quick-view-product-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 8px;
+    color: var(--color-foreground);
+  }
+
+  .quick-view-product-price {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .quick-view-product-price .price-compare {
+    text-decoration: line-through;
+    color: var(--color-foreground);
+    opacity: 0.6;
+    font-size: 16px;
+    margin-left: 8px;
+  }
+
+  .quick-view-product-price .price-current {
+    color: #007AFF;
+    font-weight: 600;
+  }
+
+  .quick-view-product-description {
+    max-height: 120px;
+    overflow-y: auto;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-foreground);
+    opacity: 0.8;
+  }
+
+  /* Product Media Gallery */
+  .quick-view-media-gallery {
+    margin: 20px 0;
+  }
+
+  .quick-view-media-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 20px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .quick-view-media-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .quick-view-media-item {
+    flex: 0 0 auto;
+    width: 280px;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    scroll-snap-align: start;
+    background: var(--color-background-secondary);
+  }
+
+  .quick-view-media-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Variant Options */
+  .quick-view-variants {
+    margin: 20px 0;
+  }
+
+  .quick-view-variant-group {
+    margin-bottom: 16px;
+  }
+
+  .quick-view-variant-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--color-foreground);
+  }
+
+  .quick-view-variant-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .quick-view-variant-option {
+    padding: 8px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quick-view-variant-option:hover {
+    border-color: #007AFF;
+    background: rgba(0, 122, 255, 0.05);
+  }
+
+  .quick-view-variant-option.selected {
+    background: #007AFF;
+    color: white;
+    border-color: #007AFF;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  }
+
+  /* Quantity and Add to Cart */
+  .quick-view-actions {
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    background: var(--color-background);
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+  }
+
+  .quick-view-quantity-cart {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .quick-view-quantity {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--color-background);
+  }
+
+  .quick-view-quantity button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .quick-view-quantity button:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .quick-view-quantity input {
+    width: 60px;
+    height: 40px;
+    border: none;
+    text-align: center;
+    font-size: 14px;
+    background: transparent;
+  }
+
+  .quick-view-add-to-cart {
+    flex: 1;
+    height: 48px;
+    background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quick-view-add-to-cart::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .quick-view-add-to-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+  }
+
+  .quick-view-add-to-cart:hover::before {
+    left: 100%;
+  }
+
+  .quick-view-add-to-cart:disabled {
+    background: rgba(0, 0, 0, 0.3);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Desktop Responsive */
+  @media screen and (min-width: 768px) {
+    .quick-view-drawer {
+      max-height: 75vh;
+      left: 50%;
+      right: auto;
+      width: 600px;
+      transform: translateX(-50%) translateY(100%);
+      border-radius: 20px;
+      box-shadow: 0 -10px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .quick-view-drawer[open] {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .quick-view-drawer.dialog-closing {
+      transform: translateX(-50%) translateY(100%);
+    }
+
+    .quick-view-drawer__content {
+      border-radius: 20px;
+    }
+
+    .quick-view-media-scroll {
+      padding: 0 24px;
+    }
+
+    .quick-view-media-item {
+      width: 320px;
+    }
+
+    .quick-view-product-content {
+      padding: 0 24px 40px;
+    }
+
+    .quick-view-actions {
+      padding: 24px;
+    }
+  }
+
+  /* Smooth animation enhancements */
+  .quick-view-drawer * {
+    box-sizing: border-box;
+  }
+
+  .quick-view-drawer__content > * {
+    animation: fadeInUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .quick-view-drawer[open] .quick-view-drawer__content > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+{% endstylesheet %}
