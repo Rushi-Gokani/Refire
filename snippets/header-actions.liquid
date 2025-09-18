@@ -8,17 +8,19 @@
   class="modern-header-actions"
   {{- block.shopify_attributes -}}
 >
-  <!-- Search Icon -->
-  <button
-    class="header-actions__action header-actions__search"
-    aria-label="{{ 'accessibility.search' | t }}"
-    onclick="document.getElementById('search-modal').showModal()"
-  >
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
+  <!-- Search Icon - conditionally show based on settings -->
+  {% if settings.predictive_search_enabled or section.settings.show_search %}
+    <button
+      class="header-actions__action header-actions__search"
+      aria-label="{{ 'accessibility.search' | t }}"
+      onclick="document.querySelector('#search-modal dialog-component').showDialog()"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  {% endif %}
 
   <!-- Account Icon -->
   {% if shop.customer_accounts_enabled %}
@@ -36,19 +38,6 @@
     {% render 'account-drawer' %}
   {% endif %}
 
-  <!-- Wishlist Icon -->
-  <a
-    href="/pages/wishlist"
-    class="header-actions__action header-actions__wishlist"
-    aria-label="Wishlist"
-  >
-    <div class="header-actions__icon-wrapper">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 18.35l-1.45-1.32C3.4 12.36 0 9.28 0 5.5 0 2.42 2.42 0 5.5 0c1.74 0 3.41.81 4.5 2.09C11.09.81 12.76 0 14.5 0 17.58 0 20 2.42 20 5.5c0 3.78-3.4 6.86-8.55 11.54L10 18.35z" fill="currentColor"/>
-      </svg>
-      <span class="header-actions__count wishlist-count">3</span>
-    </div>
-  </a>
 
   <!-- Cart Icon -->
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
@@ -64,7 +53,9 @@
           <circle cx="7.5" cy="16.5" r="0.5" fill="currentColor"/>
           <circle cx="14.5" cy="16.5" r="0.5" fill="currentColor"/>
         </svg>
-        <span class="header-actions__count cart-count">{{ cart.item_count }}</span>
+        {% if cart.item_count > 0 %}
+          <span class="header-actions__count cart-count">{{ cart.item_count }}</span>
+        {% endif %}
       </div>
     </button>
   {% else %}
@@ -79,7 +70,9 @@
           <circle cx="7.5" cy="16.5" r="0.5" fill="currentColor"/>
           <circle cx="14.5" cy="16.5" r="0.5" fill="currentColor"/>
         </svg>
-        <span class="header-actions__count cart-count">{{ cart.item_count }}</span>
+        {% if cart.item_count > 0 %}
+          <span class="header-actions__count cart-count">{{ cart.item_count }}</span>
+        {% endif %}
       </div>
     </a>
   {% endif %}
@@ -330,11 +323,6 @@
   }
 
   .header-actions__count:empty {
-    display: none;
-  }
-
-  /* Hide wishlist count if 0 */
-  .wishlist-count[data-count="0"] {
     display: none;
   }
 
