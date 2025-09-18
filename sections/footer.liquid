@@ -18,10 +18,7 @@
   <div
     class="
       spacing-style
-      layout-panel-flex
-      layout-panel-flex--{{ section.settings.content_direction }}
-      section-content-wrapper
-      {% if section.settings.vertical_on_mobile %} mobile-column{% endif %}
+      section-content-wrapper footer-grid
     "
     style="
       {% render 'layout-panel-style', settings: section.settings %}
@@ -372,3 +369,55 @@
   ]
 }
 {% endschema %}
+
+{% stylesheet %}
+  /* Responsive grid matching reference: 4 columns desktop, stacked on mobile */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--gap-2xl);
+
+    @media screen and (min-width: 990px) {
+      grid-template-columns: 1.2fr 1fr 1fr 1.2fr;
+      align-items: start;
+    }
+  }
+
+  /* Column spacing hygiene */
+  .footer-grid > * {
+    min-width: 0;
+  }
+
+  /* Headings visual weight like reference */
+  .section-wrapper footer .group .group__heading,
+  .section-wrapper footer .menu .menu__heading,
+  .section-wrapper footer .email-signup__heading {
+    font-weight: 600;
+    font-size: var(--font-size--lg);
+    margin-bottom: var(--gap-md);
+  }
+
+  /* Social row */
+  .social-icons__wrapper {
+    justify-content: flex-start;
+  }
+
+  /* Email signup input + button inline */
+  .email-signup .form {
+    display: flex;
+    gap: var(--gap-sm);
+  }
+
+  .email-signup .form input[type="email"] {
+    flex: 1 1 auto;
+  }
+
+  /* Payment icons row, right aligned on desktop */
+  .payment-icons .payment-icons__list {
+    justify-content: center;
+
+    @media screen and (min-width: 990px) {
+      justify-content: flex-end;
+    }
+  }
+{% endstylesheet %}
