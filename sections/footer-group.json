@@ -99,7 +99,7 @@
                   "name": "t:names.menu",
                   "settings": {
                     "menu": "footer",
-                    "heading": "Shop",
+                    "heading": "Help",
                     "menu_spacing": 4,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -119,8 +119,8 @@
                   "type": "menu",
                   "name": "t:names.menu",
                   "settings": {
-                    "menu": "",
-                    "heading": "Ask",
+                    "menu": "quick-link",
+                    "heading": "Quick Link",
                     "menu_spacing": 4,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -136,20 +136,25 @@
                   },
                   "blocks": {}
                 },
-                "menu_xdWfdM": {
-                  "type": "menu",
-                  "name": "t:names.menu",
+                "text_fC7UaF": {
+                  "type": "text",
+                  "name": "t:names.text",
                   "settings": {
-                    "menu": "",
-                    "heading": "Connect",
-                    "menu_spacing": 4,
-                    "show_as_accordion": false,
-                    "accordion_icon": "caret",
-                    "accordion_dividers": false,
-                    "inherit_color_scheme": true,
-                    "color_scheme": "",
-                    "heading_preset": "h4",
-                    "link_preset": "paragraph",
+                    "text": "<p>We make things that work better and last longer. Our products solve real problems with clean design and honest materials.</p>",
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "color": "var(--color-foreground)",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -161,7 +166,7 @@
               "block_order": [
                 "menu_zGVbCp",
                 "menu_A6XnBJ",
-                "menu_xdWfdM"
+                "text_fC7UaF"
               ]
             },
             "email_signup_wcdFMg": {
