@@ -11,6 +11,7 @@
   "sections": {
     "hero_media_miHERh": {
       "type": "hero-media",
+      "disabled": true,
       "name": "Hero — media",
       "settings": {
         "background_type": "image",
@@ -219,6 +220,7 @@
       "block_order": [
         "group_3cB4GW"
       ],
+      "disabled": true,
       "settings": {
         "media_type_1": "image",
         "image_1": "shopify://shop_images/power-lines-under-blue-and-pink-sky.jpg",
