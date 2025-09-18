@@ -98,7 +98,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Address: <br/>13th Street 47 W 13th St, New York, NY 10011, USA</p><p>Email: <a href=\"mailto:services@ecoflowindia.com\" title=\"mailto:services@ecoflowindia.com\">services@dummmy</a></p><p>Phone: <a href=\"tel:07969595009\" title=\"tel:07969595009\"><strong>079-69590000</strong></a></p><p></p>",
+                    "text": "<p>Plot No. 38, Patparganj Industrial Area, Patparganj, New Delhi, 110092</p><p>Email: <a href=\"mailto:services@ecoflowindia.com\" title=\"mailto:services@ecoflowindia.com\">services@dummmy</a></p><p>Phone: <a href=\"tel:07969595009\" title=\"tel:07969595009\"><strong>079-69590000</strong></a></p><p></p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
