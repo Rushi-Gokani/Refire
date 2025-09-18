@@ -1,0 +1,219 @@
+{%- comment -%}
+  sections/hero-media.liquid
+  - Media hero: background image OR video (via URL), overlay, center/left/right content.
+  - Full set of basic customizer settings: padding (top/right/bottom/left), height, overlay, alignment, accent color, text color, custom class.
+  - Content: eyebrow, heading, subheading, CTA label + link.
+{%- endcomment -%}
+
+<section id="hero-media-{{ section.id }}" class="hero-media-section {{ section.settings.custom_class | escape }}" aria-label="Hero media section" style="
+  --hm-padding-top: {{ section.settings.padding_top | default: 48 }}px;
+  --hm-padding-bottom: {{ section.settings.padding_bottom | default: 48 }}px;
+  --hm-padding-left: {{ section.settings.padding_left | default: 28 }}px;
+  --hm-padding-right: {{ section.settings.padding_right | default: 28 }}px;
+  --hm-height: {% if section.settings.height == 'full' %}100vh{% else %}{{ section.settings.height }}px{% endif %};
+  --hm-accent: {{ section.settings.accent_color | default: '#2f6f4e' }};
+  --hm-text-color: {{ section.settings.text_color | default: '#ffffff' }};
+">
+  <style>
+    /* Scoped styles */
+    #hero-media-{{ section.id }}{ position:relative; overflow:hidden; display:block; color:var(--hm-text-color); }
+    #hero-media-{{ section.id }} .hm-viewport { position:relative; width:100%; height:var(--hm-height); min-height:220px; display:flex; align-items:center; }
+    /* Background media */
+    #hero-media-{{ section.id }} .hm-bg-img,
+    #hero-media-{{ section.id }} video.hm-bg-video {
+      position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background-position:center; background-size:cover; z-index:0;
+    }
+    #hero-media-{{ section.id }} .hm-bg-img { background-repeat:no-repeat; background-size:cover; background-position:center; }
+    #hero-media-{{ section.id }} .hm-overlay {
+      position:absolute; inset:0; z-index:1;
+      background: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0.45)' }};
+      pointer-events:none;
+      mix-blend-mode: normal;
+    }
+
+    /* Content container */
+    #hero-media-{{ section.id }} .hm-content-wrap {
+      position:relative; z-index:2; width:100%;
+      padding-top: var(--hm-padding-top); padding-bottom: var(--hm-padding-bottom);
+      padding-left: var(--hm-padding-left); padding-right: var(--hm-padding-right);
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* horizontal alignment choices */
+    #hero-media-{{ section.id }} .hm-inner {
+      max-width:1200px; width:100%;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    #hero-media-{{ section.id }} .hm-inner.align-left { align-items:flex-start; text-align:left; }
+    #hero-media-{{ section.id }} .hm-inner.align-center { align-items:center; text-align:center; }
+    #hero-media-{{ section.id }} .hm-inner.align-right { align-items:flex-end; text-align:right; }
+
+    .hm-eyebrow { font-weight:700; letter-spacing:0.02em; color:var(--hm-accent); background: rgba(255,255,255,0.04); padding:6px 10px; border-radius:999px; display:inline-block; font-size:13px; }
+    .hm-title { font-size:clamp(28px,4.6vw,56px); line-height:1.02; margin:0; font-weight:800; color:var(--hm-text-color); text-shadow: 0 6px 24px rgba(0,0,0,0.45); }
+    .hm-sub { color: rgba(255,255,255,0.92); max-width:74ch; margin-top:6px; font-size:16px; }
+    .hm-cta { display:inline-flex; align-items:center; gap:10px; padding:12px 18px; border-radius:999px; font-weight:700; text-decoration:none; background:var(--hm-accent); color:#fff; border:0; box-shadow:0 8px 30px rgba(0,0,0,0.35); margin-top:12px; }
+    .hm-cta.secondary { background:transparent; border:1px solid rgba(255,255,255,0.12); color:var(--hm-text-color); }
+
+    /* responsive tweaks */
+    @media (max-width: 900px) {
+      #hero-media-{{ section.id }} .hm-title { font-size:clamp(20px,6.4vw,36px); }
+      #hero-media-{{ section.id }} .hm-content-wrap { padding-left:18px; padding-right:18px; }
+    }
+    @media (max-width: 520px) {
+      #hero-media-{{ section.id }} { font-size:14px; }
+      #hero-media-{{ section.id }} .hm-title { font-size:22px; }
+      #hero-media-{{ section.id }} .hm-inner { gap:8px; }
+    }
+  </style>
+
+  <div class="hm-viewport" role="region" aria-label="Hero media">
+    {%- comment -%} Background image or video element {%- endcomment -%}
+    {%- if section.settings.background_type == 'image' -%}
+      {%- assign bg_url = section.settings.background_image | img_url: '2048x2048' -%}
+      <div class="hm-bg-img" aria-hidden="true" style="background-image:url('{{ bg_url }}');"></div>
+    {%- else -%}
+      {%- if section.settings.background_video != blank -%}
+        {%- assign video_url = section.settings.background_video -%}
+        <video class="hm-bg-video" autoplay="{{ section.settings.video_autoplay }}" muted="{{ section.settings.video_muted }}" loop="{{ section.settings.video_loop }}" playsinline aria-hidden="true" preload="metadata">
+          <source src="{{ video_url | escape }}" type="video/mp4">
+          <!-- Fallback to background image if video fails -->
+        </video>
+      {%- else -%}
+        {%- assign bg_url = section.settings.background_image | img_url: '2048x2048' -%}
+        <div class="hm-bg-img" aria-hidden="true" style="background-image:url('{{ bg_url }}');"></div>
+      {%- endif -%}
+    {%- endif -%}
+
+    <div class="hm-overlay" style="background: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0.45)' }};"></div>
+
+    <div class="hm-content-wrap">
+      <div class="hm-inner {% if section.settings.content_alignment == 'left' %}align-left{% elsif section.settings.content_alignment == 'right' %}align-right{% else %}align-center{% endif %}">
+        {% if section.settings.eyebrow != blank %}
+          <div class="hm-eyebrow">{{ section.settings.eyebrow }}</div>
+        {% endif %}
+
+        {% if section.settings.title != blank %}
+          <h2 class="hm-title" style="color: {{ section.settings.title_color | default: 'var(--hm-text-color)' }}">{{ section.settings.title }}</h2>
+        {% endif %}
+
+        {% if section.settings.subtitle != blank %}
+          <div class="hm-sub" style="color: {{ section.settings.subtitle_color | default: 'rgba(255,255,255,0.92)' }}">{{ section.settings.subtitle }}</div>
+        {% endif %}
+
+        <div class="hm-ctas" aria-hidden="false">
+          {% if section.settings.cta_label != blank and section.settings.cta_link != blank %}
+            <a class="hm-cta" href="{{ section.settings.cta_link }}" aria-label="{{ section.settings.cta_label }}">{{ section.settings.cta_label }}</a>
+          {% endif %}
+          {% if section.settings.cta2_label != blank and section.settings.cta2_link != blank %}
+            <a class="hm-cta secondary" href="{{ section.settings.cta2_link }}" aria-label="{{ section.settings.cta2_label }}">{{ section.settings.cta2_label }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var section = document.getElementById('hero-media-{{ section.id }}');
+      if (!section) return;
+
+      // If video element exists, configure autoplay/mute/loop from settings (some attributes must be set via JS for consistent behavior)
+      var vid = section.querySelector('video.hm-bg-video');
+      if (vid) {
+        try {
+          {% if section.settings.video_autoplay %}
+            vid.autoplay = true;
+          {% else %}
+            vid.autoplay = false;
+          {% endif %}
+          {% if section.settings.video_loop %}
+            vid.loop = true;
+          {% else %}
+            vid.loop = false;
+          {% endif %}
+          {% if section.settings.video_muted %}
+            vid.muted = true;
+          {% else %}
+            vid.muted = false;
+          {% endif %}
+          // try to play if autoplay enabled (browser might block if not muted)
+          if (vid.autoplay) { vid.play().catch(function(){ /* autoplay blocked */ }); }
+        } catch(e) { /* ignore */ }
+      }
+
+      // Set computed overlay opacity if user provided numeric overlay opacity (in case they used rgba or hex)
+      // (Nothing else needed — overlay color is applied via inline style from Liquid)
+    })();
+  </script>
+
+  {%- schema -%}
+  {
+    "name": "Hero — media ",
+    "settings": [
+      {
+        "type": "select",
+        "id": "background_type",
+        "label": "Background type",
+        "default": "image",
+        "options": [
+          { "value": "image", "label": "Image" },
+          { "value": "video", "label": "Video (MP4 URL)" }
+        ]
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background image (used for image type and video fallback)"
+      },
+      {
+        "type": "url",
+        "id": "background_video",
+        "label": "Background video URL (mp4)",
+        "info": "Direct mp4 URL (CDN). If empty, background_image will be used."
+      },
+
+      { "type": "checkbox", "id": "video_autoplay", "label": "Video autoplay", "default": true },
+      { "type": "checkbox", "id": "video_muted", "label": "Video muted", "default": true },
+      { "type": "checkbox", "id": "video_loop", "label": "Video loop", "default": true },
+
+      { "type": "text", "id": "eyebrow", "label": "Eyebrow / small label", "default": "123" },
+      { "type": "text", "id": "title", "label": "Heading / Title", "default": "DJI POWER 2000" },
+      { "type": "textarea", "id": "subtitle", "label": "Subtitle / supporting text", "default": "Power your world — portable, durable, dependable." },
+      { "type": "text", "id": "cta_label", "label": "Primary CTA label", "default": "Buy Now" },
+      { "type": "url", "id": "cta_link", "label": "Primary CTA link"},
+      { "type": "text", "id": "cta2_label", "label": "Secondary CTA label", "default": "Watch Video" },
+      { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" },
+
+      { "type": "select", "id": "content_alignment", "label": "Content horizontal alignment", "default": "center", "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ] },
+
+      { "type": "color", "id": "accent_color", "label": "Accent color (CTA / eyebrow)", "default": "#2f6f4e" },
+      { "type": "color", "id": "text_color", "label": "Primary text color", "default": "#FFFFFF" },
+      { "type": "text", "id": "title_color", "label": "Title color (optional)"},
+      { "type": "text", "id": "subtitle_color", "label": "Subtitle color (optional)"},
+
+      { "type": "select", "id": "height", "label": "Hero height", "default": "520", "options": [
+        { "value": "320", "label": "Small (320px)" },
+        { "value": "420", "label": "Medium (420px)" },
+        { "value": "520", "label": "Large (520px)" },
+        { "value": "full", "label": "Full screen (100vh)" }
+      ] },
+
+ { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 500, "step": 5, "default": 50 },
+{ "type": "range", "id": "padding_right", "label": "Padding right (px)", "min": 0, "max": 500, "step": 5, "default": 30 },
+{ "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 500, "step": 5, "default": 50 },
+{ "type": "range", "id": "padding_left", "label": "Padding left (px)", "min": 0, "max": 500, "step": 5, "default": 30 }, 
+      { "type": "text", "id": "overlay_color", "label": "Overlay color (any valid css color e.g. rgba())", "default": "rgba(0,0,0,0.45)" },
+
+      { "type": "text", "id": "custom_class", "label": "Custom CSS class (optional)"}
+    ],
+    "blocks": [],
+    "presets": [
+      { "name": "Hero — media", "category": "Hero" }
+    ]
+  }
+  {%- endschema -%}
+</section>

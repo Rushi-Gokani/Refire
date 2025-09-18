@@ -1,0 +1,489 @@
+{%- comment -%}
+  sections/hero-heroic-slider.liquid
+  - Responsive improvements: mobile font scaling, responsive paddings, side-list -> bottom strip on mobile,
+    touch / swipe support, smaller arrows/dots on small screens, retains all existing settings & blocks
+{%- endcomment -%}
+
+<section id="hero-heroic-slider-{{ section.id }}" class="hero-heroic-slider" aria-label="Hero slider" style="
+  --hh-padding-top: {{ section.settings.padding_top | default: 60 }}px;
+  --hh-padding-bottom: {{ section.settings.padding_bottom | default: 60 }}px;
+  --hh-padding-left: {{ section.settings.padding_left | default: 40 }}px;
+  --hh-padding-right: {{ section.settings.padding_right | default: 40 }}px;
+  --hh-height: {% if section.settings.height == 'full' %}100vh{% else %}{{ section.settings.height }}px{% endif %};
+  --hh-accent: {{ section.settings.accent_color | default: '#2f6f4e' }};
+  --hh-overlay: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0.45)' }};
+">
+  <style>
+    /* --- Base --- */
+    #hero-heroic-slider-{{ section.id }}{ position:relative; display:block; overflow:hidden; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color: #fff; }
+    #hero-heroic-slider-{{ section.id }} *{ box-sizing:border-box }
+    #hero-heroic-slider-{{ section.id }} .hh-viewport { position:relative; width:100%; height:var(--hh-height); min-height:320px; }
+    #hero-heroic-slider-{{ section.id }} .hh-track { display:flex; width:100%; height:100%; transition:transform 560ms cubic-bezier(.2,.9,.3,1); will-change:transform; touch-action: pan-y; }
+    #hero-heroic-slider-{{ section.id }} .hh-slide { min-width:100%; height:100%; position:relative; flex-shrink:0; display:block; user-select:none; -webkit-user-select:none; -ms-user-select:none; }
+    /* Background */
+    #hero-heroic-slider-{{ section.id }} .hh-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background-size:cover; background-position:center center; z-index:0; }
+    #hero-heroic-slider-{{ section.id }} .hh-overlay { position:absolute; inset:0; z-index:1; background:var(--hh-overlay); pointer-events:none; }
+    /* Content wrapper */
+    #hero-heroic-slider-{{ section.id }} .hh-content {
+      position:relative; z-index:2; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      padding-top:var(--hh-padding-top); padding-bottom:var(--hh-padding-bottom);
+      padding-left:var(--hh-padding-left); padding-right:var(--hh-padding-right);
+    }
+    #hero-heroic-slider-{{ section.id }} .hh-inner { text-align:center; max-width:1180px; margin: 0 auto; padding:0 6px; }
+    #hero-heroic-slider-{{ section.id }} .hh-eyebrow { display:inline-block; margin-bottom: 12px; color: var(--hh-accent); font-weight:700; background: rgba(255,255,255,0.04); padding:6px 12px; border-radius:999px; font-size:13px; }
+    #hero-heroic-slider-{{ section.id }} .hh-title { font-size: clamp(28px, 6vw, 64px); margin:0 0 14px; font-weight:800; letter-spacing: -0.02em; text-shadow: 0 10px 30px rgba(0,0,0,0.5); line-height:1.02; }
+    #hero-heroic-slider-{{ section.id }} .hh-sub { margin:0 auto 20px; color: rgba(255,255,255,0.9); font-size:16px; max-width:72ch; }
+    #hero-heroic-slider-{{ section.id }} .hh-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+    #hero-heroic-slider-{{ section.id }} .hh-btn {
+      padding:10px 18px; border-radius:999px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+      background: var(--hh-accent); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.45); border:0;
+    }
+    #hero-heroic-slider-{{ section.id }} .hh-btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.12); color: #fff; }
+
+    /* Left-side compact slide list */
+    #hero-heroic-slider-{{ section.id }} .hh-side-list {
+      position:absolute; left:28px; bottom:40px; z-index:3; display:flex; flex-direction:column; gap:10px; align-items:flex-start;
+      pointer-events:auto;
+    }
+    #hero-heroic-slider-{{ section.id }} .hh-side-item { display:flex; gap:12px; align-items:center; color: rgba(255,255,255,0.85); cursor:pointer; padding:8px 12px; border-radius:8px; transition: background .18s, color .18s; }
+    #hero-heroic-slider-{{ section.id }} .hh-side-item:focus { outline: 3px solid rgba(255,255,255,0.06); outline-offset:2px; }
+    #hero-heroic-slider-{{ section.id }} .hh-side-item.active { background: rgba(0,0,0,0.32); color:#fff; box-shadow: 0 8px 20px rgba(0,0,0,0.45); }
+    #hero-heroic-slider-{{ section.id }} .hh-side-dot { width:8px; height:8px; border-radius:50%; background:var(--hh-accent); opacity:0.9; }
+
+    /* Arrows & dots */
+    #hero-heroic-slider-{{ section.id }} .hh-arrow {
+      position:absolute; top:50%; transform:translateY(-50%); z-index:4; width:56px; height:56px; display:flex; align-items:center; justify-content:center;
+      background: rgba(0,0,0,0.35); border-radius:10px; color:#fff; cursor:pointer; border:0; transition: background .18s;
+    }
+    #hero-heroic-slider-{{ section.id }} .hh-arrow.left { left:12px; }
+    #hero-heroic-slider-{{ section.id }} .hh-arrow.right { right:12px; }
+    #hero-heroic-slider-{{ section.id }} .hh-arrow:hover { background: var(--hh-accent); color:#fff; }
+
+    #hero-heroic-slider-{{ section.id }} .hh-dots { position:absolute; left:50%; transform:translateX(-50%); bottom:20px; display:flex; gap:10px; z-index:4; }
+    #hero-heroic-slider-{{ section.id }} .hh-dot { width:12px; height:12px; border-radius:999px; background: rgba(255,255,255,0.22); cursor:pointer; border:1px solid rgba(0,0,0,0.08); }
+    #hero-heroic-slider-{{ section.id }} .hh-dot.active { background: var(--hh-accent); transform:scale(1.08); }
+
+    /* small-screen styles */
+    @media (max-width: 1000px) {
+      #hero-heroic-slider-{{ section.id }} .hh-side-list { left:18px; bottom:28px; gap:8px; }
+      #hero-heroic-slider-{{ section.id }} .hh-arrow { width:48px; height:48px; }
+    }
+
+    @media (max-width: 720px) {
+      /* overall */
+      #hero-heroic-slider-{{ section.id }} { --hh-padding-left: 18px; --hh-padding-right: 18px; --hh-padding-top: 36px; --hh-padding-bottom: 36px; }
+      #hero-heroic-slider-{{ section.id }} .hh-title { font-size: clamp(20px, 9vw, 36px); }
+      #hero-heroic-slider-{{ section.id }} .hh-sub { font-size:15px; padding:0 6px; }
+
+      /* arrows become smaller and slightly translucent */
+      #hero-heroic-slider-{{ section.id }} .hh-arrow { width:44px; height:44px; background: rgba(0,0,0,0.28); }
+
+      /* side list becomes a bottom horizontal strip */
+      #hero-heroic-slider-{{ section.id }} .hh-side-list {
+        left:50%; transform:translateX(-50%); bottom:12px; flex-direction:row; align-items:center; gap:8px;
+        background: rgba(0,0,0,0.28); padding:6px 8px; border-radius:999px; overflow:auto; max-width:94%;
+      }
+      #hero-heroic-slider-{{ section.id }} .hh-side-item { padding:8px 10px; min-width: max-content; white-space:nowrap; }
+      #hero-heroic-slider-{{ section.id }} .hh-side-item .hh-side-txt div:first-child { font-size:13px; }
+
+      /* dots slightly higher to avoid overlap with side strip */
+      #hero-heroic-slider-{{ section.id }} .hh-dots { bottom:66px; }
+
+      /* make CTA buttons larger and easier to tap */
+      #hero-heroic-slider-{{ section.id }} .hh-btn { padding:12px 18px; font-size:15px; }
+    }
+
+    @media (max-width: 420px) {
+      #hero-heroic-slider-{{ section.id }} { --hh-padding-top: 22px; --hh-padding-bottom: 22px; }
+      #hero-heroic-slider-{{ section.id }} .hh-title { font-size: clamp(18px, 10.5vw, 28px); }
+      #hero-heroic-slider-{{ section.id }} .hh-sub { font-size:13px; }
+      #hero-heroic-slider-{{ section.id }} .hh-dots { bottom:58px; }
+      #hero-heroic-slider-{{ section.id }} .hh-side-list { bottom:10px; gap:6px; }
+    }
+    /* --- MOBILE / SMALL SCREEN ADJUSTMENTS --- */
+@media (max-width: 720px) {
+  /* reduce padding for tighter fit */
+  #hero-heroic-slider-{{ section.id }} {
+    --hh-padding-left: 16px;
+    --hh-padding-right: 16px;
+    --hh-padding-top: 28px;
+    --hh-padding-bottom: 28px;
+  }
+
+  /* scale title & subtitle for small screens */
+  #hero-heroic-slider-{{ section.id }} .hh-title {
+    font-size: clamp(18px, 8vw, 34px);
+    line-height: 1.06;
+    padding: 0 6px;
+  }
+  #hero-heroic-slider-{{ section.id }} .hh-sub {
+    font-size: 14px;
+    padding: 0 6px;
+  }
+
+  /* arrows become smaller and more touch-friendly */
+  #hero-heroic-slider-{{ section.id }} .hh-arrow {
+    width: 42px;
+    height: 42px;
+    background: rgba(0,0,0,0.24);
+  }
+
+  /* HIDE side list on mobile (you asked) */
+  #hero-heroic-slider-{{ section.id }} .hh-side-list {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* move dots a bit higher so they don't overlap where the side list used to sit */
+  #hero-heroic-slider-{{ section.id }} .hh-dots {
+    bottom: 18px;
+  }
+
+  /* make CTAs easier to tap */
+  #hero-heroic-slider-{{ section.id }} .hh-btn {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+
+  /* ensure bg covers and centers focusing slightly higher (helps hero crops on phones) */
+  #hero-heroic-slider-{{ section.id }} .hh-bg {
+    background-position: center 30%;
+    background-size: cover;
+  }
+}
+
+/* extra tiny devices */
+@media (max-width: 420px) {
+  #hero-heroic-slider-{{ section.id }} {
+    --hh-padding-top: 18px;
+    --hh-padding-bottom: 18px;
+  }
+  #hero-heroic-slider-{{ section.id }} .hh-title {
+    font-size: clamp(16px, 10vw, 28px);
+  }
+  #hero-heroic-slider-{{ section.id }} .hh-sub {
+    font-size: 13px;
+  }
+  #hero-heroic-slider-{{ section.id }} .hh-dots { bottom: 14px; }
+}
+@media (max-width: 720px) {
+  #hero-heroic-slider-{{ section.id }} .hh-slide {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+/* Ensure slides fit exactly one per viewport */
+#hero-heroic-slider-{{ section.id }} .hh-viewport {
+  overflow: hidden;  /* clip overflow */
+}
+
+#hero-heroic-slider-{{ section.id }} .hh-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+#hero-heroic-slider-{{ section.id }} .hh-slide {
+  flex: 0 0 100%;   /* always 100% of viewport */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+  </style>
+
+  <div class="hh-viewport" role="region" aria-roledescription="carousel" aria-label="Hero slides for homepage">
+    <div class="hh-track" data-track>
+      {%- for block in section.blocks -%}
+        {%- assign bg = block.settings.image | img_url: '2048x2048' -%}
+        <article class="hh-slide" data-index="{{ forloop.index0 }}" role="group" aria-roledescription="slide" aria-label="{{ block.settings.title | escape }}">
+          <div class="hh-bg" aria-hidden="true" style="background-image: url('{{ bg }}');"></div>
+          <div class="hh-overlay" aria-hidden="true"></div>
+
+          <div class="hh-content">
+            <div class="hh-inner">
+              {% if block.settings.eyebrow != blank %}
+                <div class="hh-eyebrow">{{ block.settings.eyebrow }}</div>
+              {% endif %}
+              {% if block.settings.title != blank %}
+                <h2 class="hh-title">{{ block.settings.title }}</h2>
+              {% endif %}
+              {% if block.settings.subtitle != blank %}
+                <div class="hh-sub">{{ block.settings.subtitle }}</div>
+              {% endif %}
+              <div class="hh-ctas" role="group" aria-label="call to action">
+                {% if block.settings.cta_label != blank and block.settings.cta_link != blank %}
+                  <a href="{{ block.settings.cta_link }}" class="hh-btn" aria-label="{{ block.settings.cta_label }}">{{ block.settings.cta_label }}</a>
+                {% endif %}
+                {% if block.settings.cta2_label != blank and block.settings.cta2_link != blank %}
+                  <a href="{{ block.settings.cta2_link }}" class="hh-btn ghost" aria-label="{{ block.settings.cta2_label }}">{{ block.settings.cta2_label }}</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {% if section.settings.show_arrows %}
+      <button class="hh-arrow left" data-prev aria-label="Previous slide" type="button" tabindex="0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="hh-arrow right" data-next aria-label="Next slide" type="button" tabindex="0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    {% endif %}
+
+    {% if section.settings.show_dots %}
+      <div class="hh-dots" data-dots role="tablist" aria-label="Slide dots"></div>
+    {% endif %}
+
+    {% if section.settings.show_side_list %}
+      <div class="hh-side-list" data-side>
+        {%- for block in section.blocks -%}
+          <div class="hh-side-item" data-side-index="{{ forloop.index0 }}" role="button" tabindex="0">
+            <div class="hh-side-dot" aria-hidden="true"></div>
+            <div class="hh-side-txt">
+              <div style="font-weight:700; font-size:13px;">{{ block.settings.side_label | default: block.settings.title | truncate: 28 }}</div>
+              {% if block.settings.side_subtext != blank %}
+                <div style="font-size:12px; color: rgba(255,255,255,0.7); margin-top:4px;">{{ block.settings.side_subtext }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    (function(){
+      const root = document.getElementById('hero-heroic-slider-{{ section.id }}');
+      if (!root) return;
+      const track = root.querySelector('[data-track]');
+      const slides = Array.from(root.querySelectorAll('.hh-slide'));
+      const dotsContainer = root.querySelector('[data-dots]');
+      const sideContainer = root.querySelector('[data-side]');
+      const prevBtn = root.querySelector('[data-prev]');
+      const nextBtn = root.querySelector('[data-next]');
+
+      const settings = {
+        autoplay: {{ section.settings.autoplay | default: true | json }},
+        interval: {{ section.settings.interval | default: 5000 }},
+        pauseOnHover: true,
+        startAt: 0
+      };
+
+      let current = settings.startAt || 0;
+      let timer = null;
+      let isAnimating = false;
+
+      function clampIndex(i){ return (i + slides.length) % slides.length; }
+
+      function updateUI(){
+        track.style.transform = 'translateX(' + (-current*100) + '%)';
+        // dots
+        if (dotsContainer) {
+          Array.from(dotsContainer.children).forEach((d,i) => {
+            d.classList.toggle('active', i === current);
+            d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+            d.setAttribute('tabindex', i === current ? '0' : '-1');
+          });
+        }
+        // side list
+        if (sideContainer) {
+          Array.from(sideContainer.children).forEach((item,i) => {
+            item.classList.toggle('active', i === current);
+          });
+          // ensure active side item visible on small screens
+          const active = sideContainer.querySelector('.hh-side-item.active');
+          if (active && typeof active.scrollIntoView === 'function') {
+            // center it within the strip
+            active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      }
+
+      function goTo(index, userInteraction){
+        if (isAnimating) return;
+        isAnimating = true;
+        current = clampIndex(index);
+        updateUI();
+        setTimeout(()=> { isAnimating = false; }, 560);
+        if (settings.autoplay && userInteraction) restartTimer();
+      }
+      function next(){ goTo(current+1, true); }
+      function prev(){ goTo(current-1, true); }
+
+      // create dots
+      if (dotsContainer) {
+        slides.forEach((_,i) => {
+          const b = document.createElement('button');
+          b.className = 'hh-dot';
+          b.setAttribute('role','tab');
+          b.setAttribute('aria-label','Go to slide '+(i+1));
+          b.addEventListener('click', ()=> goTo(i, true));
+          b.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); goTo(i,true); }});
+          dotsContainer.appendChild(b);
+        });
+      }
+
+      // side list click handlers
+      if (sideContainer) {
+        Array.from(sideContainer.children).forEach((item, i) => {
+          item.addEventListener('click', ()=> goTo(i, true));
+          item.addEventListener('keydown', (e)=> { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(i,true); }});
+        });
+      }
+
+      // arrows
+      if (prevBtn) prevBtn.addEventListener('click', prev);
+      if (nextBtn) nextBtn.addEventListener('click', next);
+
+      // keyboard nav
+      root.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
+      });
+
+      // autoplay
+      function startTimer(){
+        stopTimer();
+        if (!settings.autoplay) return;
+        timer = setInterval(()=> goTo(current+1, false), Number(settings.interval) || 5000);
+      }
+      function stopTimer(){ if (timer) { clearInterval(timer); timer = null; } }
+      function restartTimer(){ stopTimer(); startTimer(); }
+      if (settings.pauseOnHover) {
+        // pause on pointer enter/down for better mobile support
+        root.addEventListener('pointerenter', stopTimer);
+        root.addEventListener('pointerleave', startTimer);
+        root.addEventListener('pointerdown', stopTimer);
+        root.addEventListener('pointerup', startTimer);
+      }
+
+      // touch / swipe support
+      (function addSwipe(){
+        let startX = 0, startTime = 0, isPointer = false;
+        const threshold = 50; // px
+        const restraint = 100; // vertical restraint
+
+        root.addEventListener('pointerdown', function(e){
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          isPointer = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          startTime = Date.now();
+          // capture pointer to this element
+          try { e.target.setPointerCapture && e.target.setPointerCapture(e.pointerId); } catch(e){}
+        });
+
+        root.addEventListener('pointermove', function(e){
+          if (!isPointer) return;
+          // nothing else — we don't translate track manually to keep code simple
+        });
+
+        root.addEventListener('pointerup', function(e){
+          if (!isPointer) return;
+          isPointer = false;
+          const distX = e.clientX - startX;
+          const distY = (e.clientY || 0) - (startY || 0);
+          const elapsed = Date.now() - startTime;
+          // horizontal swipe detection
+          if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
+            if (distX < 0) { // left swipe -> next
+              next();
+            } else { // right swipe -> prev
+              prev();
+            }
+          }
+          try { e.target.releasePointerCapture && e.target.releasePointerCapture(e.pointerId); } catch(e){}
+        });
+
+        // fallback for touch-only browsers (optional)
+        root.addEventListener('touchstart', function(e){
+          const t = e.touches[0];
+          startX = t.clientX;
+          startY = t.clientY;
+          startTime = Date.now();
+        }, {passive:true});
+        root.addEventListener('touchend', function(e){
+          const t = (e.changedTouches && e.changedTouches[0]) || {};
+          const distX = (t.clientX || 0) - startX;
+          const distY = (t.clientY || 0) - startY;
+          if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
+            if (distX < 0) next(); else prev();
+          }
+        }, {passive:true});
+      })();
+
+      // init UI
+      updateUI();
+      startTimer();
+
+      // hide controls when 0/1 slides
+      if (slides.length <= 1) {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (dotsContainer) dotsContainer.style.display = 'none';
+        if (sideContainer) sideContainer.style.display = 'none';
+      }
+
+      // expose for debugging
+      root.heroSlider = { goTo, next, prev, startTimer, stopTimer };
+    })();
+  </script>
+
+  {%- schema -%}
+  {
+    "name": "Hero — Heroic Slider",
+    "settings": [
+      { "type": "checkbox", "id": "autoplay", "label": "Autoplay slides", "default": true },
+      { "type": "number", "id": "interval", "label": "Autoplay interval (ms)", "default": 5000 },
+      { "type": "select", "id": "height", "label": "Hero height", "default": "520", "options": [
+        { "value": "320", "label": "Small (320px)" },
+        { "value": "420", "label": "Medium (420px)" },
+        { "value": "520", "label": "Large (520px)" },
+        { "value": "full", "label": "Full screen (100vh)" }
+      ] },
+
+      { "type": "checkbox", "id": "show_arrows", "label": "Show arrows", "default": true },
+      { "type": "checkbox", "id": "show_dots", "label": "Show dots (bottom center)", "default": true },
+      { "type": "checkbox", "id": "show_side_list", "label": "Show left compact slide list (becomes bottom on mobile)", "default": true },
+
+      { "type": "color", "id": "accent_color", "label": "Accent color (CTAs & dots)", "default": "#2f6f4e" },
+      { "type": "text", "id": "overlay_color", "label": "Overlay color (any CSS color, e.g. rgba())", "default": "rgba(0,0,0,0.45)" },
+
+      { "type": "range", "id": "padding_top", "label": "Padding top (px)", "min": 0, "max": 500, "step": 5, "default": 60 },
+      { "type": "range", "id": "padding_right", "label": "Padding right (px)", "min": 0, "max": 500, "step": 5, "default": 40 },
+      { "type": "range", "id": "padding_bottom", "label": "Padding bottom (px)", "min": 0, "max": 500, "step": 5, "default": 60 },
+      { "type": "range", "id": "padding_left", "label": "Padding left (px)", "min": 0, "max": 500, "step": 5, "default": 40 },
+
+      { "type": "text", "id": "custom_class", "label": "Custom CSS class (optional)"}
+    ],
+    "blocks": [
+      {
+        "type": "slide",
+        "name": "Slide",
+        "settings": [
+          { "type": "image_picker", "id": "image", "label": "Background image (recommended 2000-4000px wide)" },
+          { "type": "text", "id": "eyebrow", "label": "Eyebrow / small label"},
+          { "type": "text", "id": "title", "label": "Title / hero heading", "default": "DJI Mavic 3 Pro" },
+          { "type": "textarea", "id": "subtitle", "label": "Subtitle / supporting text", "default": "Inspiration in focus" },
+          { "type": "text", "id": "cta_label", "label": "Primary CTA label", "default": "Learn More" },
+          { "type": "url", "id": "cta_link", "label": "Primary CTA link" },
+          { "type": "text", "id": "cta2_label", "label": "Secondary CTA label", "default": "Buy Now" },
+          { "type": "url", "id": "cta2_link", "label": "Secondary CTA link" },
+
+          { "type": "text", "id": "side_label", "label": "Side list label (short)"},
+          { "type": "text", "id": "side_subtext", "label": "Side list subtext (optional)"}
+        ]
+      }
+    ],
+    "max_blocks": 8,
+    "presets": [
+      { "name": "Hero — Heroic Slider (responsive)", "category": "Hero" }
+    ]
+  }
+  {%- endschema -%}
+</section>
