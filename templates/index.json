@@ -97,7 +97,7 @@
       ],
       "name": "Hero slider (creative)",
       "settings": {
-        "autoplay": true,
+        "autoplay": false,
         "interval": 5000,
         "height": "700",
         "show_arrows": true,
