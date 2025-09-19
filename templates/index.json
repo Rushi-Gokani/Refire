@@ -289,10 +289,10 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "",
-                "width": "fit-content",
+                "text": "<h3><br/>Outdoor Energy Essential<br/><br/></h3>",
+                "width": "100%",
                 "max_width": "normal",
-                "alignment": "left",
+                "alignment": "center",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
@@ -319,7 +319,6 @@
         "static-product-card": {
           "type": "_product-card",
           "name": "t:names.product_card",
-          "disabled": true,
           "static": true,
           "settings": {
             "product_card_gap": 0,
@@ -572,8 +571,8 @@
         "collection": "all",
         "layout_type": "grid",
         "carousel_on_mobile": false,
-        "max_products": 6,
-        "columns": 3,
+        "max_products": 4,
+        "columns": 4,
         "mobile_columns": "1",
         "mobile_card_size": "60cqw",
         "columns_gap": 1,
@@ -584,8 +583,8 @@
         "horizontal_alignment": "flex-start",
         "gap": 0,
         "color_scheme": "scheme-1",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "padding-block-start": 50,
+        "padding-block-end": 50
       }
     },
     "section_RhpYRt": {

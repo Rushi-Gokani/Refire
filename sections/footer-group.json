@@ -312,6 +312,7 @@
         "group_EUUkMF",
         "footer_utilities_B7cUpb"
       ],
+      "disabled": true,
       "name": "Footer",
       "settings": {
         "content_direction": "column",
