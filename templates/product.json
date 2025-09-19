@@ -128,6 +128,7 @@
             "text_gXMUag": {
               "type": "text",
               "name": "Product description",
+              "disabled": true,
               "settings": {
                 "text": "{{ closest.product.description }}",
                 "width": "100%",
@@ -221,7 +222,7 @@
                 "accordion_row_jyNHdY": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Return policy",
+                    "heading": "Description",
                     "open_by_default": true,
                     "icon": "none",
                     "width": 20
@@ -230,9 +231,9 @@
                     "text_q4dc4p": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Our goal is for every customer to be totally satisfied with their purchase. If this isn't the case, let us know and we'll do our best to work with you to make it right.</p>",
+                        "text": "{{ closest.product.description }}",
                         "width": "100%",
-                        "max_width": "normal",
+                        "max_width": "none",
                         "alignment": "left",
                         "type_preset": "rte",
                         "font": "var(--font-body--family)",
