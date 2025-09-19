@@ -512,7 +512,22 @@
       justify-content: flex-end;
     }
   }
+  .footer-utilities__group--left {
+    justify-content: flex-end;
+    text-align: right;
+  }
 
+  /* keep the center group centered */
+  .footer-utilities__group--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* ensure the right group aligns left to avoid layout shift */
+  .footer-utilities__group--right {
+    justify-content: flex-start;
+    text-align: left;
+  }
   .footer-copyright {
     display: flex;
     flex-direction: column;
