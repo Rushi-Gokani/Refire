@@ -4,16 +4,19 @@
 
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
-
 {% style %}
+  /* Container & layout */
   .ai-why-buy-section-{{ ai_gen_id }} {
     padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
     background-color: {{ block.settings.background_color }};
+    box-sizing: border-box;
+    overflow: visible;
   }
 
   .ai-why-buy-container-{{ ai_gen_id }} {
     max-width: 1200px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .ai-why-buy-header-{{ ai_gen_id }} {
@@ -36,6 +39,7 @@
     line-height: 1.4;
   }
 
+  /* Desktop grid */
   .ai-why-buy-grid-{{ ai_gen_id }} {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -65,6 +69,7 @@
     justify-content: center;
     background-color: {{ block.settings.icon_background_color }};
     border-radius: 50%;
+    box-sizing: border-box;
   }
 
   .ai-why-buy-icon-{{ ai_gen_id }} {
@@ -90,6 +95,7 @@
     line-height: 1.5;
   }
 
+  /* Carousel (mobile) wrapper — hidden on desktop */
   .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
     display: none;
     overflow: hidden;
@@ -99,9 +105,11 @@
 
   .ai-why-buy-carousel-track-{{ ai_gen_id }} {
     display: flex;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
     cursor: grab;
     touch-action: pan-y;
+    will-change: transform;
+    align-items: stretch;
   }
 
   .ai-why-buy-carousel-track-{{ ai_gen_id }}:active {
@@ -120,6 +128,7 @@
     scroll-snap-align: center;
     outline: none;
     position: relative;
+    box-sizing: border-box; /* critical to avoid overflow from padding */
   }
 
   .ai-why-buy-carousel-item-{{ ai_gen_id }}:focus {
@@ -134,10 +143,7 @@
 
   .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered {
     transform: scale(1.05);
-  }
-
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered:hover {
-    transform: scale(1.05) translateY(-4px);
+    z-index: 2;
   }
 
   .ai-why-buy-sr-only-{{ ai_gen_id }} {
@@ -152,11 +158,9 @@
     border: 0;
   }
 
+  /* Responsive behavior */
   @media screen and (max-width: 990px) {
-    .ai-why-buy-grid-{{ ai_gen_id }} {
-      grid-template-columns: repeat(2, 1fr);
-      gap: {{ block.settings.column_gap | times: 0.8 }}px;
-    }
+    .ai-why-buy-grid-{{ ai_gen_id }} { grid-template-columns: repeat(2, 1fr); gap: {{ block.settings.column_gap | times: 0.8 }}px; }
   }
 
   @media screen and (max-width: 749px) {
@@ -164,49 +168,35 @@
       padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px;
     }
 
-    .ai-why-buy-container-{{ ai_gen_id }} {
-      padding: 0 16px;
-    }
+    .ai-why-buy-container-{{ ai_gen_id }} { padding: 0 16px; }
 
-    .ai-why-buy-grid-{{ ai_gen_id }} {
-      display: none;
-    }
-
+    /* hide desktop grid, show mobile carousel */
+    .ai-why-buy-grid-{{ ai_gen_id }} { display: none; }
     .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
       display: block;
       margin-left: -16px;
       margin-right: -16px;
+      padding: 12px 0;
     }
 
-    .ai-why-buy-title-{{ ai_gen_id }} {
-      font-size: {{ block.settings.title_size | times: 0.8 }}px;
-    }
+    .ai-why-buy-title-{{ ai_gen_id }} { font-size: {{ block.settings.title_size | times: 0.9 }}px; }
+    .ai-why-buy-subtitle-{{ ai_gen_id }} { font-size: {{ block.settings.subtitle_size | times: 0.95 }}px; }
+    .ai-why-buy-column-title-{{ ai_gen_id }} { font-size: {{ block.settings.column_title_size | times: 0.95 }}px; }
+    .ai-why-buy-column-description-{{ ai_gen_id }} { font-size: {{ block.settings.column_description_size | times: 0.95 }}px; }
 
-    .ai-why-buy-subtitle-{{ ai_gen_id }} {
-      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
-    }
-
-    .ai-why-buy-column-title-{{ ai_gen_id }} {
-      font-size: {{ block.settings.column_title_size | times: 0.9 }}px;
-    }
-
-    .ai-why-buy-column-description-{{ ai_gen_id }} {
-      font-size: {{ block.settings.column_description_size | times: 0.9 }}px;
-    }
-
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 80px);
-      margin: 0 20px;
-    }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 80px); margin: 0 20px; }
   }
 
   @media screen and (max-width: 480px) {
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-      flex: 0 0 calc(100vw - 60px);
-      margin: 0 15px;
-    }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 60px); margin: 0 15px; }
   }
-{% endstyle %}<why-buy-carousel-{{ ai_gen_id }} class="ai-why-buy-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-why-buy-carousel-track-{{ ai_gen_id }} { transition: none !important; }
+  }
+{% endstyle %}
+
+ <why-buy-carousel-{{ ai_gen_id }} class="ai-why-buy-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-why-buy-container-{{ ai_gen_id }}">
     {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
       <div class="ai-why-buy-header-{{ ai_gen_id }}">
