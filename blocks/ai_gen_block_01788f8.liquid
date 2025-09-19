@@ -1,17 +1,13 @@
-{% doc %}
-  @prompt
-    Create a Shopify **section block** named "FAQ Item — Minimal" (block fields: "Question" short text, "Answer" rich-text/textarea, "Open by default" boolean, optional heading/text color overrides) designed to be added repeatedly inside a parent FAQ section; output a single-file Liquid block + example parent section wrapper that demonstrates 10 pre-populated FAQ blocks (so you can paste the block and see 10 items), use theme variables/classes (color_scheme, typography, spacing) so it blends with the current theme, produce minimal CSS and vanilla JS (no external libraries) that integrates with the parent accordion (questions as `<button>`, answers in a region with `aria-hidden`/`aria-expanded`, keyboard support: Enter/Space toggle, Arrow Up/Down to move focus, Home/End to jump), support "single expand" or "multi expand" modes via section setting, respect block-level "open by default", include smooth slide animation toggle, subtle 1px dividers, 14–16px body text and 18–24px heading, simple chevron that rotates on open, mobile-first responsive styles, SEO-friendly markup, include inline comments explaining customization, and return the full ready-to-paste Liquid code (block + example parent section wrapper with 10 sample FAQ blocks and schema) in one file.
-
-{% enddoc %}
 {% comment %}
-FAQ Item - Minimal Block
-This block is designed to be used within an FAQ section.
-Each block represents a single FAQ item with question and answer.
+FAQ Item — Minimal (fixed)
+Single-file block ready to paste. Works whether or not you wrap items in <faq-accordion>.
+Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwarding.
 {% endcomment %}
 
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
+  /* ---------- Container / divider ---------- */
   .faq-item-{{ ai_gen_id }} {
     border-bottom: 1px solid rgb(var(--color-border) / 0.2);
   }
@@ -20,6 +16,7 @@ Each block represents a single FAQ item with question and answer.
     border-bottom: none;
   }
 
+  /* ---------- Question button ---------- */
   .faq-question-{{ ai_gen_id }} {
     width: 100%;
     display: flex;
@@ -30,11 +27,12 @@ Each block represents a single FAQ item with question and answer.
     border: none;
     text-align: left;
     cursor: pointer;
-    font-size: 1.125rem;
+    font-size: 1.125rem; /* ~18px */
     font-weight: 500;
     line-height: 1.4;
     color: {% if block.settings.heading_color != blank %}{{ block.settings.heading_color }}{% else %}rgb(var(--color-foreground)){% endif %};
-    transition: color 0.2s ease;}
+    transition: color 0.2s ease;
+  }
 
   .faq-question-{{ ai_gen_id }}:hover {
     color: rgb(var(--color-primary));
@@ -50,42 +48,53 @@ Each block represents a single FAQ item with question and answer.
     margin-right: 1rem;
   }
 
+  /* ---------- Chevron ---------- */
   .faq-chevron-{{ ai_gen_id }} {
     width: 1.25rem;
     height: 1.25rem;
     transition: transform 0.3s ease;
     color: rgb(var(--color-foreground) / 0.6);
+    flex-shrink: 0;
+    /* ensure clicks register on the svg */
+    pointer-events: auto;
   }
 
   .faq-question-{{ ai_gen_id }}[aria-expanded="true"] .faq-chevron-{{ ai_gen_id }} {
     transform: rotate(180deg);
   }
 
+  /* ---------- Answer region (slide) ---------- */
   .faq-answer-{{ ai_gen_id }} {
     overflow: hidden;
-    transition: max-height 0.3s ease, padding0.3s ease;
+    /* FIXED: was `padding0.3s` typo before */
+    transition: max-height 0.33s ease, padding 0.33s ease;
     max-height: 0;
-    padding: 0;}
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 
+  /* open class increases max-height (safe simple animation) */
   .faq-answer-{{ ai_gen_id }}.open {
-    max-height: 500px;
+    max-height: 600px; /* large enough for typical content */
     padding-bottom: 1.5rem;
   }
 
   .faq-answer-content-{{ ai_gen_id }} {
-    font-size: 0.9375rem;
+    font-size: 0.9375rem; /* ~15px */
     line-height: 1.6;
     color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground) / 0.8){% endif %};
+    padding-right: 0.25rem;
   }
 
   .faq-answer-content-{{ ai_gen_id }} p {
-    margin: 00 1rem 0;
+    margin: 0 0 0.75rem 0;
   }
 
   .faq-answer-content-{{ ai_gen_id }} p:last-child {
     margin-bottom: 0;
   }
 
+  /* ---------- Responsive ---------- */
   @media screen and (max-width: 749px) {
     .faq-question-{{ ai_gen_id }} {
       font-size: 1rem;
@@ -103,18 +112,19 @@ Each block represents a single FAQ item with question and answer.
 {% endstyle %}
 
 <div class="faq-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
-    <!-- give the button an ID (so aria-labelledby points to a real element) -->
+  <!-- Give the question button an id for aria-labelledby and focus management -->
   <button
     id="faq-question-{{ ai_gen_id }}"
     class="faq-question-{{ ai_gen_id }}"
     aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
     aria-controls="faq-answer-{{ ai_gen_id }}"
-    data-faq-question>
+    data-faq-question
+    type="button">
     <span class="faq-question-text-{{ ai_gen_id }}">
       {{ block.settings.question | default: 'Add your question here' }}
     </span>
 
-    <!-- forward clicks on the SVG to the parent button so arrow clicks always toggle -->
+    <!-- Chevron forwards clicks to the button (ensures clicking arrow toggles) -->
     <svg
       class="faq-chevron-{{ ai_gen_id }}"
       viewBox="0 0 24 24"
@@ -128,15 +138,13 @@ Each block represents a single FAQ item with question and answer.
     </svg>
   </button>
 
+  <!-- Answer region -->
   <div
     id="faq-answer-{{ ai_gen_id }}"
     class="faq-answer-{{ ai_gen_id }}{% if block.settings.open_by_default %} open{% endif %}"
     aria-hidden="{% if block.settings.open_by_default %}false{% else %}true{% endif %}"
     role="region"
     aria-labelledby="faq-question-{{ ai_gen_id }}">
-
-  
-
     <div class="faq-answer-content-{{ ai_gen_id }}">
       {% if block.settings.answer != blank %}
         {{ block.settings.answer }}
@@ -146,106 +154,203 @@ Each block represents a single FAQ item with question and answer.
     </div>
   </div>
 </div>
+
 <script>
+/*
+ Robust FAQ initializer:
+ - Works whether items are inside a <faq-accordion data-expand-mode="single|multi"> container
+   OR when blocks exist without that wrapper.
+ - Finds accordion containers (data-faq-accordion) or creates a virtual grouping by parent section element.
+ - Adds click + keyboard handlers and manages aria-expanded / aria-hidden properly (strings).
+*/
+
 (function() {
-  class FaqAccordion extends HTMLElement {
-    constructor() {
-      super();
-      this.expandMode = this.dataset.expandMode || 'multi';
-      this.questions = [];
-      this.currentFocus = -1;
-    }
+  // Helper to convert boolean to "true"/"false"
+  function boolStr(v) { return v ? 'true' : 'false'; }
 
-    connectedCallback() {
-      this.questions = Array.from(this.querySelectorAll('[data-faq-question]'));
-      this.setupEventListeners();
-      this.setupKeyboardNavigation();
-    }
+  // Initialize a single accordion container (element) and its question buttons
+  function initAccordionContainer(container, expandMode) {
+    // Find question buttons within container
+    const questions = Array.from(container.querySelectorAll('[data-faq-question]'));
+    if (!questions.length) return;
 
-    setupEventListeners() {
-      this.questions.forEach((question, index) => {
-        question.addEventListener('click', () => this.toggleAnswer(question, index));
+    // Set container attribute to identify it's handled
+    container.setAttribute('data-faq-initialized', 'true');
+    container.dataset.expandMode = expandMode || container.dataset.expandMode || 'multi';
+
+    // Add click listeners and keyboard support
+    questions.forEach((question, index) => {
+      // Ensure button has role/attributes (id is present in block)
+      question.setAttribute('tabindex', '0');
+
+      question.addEventListener('click', function() {
+        toggle(question, index, container);
+      });
+
+      question.addEventListener('keydown', function(e) {
+        switch (e.key) {
+          case 'ArrowDown':
+            e.preventDefault();
+            focusNext(questions, index);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            focusPrevious(questions, index);
+            break;
+          case 'Home':
+            e.preventDefault();
+            questions[0].focus();
+            break;
+          case 'End':
+            e.preventDefault();
+            questions[questions.length - 1].focus();
+            break;
+          case 'Enter':
+          case ' ':
+            e.preventDefault();
+            toggle(question, index, container);
+            break;
+        }
+      });
+    });
+
+    // Close all helper
+    function closeAll() {
+      questions.forEach(q => {
+        const ans = q.nextElementSibling;
+        q.setAttribute('aria-expanded', 'false');
+        if (ans) {
+          ans.setAttribute('aria-hidden', 'true');
+          ans.classList.remove('open');
+        }
       });
     }
 
-    setupKeyboardNavigation() {
-      this.questions.forEach((question, index) => {
-        question.addEventListener('keydown', (e) => {
-          switch(e.key) {
-            case 'ArrowDown':
-              e.preventDefault();
-              this.focusNext(index);
-              break;
-            case 'ArrowUp':
-              e.preventDefault();
-              this.focusPrevious(index);
-              break;
-            case 'Home':
-              e.preventDefault();
-              this.focusFirst();
-              break;
-            case 'End':
-              e.preventDefault();
-              this.focusLast();
-              break;
-            case 'Enter':
-            case ' ':
-              e.preventDefault();
-              this.toggleAnswer(question, index);
-              break;
-          }
-        });
-      });
-    }
-
-    toggleAnswer(question, index) {
+    // Toggle single question
+    function toggle(question, index, containerRef) {
       const isExpanded = question.getAttribute('aria-expanded') === 'true';
       const answer = question.nextElementSibling;
-      
-      if (this.expandMode === 'single' && !isExpanded) {
-        this.closeAllAnswers();
+
+      // If container is single expand, close others when opening one
+      if (containerRef.dataset.expandMode === 'single' && !isExpanded) {
+        closeAll();
       }
-      
-      question.setAttribute('aria-expanded', !isExpanded);
-      answer.setAttribute('aria-hidden', isExpanded);
-      
-      if (isExpanded) {
-        answer.classList.remove('open');
-      } else {
-        answer.classList.add('open');
-      }}
 
-    closeAllAnswers() {
-      this.questions.forEach(question => {
-        const answer = question.nextElementSibling;
-        question.setAttribute('aria-expanded', 'false');
-        answer.setAttribute('aria-hidden', 'true');
-        answer.classList.remove('open');
-      });
+      // Toggle attributes (use string values)
+      question.setAttribute('aria-expanded', boolStr(!isExpanded));
+      if (answer) {
+        answer.setAttribute('aria-hidden', boolStr(isExpanded));
+        if (isExpanded) {
+          answer.classList.remove('open');
+        } else {
+          answer.classList.add('open');
+        }
+      }
     }
 
-    focusNext(currentIndex) {
-      const nextIndex = (currentIndex + 1) % this.questions.length;
-      this.questions[nextIndex].focus();
+    // Focus helpers
+    function focusNext(arr, idx) {
+      const next = (idx + 1) % arr.length;
+      arr[next].focus();
     }
-
-    focusPrevious(currentIndex) {
-      const prevIndex = currentIndex === 0 ? this.questions.length - 1 : currentIndex - 1;
-      this.questions[prevIndex].focus();
-    }
-
-    focusFirst() {
-      this.questions[0].focus();
-    }
-
-    focusLast() {
-      this.questions[this.questions.length - 1].focus();
+    function focusPrevious(arr, idx) {
+      const prev = idx === 0 ? arr.length - 1 : idx - 1;
+      arr[prev].focus();
     }
   }
 
-  customElements.define('faq-accordion', FaqAccordion);
+  // Find or create accordion groups on the page
+  function initializeAllFaqs() {
+    // 1) First, look for explicit wrappers: <faq-accordion> or any element with data-faq-accordion
+    const explicitWrappers = Array.from(document.querySelectorAll('faq-accordion, [data-faq-accordion]'));
+
+    explicitWrappers.forEach(wrapper => {
+      const mode = wrapper.dataset.expandMode || wrapper.getAttribute('data-expand-mode') || 'multi';
+      // If not already initialized
+      if (wrapper.getAttribute('data-faq-initialized') !== 'true') {
+        initAccordionContainer(wrapper, mode);
+      }
+    });
+
+    // 2) Next, handle FAQ blocks not inside an explicit wrapper:
+    // Group by nearest section or common parent element that contains [data-faq-question] children.
+    // We search for any question buttons not yet initialized and group them by their nearest ancestor section element.
+    const allQuestions = Array.from(document.querySelectorAll('[data-faq-question]'));
+    const uninitializedQuestions = allQuestions.filter(q => {
+      // is the parent container already handled?
+      let parent = q.parentElement;
+      while (parent) {
+        if (parent.getAttribute && parent.getAttribute('data-faq-initialized') === 'true') return false;
+        parent = parent.parentElement;
+      }
+      // also skip if question belongs to an explicit wrapper above (already handled)
+      return true;
+    });
+
+    // Group uninitialized questions by nearest section element (or top-level container)
+    const groups = new Map();
+    uninitializedQuestions.forEach(q => {
+      // find nearest ancestor that is a section, or .section, or element with data-section, or fallback to q.parentElement
+      let ancestor = q.closest('section, [data-section], .section') || q.parentElement;
+      const key = ancestor || document;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(q);
+    });
+
+    // Initialize each group by creating a virtual wrapper element (a <div>) that contains those buttons
+    groups.forEach((questions, ancestor) => {
+      // If questions already belong to a real wrapper, skip (shouldn't here)
+      // Create a lightweight container element to pass to the initializer (doesn't move DOM nodes)
+      const container = document.createElement('div');
+      container.dataset.expandMode = ancestor && ancestor.dataset ? (ancestor.dataset.expandMode || 'multi') : 'multi';
+
+      // To let selector queries inside initializer find the relevant buttons, append references:
+      // We'll temporarily attach the questions as a NodeList via a query: Instead, simpler approach:
+      // Append a marker class on each question to indicate group membership.
+      questions.forEach(q => q.classList.add('faq-js-group-temp'));
+      // Put the container into DOM (hidden) so querySelectorAll works relative to document
+      document.body.appendChild(container); // lightweight, will be removed
+      // Now initialize using a container that queries the document for the class
+      // To do that, we temporarily set container.querySelectorAll to function returning list (monkeypatch)
+      container.querySelectorAll = function() {
+        return Array.from(document.querySelectorAll('.faq-js-group-temp'));
+      };
+      // Initialize
+      initAccordionContainer(container, container.dataset.expandMode || 'multi');
+      // Cleanup: remove temporary marker and the container
+      questions.forEach(q => q.classList.remove('faq-js-group-temp'));
+      container.remove();
+    });
+  }
+
+  // Run on DOMContentLoaded and also if new blocks are injected later (basic mutation observer)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAllFaqs);
+  } else {
+    initializeAllFaqs();
+  }
+
+  // MutationObserver: if theme editor injects blocks after load, catch them
+  const mo = new MutationObserver((mutations) => {
+    // If any added nodes contain [data-faq-question], re-run initializer
+    let found = false;
+    for (const m of mutations) {
+      for (const n of m.addedNodes) {
+        if (n.nodeType === 1) {
+          if (n.matches && n.matches('[data-faq-question]')) found = true;
+          if (n.querySelector && n.querySelector('[data-faq-question]')) found = true;
+        }
+      }
+    }
+    if (found) {
+      initializeAllFaqs();
+    }
+  });
+  mo.observe(document.body, { childList: true, subtree: true });
+
 })();
-</script> 
+</script>
+
 {% schema %}
 {
   "name": "FAQ item",
@@ -285,4 +390,3 @@ Each block represents a single FAQ item with question and answer.
   ]
 }
 {% endschema %}
-
