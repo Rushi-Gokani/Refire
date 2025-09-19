@@ -404,25 +404,36 @@
         });
       }
 
-      calculateItemWidth() {
-        if (!this.track || !this.track.children.length) return;
-        // compute width based on the first child (no horizontal margins used)
-        const item = this.track.children[0];
-        const rect = item.getBoundingClientRect();
-        this.itemWidth = Math.round(rect.width); // width without margins (we removed margins)
-        // set explicit width for each child to avoid fractional layout differences
-        Array.from(this.track.children).forEach(child => {
-          child.style.width = `${rect.width}px`;
-        });
-        // set explicit track width
-        this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
-      }
-      if (window.matchMedia('(max-width: 749px)').matches) {
-  this.itemWidth = this.track.parentElement.offsetWidth;
-  Array.from(this.track.children).forEach(c => c.style.width = `${this.itemWidth}px`);
+  calculateItemWidth() {
+  if (!this.track || !this.track.children.length) return;
+
+  // Use parent container width so on mobile each item equals viewport width
+  const containerWidth = this.track.parentElement ? this.track.parentElement.offsetWidth : window.innerWidth;
+
+  // measure first child content width and respect container width
+  const firstChildRect = this.track.children[0].getBoundingClientRect();
+  const measuredChildWidth = Math.round(firstChildRect.width);
+
+  // On small screens, force itemWidth to container width (so one card = viewport)
+  if (window.matchMedia('(max-width: 749px)').matches) {
+    this.itemWidth = Math.round(containerWidth);
+    // set explicit width for each child to match container
+    Array.from(this.track.children).forEach(child => {
+      child.style.width = `${this.itemWidth}px`;
+    });
+  } else {
+    // desktop / tablet: use measured child width (keeps earlier behavior)
+    this.itemWidth = measuredChildWidth;
+    Array.from(this.track.children).forEach(child => {
+      child.style.width = `${measuredChildWidth}px`;
+    });
+  }
+
+  // Update track width accordingly
   this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
 }
 
+      
 
       setupEventListeners() {
         this._onPointerDown = this.onPointerDown.bind(this);
