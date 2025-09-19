@@ -163,6 +163,7 @@
   }
 {% endstyle %}
 
+
 <testimonials-slider-{{ ai_gen_id }}
   class="ai-testimonials-{{ ai_gen_id }}"
   data-autoplay-speed="{{ block.settings.autoplay_speed | times: 1000 }}"
@@ -275,99 +276,57 @@
         this.isPlaying = false;
         this.touchStartX = 0;
         this.touchEndX = 0;
-        this._resizeTimeout = null;
       }
 
       connectedCallback() {
-        // Element references
         this.track = this.querySelector('.ai-testimonials-track-{{ ai_gen_id }}');
         this.slides = this.querySelectorAll('.ai-testimonials-slide-{{ ai_gen_id }}');
         this.dots = this.querySelectorAll('.ai-testimonials-dot-{{ ai_gen_id }}');
         this.prevBtn = this.querySelector('.ai-testimonials-prev-{{ ai_gen_id }}');
         this.nextBtn = this.querySelector('.ai-testimonials-next-{{ ai_gen_id }}');
-
-        // Make container focusable so keyboard arrow keys work
-        if (!this.hasAttribute('tabindex')) {
-          this.setAttribute('tabindex', '0');
-        }
-
-        // Autoplay settings
+        
         this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed) || 4000;
-        this.autoplayEnabled = this.dataset.autoplay === 'true' || this.dataset.autoplay === true;
+        this.autoplayEnabled = this.dataset.autoplay === 'true';
 
-        // If there are 0 or 1 slides, nothing to do
-        if (!this.slides || this.slides.length <= 1) {
-          // ensure first slide visible and aria states set
-          if (this.slides && this.slides[0]) {
-            this.slides[0].setAttribute('aria-hidden', 'false');
-          }
-          return;
-        }
+        if (this.slides.length <= 1) return;
 
-        // Setup & initial layout
         this.setupEventListeners();
-        this.updateSlideSizes();
         this.updateSlider();
-
+        
         if (this.autoplayEnabled) {
           this.startAutoplay();
         }
-
-        // Recalc sizes on orientation/resizes
-        this._boundResize = () => {
-          clearTimeout(this._resizeTimeout);
-          this._resizeTimeout = setTimeout(() => {
-            this.updateSlideSizes();
-            this.updateSlider();
-          }, 120);
-        };
-        window.addEventListener('resize', this._boundResize);
       }
 
       setupEventListeners() {
         if (this.prevBtn) {
           this.prevBtn.addEventListener('click', () => this.prevSlide());
         }
+        
         if (this.nextBtn) {
           this.nextBtn.addEventListener('click', () => this.nextSlide());
         }
 
         this.dots.forEach((dot, index) => {
-          dot.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.goToSlide(index);
-          });
+          dot.addEventListener('click', () => this.goToSlide(index));
         });
 
-        // Pause on hover/focus
         this.addEventListener('mouseenter', () => this.pauseAutoplay());
         this.addEventListener('mouseleave', () => {
           if (this.autoplayEnabled) this.startAutoplay();
         });
 
-        // Focus/blur pause for accessibility
-        this.addEventListener('focusin', () => this.pauseAutoplay());
-        this.addEventListener('focusout', () => {
+        this.addEventListener('touchstart', (e) => {
+          this.touchStartX = e.changedTouches[0].screenX;
+          this.pauseAutoplay();
+        });
+
+        this.addEventListener('touchend', (e) => {
+          this.touchEndX = e.changedTouches[0].screenX;
+          this.handleSwipe();
           if (this.autoplayEnabled) this.startAutoplay();
         });
 
-        // Touch swipe
-        this.addEventListener('touchstart', (e) => {
-          if (e.changedTouches && e.changedTouches[0]) {
-            this.touchStartX = e.changedTouches[0].screenX;
-          }
-          this.pauseAutoplay();
-        }, { passive: true });
-
-        this.addEventListener('touchend', (e) => {
-          if (e.changedTouches && e.changedTouches[0]) {
-            this.touchEndX = e.changedTouches[0].screenX;
-          }
-          this.handleSwipe();
-          if (this.autoplayEnabled) this.startAutoplay();
-        }, { passive: true });
-
-        // Keyboard navigation
         this.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowLeft') {
             e.preventDefault();
@@ -378,20 +337,19 @@
           }
         });
 
-        // Visibility change to pause autoplay when tab not focused
-        this._boundVisibility = () => {
+        document.addEventListener('visibilitychange', () => {
           if (document.hidden) {
             this.pauseAutoplay();
           } else if (this.autoplayEnabled) {
             this.startAutoplay();
           }
-        };
-        document.addEventListener('visibilitychange', this._boundVisibility);
+        });
       }
 
       handleSwipe() {
         const swipeThreshold = 50;
         const diff = this.touchStartX - this.touchEndX;
+
         if (Math.abs(diff) > swipeThreshold) {
           if (diff > 0) {
             this.nextSlide();
@@ -402,69 +360,39 @@
       }
 
       prevSlide() {
-        this.currentSlide = (this.currentSlide === 0) ? this.slides.length - 1 : this.currentSlide - 1;
+        this.currentSlide = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
         this.updateSlider();
       }
 
       nextSlide() {
-        this.currentSlide = (this.currentSlide === this.slides.length - 1) ? 0 : this.currentSlide + 1;
+        this.currentSlide = this.currentSlide === this.slides.length - 1 ? 0 : this.currentSlide + 1;
         this.updateSlider();
       }
 
       goToSlide(index) {
-        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.currentSlide = index;
         this.updateSlider();
-      }
-
-      updateSlideSizes() {
-        if (!this.track || !this.slides || !this.slides.length) return;
-
-        const sliderRect = this.getBoundingClientRect();
-        const sliderWidth = Math.max(0, Math.floor(sliderRect.width));
-
-        // Set slide width explicitly to avoid fractional px issues causing overflow
-        this.slides.forEach(slide => {
-          slide.style.width = `${sliderWidth}px`;
-        });
-
-        // Track width equals number_of_slides * slide width (pixels)
-        this.track.style.width = `${this.slides.length * sliderWidth}px`;
       }
 
       updateSlider() {
         if (!this.track) return;
 
-        // Prefer pixel-based translate if widths have been calculated
-        let sliderWidth = 0;
-        const firstSlide = this.slides && this.slides[0];
-        if (firstSlide && firstSlide.style && firstSlide.style.width) {
-          sliderWidth = parseInt(firstSlide.style.width, 10) || this.getBoundingClientRect().width;
-          const translateX = -this.currentSlide * sliderWidth;
-          // Use transform with pixels to avoid percent rounding issues on mobile
-          this.track.style.transform = `translateX(${translateX}px)`;
-        } else {
-          // Fallback to percent
-          const translatePercent = -this.currentSlide * 100;
-          this.track.style.transform = `translateX(${translatePercent}%)`;
-        }
+        const translateX = -this.currentSlide * 100;
+        this.track.style.transform = `translateX(${translateX}%)`;
 
-        // Update dots aria/state
-        if (this.dots && this.dots.length) {
-          this.dots.forEach((dot, index) => {
-            const isActive = index === this.currentSlide;
-            dot.classList.toggle('active', isActive);
-            dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
-          });
-        }
+        this.dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === this.currentSlide);
+          dot.setAttribute('aria-selected', index === this.currentSlide ? 'true' : 'false');
+        });
 
-        // Update slides aria-hidden
         this.slides.forEach((slide, index) => {
-          slide.setAttribute('aria-hidden', index === this.currentSlide ? 'false' : 'true');
+          slide.setAttribute('aria-hidden', index !== this.currentSlide ? 'true' : 'false');
         });
       }
 
       startAutoplay() {
-        if (this.isPlaying || !this.autoplayEnabled || this.slides.length <= 1) return;
+        if (this.isPlaying || this.slides.length <= 1) return;
+        
         this.isPlaying = true;
         this.autoplayTimer = setInterval(() => {
           this.nextSlide();
@@ -481,16 +409,12 @@
 
       disconnectedCallback() {
         this.pauseAutoplay();
-        // Clean up listeners
-        window.removeEventListener('resize', this._boundResize);
-        document.removeEventListener('visibilitychange', this._boundVisibility);
       }
     }
 
     customElements.define('testimonials-slider-{{ ai_gen_id }}', TestimonialsSlider{{ ai_gen_id }});
   })();
 </script>
-
 
 {% schema %}
 {
