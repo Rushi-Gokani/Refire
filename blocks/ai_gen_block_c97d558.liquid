@@ -5,12 +5,13 @@
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 {% style %}
-  /* Container & layout */
+  /* Ensure section never allows page horizontal scroll */
   .ai-why-buy-section-{{ ai_gen_id }} {
     padding: {{ block.settings.section_padding_top }}px 20px {{ block.settings.section_padding_bottom }}px;
     background-color: {{ block.settings.background_color }};
     box-sizing: border-box;
-    overflow: visible;
+    overflow-x: hidden; /* prevent page horizontal overflow */
+    overflow-y: visible;
   }
 
   .ai-why-buy-container-{{ ai_gen_id }} {
@@ -19,27 +20,10 @@
     box-sizing: border-box;
   }
 
-  .ai-why-buy-header-{{ ai_gen_id }} {
-    text-align: center;
-    margin-bottom: {{ block.settings.header_margin_bottom }}px;
-  }
+  .ai-why-buy-header-{{ ai_gen_id }} { text-align: center; margin-bottom: {{ block.settings.header_margin_bottom }}px; }
+  .ai-why-buy-title-{{ ai_gen_id }} { color: {{ block.settings.title_color }}; font-size: {{ block.settings.title_size }}px; font-weight:700; margin:0; line-height:1.2; }
+  .ai-why-buy-subtitle-{{ ai_gen_id }} { color: {{ block.settings.subtitle_color }}; font-size: {{ block.settings.subtitle_size }}px; margin:16px 0 0; line-height:1.4; }
 
-  .ai-why-buy-title-{{ ai_gen_id }} {
-    color: {{ block.settings.title_color }};
-    font-size: {{ block.settings.title_size }}px;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-  }
-
-  .ai-why-buy-subtitle-{{ ai_gen_id }} {
-    color: {{ block.settings.subtitle_color }};
-    font-size: {{ block.settings.subtitle_size }}px;
-    margin: 16px 0 0;
-    line-height: 1.4;
-  }
-
-  /* Desktop grid */
   .ai-why-buy-grid-{{ ai_gen_id }} {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -55,72 +39,50 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .ai-why-buy-column-{{ ai_gen_id }}:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
+  .ai-why-buy-column-{{ ai_gen_id }}:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
 
   .ai-why-buy-icon-wrapper-{{ ai_gen_id }} {
     width: {{ block.settings.icon_size }}px;
     height: {{ block.settings.icon_size }}px;
     margin: 0 auto {{ block.settings.icon_margin_bottom }}px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: {{ block.settings.icon_background_color }};
-    border-radius: 50%;
-    box-sizing: border-box;
+    display:flex; align-items:center; justify-content:center;
+    background-color: {{ block.settings.icon_background_color }}; border-radius:50%; box-sizing:border-box;
   }
 
-  .ai-why-buy-icon-{{ ai_gen_id }} {
-    width: calc({{ block.settings.icon_size }}px * 0.5);
-    height: calc({{ block.settings.icon_size }}px * 0.5);
-    stroke: {{ block.settings.icon_color }};
-    stroke-width: 2;
-    fill: none;
-  }
+  .ai-why-buy-icon-{{ ai_gen_id }} { width: calc({{ block.settings.icon_size }}px * 0.5); height: calc({{ block.settings.icon_size }}px * 0.5); stroke: {{ block.settings.icon_color }}; stroke-width:2; fill:none; }
 
-  .ai-why-buy-column-title-{{ ai_gen_id }} {
-    color: {{ block.settings.column_title_color }};
-    font-size: {{ block.settings.column_title_size }}px;
-    font-weight: 700;
-    margin: 0 0 {{ block.settings.title_margin_bottom }}px;
-    line-height: 1.3;
-  }
+  .ai-why-buy-column-title-{{ ai_gen_id }} { color: {{ block.settings.column_title_color }}; font-size: {{ block.settings.column_title_size }}px; font-weight:700; margin:0 0 {{ block.settings.title_margin_bottom }}px; line-height:1.3; }
+  .ai-why-buy-column-description-{{ ai_gen_id }} { color: {{ block.settings.column_description_color }}; font-size: {{ block.settings.column_description_size }}px; margin:0; line-height:1.5; }
 
-  .ai-why-buy-column-description-{{ ai_gen_id }} {
-    color: {{ block.settings.column_description_color }};
-    font-size: {{ block.settings.column_description_size }}px;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  /* Carousel (mobile) wrapper — hidden on desktop */
+  /* MOBILE CAROUSEL - use wrapper padding (not item margins) for breathing room */
   .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
     display: none;
-    overflow: hidden;
+    overflow: hidden; /* important: hide any overflowing track */
     margin-top: {{ block.settings.content_margin_top }}px;
     position: relative;
+    box-sizing: border-box;
+    padding: 0 40px; /* breathing room so center card has space and partial neighbors are visible */
   }
 
   .ai-why-buy-carousel-track-{{ ai_gen_id }} {
-    display: flex;
+    display:flex;
     transition: transform 0.35s ease;
     cursor: grab;
     touch-action: pan-y;
     will-change: transform;
     align-items: stretch;
+    box-sizing: border-box;
+    /* Prevent track from overflowing container by using explicit pixel sizing in JS */
   }
 
-  .ai-why-buy-carousel-track-{{ ai_gen_id }}:active {
-    cursor: grabbing;
-  }
+  .ai-why-buy-carousel-track-{{ ai_gen_id }}:active { cursor: grabbing; }
 
+  /* Items: remove horizontal margins (margins caused overflow) and use wrapper padding instead */
   .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-    flex: 0 0 calc(100vw - 80px);
-    max-width: 320px;
-    margin: 0 20px;
-    text-align: center;
+    flex: 0 0 calc(100vw - 80px); /* visible width = viewport minus wrapper padding*2 */
+    max-width: calc(100vw - 80px);
+    margin: 0; /* IMPORTANT: no horizontal margins */
+    text-align:center;
     padding: {{ block.settings.column_padding }}px;
     background-color: {{ block.settings.column_background_color }};
     border-radius: {{ block.settings.column_border_radius }}px;
@@ -128,73 +90,44 @@
     scroll-snap-align: center;
     outline: none;
     position: relative;
-    box-sizing: border-box; /* critical to avoid overflow from padding */
+    box-sizing: border-box; /* critical */
   }
 
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}:focus {
-    outline: 2px solid {{ block.settings.icon_color }};
-    outline-offset: 2px;
-  }
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}:focus { outline: 2px solid {{ block.settings.icon_color }}; outline-offset:2px; }
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered { transform: scale(1.05); z-index: 2; }
 
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
+  .ai-why-buy-sr-only-{{ ai_gen_id }} { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered {
-    transform: scale(1.05);
-    z-index: 2;
-  }
-
-  .ai-why-buy-sr-only-{{ ai_gen_id }} {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  /* Responsive behavior */
   @media screen and (max-width: 990px) {
     .ai-why-buy-grid-{{ ai_gen_id }} { grid-template-columns: repeat(2, 1fr); gap: {{ block.settings.column_gap | times: 0.8 }}px; }
   }
 
   @media screen and (max-width: 749px) {
-    .ai-why-buy-section-{{ ai_gen_id }} {
-      padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px;
-    }
-
+    .ai-why-buy-section-{{ ai_gen_id }} { padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px; }
     .ai-why-buy-container-{{ ai_gen_id }} { padding: 0 16px; }
 
-    /* hide desktop grid, show mobile carousel */
     .ai-why-buy-grid-{{ ai_gen_id }} { display: none; }
-    .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
-      display: block;
-      margin-left: -16px;
-      margin-right: -16px;
-      padding: 12px 0;
-    }
+    .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} { display: block; margin-left: 0; margin-right: 0; padding: 0 24px; /* slightly smaller breathing room on smaller screens */ }
 
     .ai-why-buy-title-{{ ai_gen_id }} { font-size: {{ block.settings.title_size | times: 0.9 }}px; }
     .ai-why-buy-subtitle-{{ ai_gen_id }} { font-size: {{ block.settings.subtitle_size | times: 0.95 }}px; }
     .ai-why-buy-column-title-{{ ai_gen_id }} { font-size: {{ block.settings.column_title_size | times: 0.95 }}px; }
     .ai-why-buy-column-description-{{ ai_gen_id }} { font-size: {{ block.settings.column_description_size | times: 0.95 }}px; }
 
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 80px); margin: 0 20px; }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 48px); max-width: calc(100vw - 48px); }
   }
 
   @media screen and (max-width: 480px) {
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 60px); margin: 0 15px; }
+    .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} { padding: 0 18px; }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 36px); max-width: calc(100vw - 36px); }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ai-why-buy-carousel-track-{{ ai_gen_id }} { transition: none !important; }
   }
 {% endstyle %}
+
 
  <why-buy-carousel-{{ ai_gen_id }} class="ai-why-buy-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-why-buy-container-{{ ai_gen_id }}">
