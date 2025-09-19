@@ -175,7 +175,7 @@
                   "settings": {
                     "link": "",
                     "open_in_new_tab": false,
-                    "content_direction": "row",
+                    "content_direction": "column",
                     "vertical_on_mobile": true,
                     "horizontal_alignment": "space-between",
                     "vertical_alignment": "center",
