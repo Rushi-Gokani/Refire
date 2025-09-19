@@ -7,34 +7,31 @@
       padding-block-end: 60px;
       padding: 60px 10px;
       margin-left: auto;
-    margin-right: auto;
-    max-width:fit-content;
+      margin-right: auto;
+      max-width:fit-content;
     }
     .container1{
       max-width: 800px !important;
     }
     .section__heading134{
-    font-size: clamp(28px, 5vw, 50px) !important;
-    font-weight: 700 !important;
-    color: #b4975a !important;
-    padding-bottom: 30px;
-    text-transform: uppercase !important;
-        position: relative;
-    z-index: 9999;
+      font-size: clamp(28px, 5vw, 50px) !important;
+      font-weight: 700 !important;
+      color: #b4975a !important;
+      padding-bottom: 30px;
+      text-transform: uppercase !important;
+      position: relative;
+      z-index: 9999;
     }
 
     @media (max-width: 767px) {
-    .accordion__button-text{
-line-height:1.4;
- font-size:21px;   
-
-}
-.accordion__body p{
- font-size:16px !important;   
-
-}
-
-}
+      .accordion__button-text{
+        line-height:1.4;
+        font-size:21px;
+      }
+      .accordion__body p{
+        font-size:16px !important;
+      }
+    }
   {%- endstyle -%}
 
   <div class="accordions color-{{ section.settings.color_scheme }} gradient js-animation-fade-in">
@@ -98,13 +95,13 @@ line-height:1.4;
     {
       "type": "inline_richtext",
       "id": "heading",
-      "label": "t:sections.global.element.heading.label",
+      "label": "Heading",
       "default": "Frequently asked questions"
     },
     {
       "type": "select",
       "id": "heading_size",
-      "label": "t:sections.global.element.heading_size.label",
+      "label": "Heading size",
       "options": [
         {
           "value": "h6",
@@ -131,25 +128,25 @@ line-height:1.4;
     },
     {
       "type": "header",
-      "content": "t:sections.global.header.settings.content",
-      "info": "t:sections.global.header.settings.info"
+      "content": "Header settings",
+      "info": "Configure header and general section options"
     },
     {
       "type": "select",
       "id": "section_width",
-      "label": "t:sections.global.section_width.label",
+      "label": "Section width",
       "options": [
         {
           "value": "max-w-page",
-          "label": "t:sections.global.section_width.options.page.label"
+          "label": "Page width"
         },
         {
           "value": "max-w-narrower",
-          "label": "t:sections.global.section_width.options.narrower.label"
+          "label": "Narrower"
         },
         {
           "value": "max-w-fluid",
-          "label": "t:sections.global.section_width.options.fluid.label"
+          "label": "Fluid"
         }
       ],
       "default": "max-w-narrower"
@@ -157,13 +154,13 @@ line-height:1.4;
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "label": "t:sections.global.color_scheme.label",
+      "label": "Color scheme",
       "default": "scheme-1"
     },
     {
       "type": "select",
       "id": "spacing_top",
-      "label": "t:sections.global.spacing.spacing_top.label",
+      "label": "Top spacing",
       "options": [
         {
           "value": "0",
@@ -191,7 +188,7 @@ line-height:1.4;
     {
       "type": "select",
       "id": "spacing_bottom",
-      "label": "t:sections.global.spacing.spacing_bottom.label",
+      "label": "Bottom spacing",
       "options": [
         {
           "value": "0",
@@ -220,30 +217,30 @@ line-height:1.4;
   "blocks": [
     {
       "type": "topic",
-      "name": "t:sections.accordions.blocks.topic.name",
+      "name": "Topic",
       "settings": [
         {
           "type": "checkbox",
           "id": "is_open",
-          "label": "t:sections.accordions.blocks.topic.settings.is_open.label"
+          "label": "Open by default"
         },
         {
           "type": "text",
           "id": "title",
-          "label": "t:sections.global.element.heading.label",
+          "label": "Question",
           "default": "Topic heading"
         },
         {
           "type": "richtext",
           "id": "text",
-          "label": "t:sections.global.element.text.label",
+          "label": "Answer",
           "default": "<p>Descriptive topic content body text</p>"
         },
         {
           "type": "page",
           "id": "page",
-          "label": "t:sections.accordions.blocks.topic.settings.page.label",
-          "info": "t:sections.accordions.blocks.topic.settings.page.info"
+          "label": "Link to page",
+          "info": "Optional: select a page whose content will be used as the answer"
         }
       ]
     }
