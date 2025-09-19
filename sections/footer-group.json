@@ -13,6 +13,9 @@
   "sections": {
     "footer_reference_dkK7me": {
       "type": "footer-reference",
+      "custom_css": [
+        ".menu-list {display: block;}"
+      ],
       "name": "Footer — Default",
       "settings": {
         "section_width": "page-width",
