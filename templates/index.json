@@ -832,12 +832,20 @@
             "video_url": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4",
             "instagram_link": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4"
           }
+        },
+        "video_kkpNrF": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4"
+          }
         }
       },
       "block_order": [
         "video_a7TB4L",
         "video_LJqQpM",
-        "video_6ydBce"
+        "video_6ydBce",
+        "video_kkpNrF"
       ],
       "name": "Our Reels",
       "settings": {
