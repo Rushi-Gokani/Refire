@@ -9,6 +9,70 @@
  */
 {
   "sections": {
+    "175828250790f7a243": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_76919bb_XkU3MG": {
+          "type": "ai_gen_block_76919bb",
+          "settings": {
+            "testimonial_1_feedback": "On our long road trips across Rajasthan and Ladakh, reliable power is a must. Refire power stations have been extremely dependable for running coolers, lights, and even charging camera batteries for our guests. It has reduced our operational headaches and improved the travel experience.",
+            "testimonial_1_name": "Arjun Patel",
+            "testimonial_2_feedback": "We run trekking expeditions in Himachal and Uttarakhand. Carrying noisy diesel generators was always a hassle. With Refire, we can provide silent, clean power at campsites for lights, cooking equipment, and charging devices. Our guests appreciate the quiet experience and the eco-friendly approach.",
+            "testimonial_2_name": "Rohan Desai",
+            "testimonial_3_feedback": "In our area we face power cuts almost every day. Refire has made life simpler. We use it for fans, lights, and charging phones. My children can study without disturbance, and it is easier to manage compared to an inverter and battery setup.",
+            "testimonial_3_name": "Manish Gupta",
+            "testimonial_4_feedback": "Very innovative and new product, I was doubtful at first but they provide amazing support. Keep it up",
+            "testimonial_4_name": "Kavita Singh",
+            "testimonial_5_feedback": "I have a couple of food trucks, and electricity and all is an issue. Generators cost in long term hoes very high, hence I wanted a product like this but didn’t know what its called. Somehow came through this, bought 1 at first, used it at one stall, and then had the confidence to buy for all stalls. I can say that all my stalls run on this now, and it’s actually been great. Thanks to the team, very helpful",
+            "testimonial_5_name": "Jagdish Singh",
+            "enable_autoplay": true,
+            "autoplay_speed": 4,
+            "background_color": "#ffffff",
+            "card_background_color": "#f8f8f8",
+            "text_color": "#333333",
+            "name_color": "#000000",
+            "border_color": "#e0e0e0",
+            "dot_color": "#cccccc",
+            "active_dot_color": "#333333",
+            "arrow_color": "#333333",
+            "feedback_font_size": 18,
+            "name_font_size": 16,
+            "border_radius": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_76919bb_XkU3MG"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "hero_media_miHERh": {
       "type": "hero-media",
       "disabled": true,
@@ -1296,6 +1360,7 @@
     }
   },
   "order": [
+    "175828250790f7a243",
     "hero_media_miHERh",
     "slider_hero_xfxDHy",
     "hero_RkimKJ",
