@@ -1,9 +1,5 @@
-{% doc %}
-  @prompt
-    Create a Shopify section titled "Why buy from us?" with four columns, each showing an icon, a bold title, and a short description. The style should be modern, clean, and centered. The icons should be simple line-style with blue color. Example items: "Fast & Free Shipping – All orders are processed within 3-5 business days", "Warranty Protection – All products are covered by a warranty service", "Secure Payments – Pay by debit or credit card, PayPal, or other secure platform", "Multi-channel Support – Contact us via email, phone or online customer service". Ensure good spacing, responsive layout, and professional typography., Update the section so that on mobile the four feature cards become horizontally scrollable with infinite loop scrolling, smooth touch drag, and snap-to-center effect, while keeping the same clean icons, bold titles, and descriptions., Update the section so that on mobile the main section title is visible at the top and the four feature cards become a horizontally scrollable, infinite-loop carousel with smooth touch drag, snap-to-center so each card sits centered in the viewport, proper padding so the centered card has breathing room, visible partial previous/next cards for context, keyboard and accessibility support (aria roles, focusable cards), and preserve the desktop four-column centered grid and blue line icons.
-
-{% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
 {% style %}
   /* Ensure section never allows page horizontal scroll */
   .ai-why-buy-section-{{ ai_gen_id }} {
@@ -20,9 +16,25 @@
     box-sizing: border-box;
   }
 
-  .ai-why-buy-header-{{ ai_gen_id }} { text-align: center; margin-bottom: {{ block.settings.header_margin_bottom }}px; }
-  .ai-why-buy-title-{{ ai_gen_id }} { color: {{ block.settings.title_color }}; font-size: {{ block.settings.title_size }}px; font-weight:700; margin:0; line-height:1.2; }
-  .ai-why-buy-subtitle-{{ ai_gen_id }} { color: {{ block.settings.subtitle_color }}; font-size: {{ block.settings.subtitle_size }}px; margin:16px 0 0; line-height:1.4; }
+  .ai-why-buy-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_margin_bottom }}px;
+  }
+
+  .ai-why-buy-title-{{ ai_gen_id }} {
+    color: {{ block.settings.title_color }};
+    font-size: {{ block.settings.title_size }}px;
+    font-weight:700;
+    margin:0;
+    line-height:1.2;
+  }
+
+  .ai-why-buy-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.subtitle_color }};
+    font-size: {{ block.settings.subtitle_size }}px;
+    margin:16px 0 0;
+    line-height:1.4;
+  }
 
   .ai-why-buy-grid-{{ ai_gen_id }} {
     display: grid;
@@ -37,22 +49,48 @@
     background-color: {{ block.settings.column_background_color }};
     border-radius: {{ block.settings.column_border_radius }}px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
   }
 
-  .ai-why-buy-column-{{ ai_gen_id }}:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+  .ai-why-buy-column-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
 
   .ai-why-buy-icon-wrapper-{{ ai_gen_id }} {
     width: {{ block.settings.icon_size }}px;
     height: {{ block.settings.icon_size }}px;
     margin: 0 auto {{ block.settings.icon_margin_bottom }}px;
-    display:flex; align-items:center; justify-content:center;
-    background-color: {{ block.settings.icon_background_color }}; border-radius:50%; box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-color: {{ block.settings.icon_background_color }};
+    border-radius:50%;
+    box-sizing:border-box;
   }
 
-  .ai-why-buy-icon-{{ ai_gen_id }} { width: calc({{ block.settings.icon_size }}px * 0.5); height: calc({{ block.settings.icon_size }}px * 0.5); stroke: {{ block.settings.icon_color }}; stroke-width:2; fill:none; }
+  .ai-why-buy-icon-{{ ai_gen_id }} {
+    width: calc({{ block.settings.icon_size }}px * 0.5);
+    height: calc({{ block.settings.icon_size }}px * 0.5);
+    stroke: {{ block.settings.icon_color }};
+    stroke-width:2;
+    fill:none;
+  }
 
-  .ai-why-buy-column-title-{{ ai_gen_id }} { color: {{ block.settings.column_title_color }}; font-size: {{ block.settings.column_title_size }}px; font-weight:700; margin:0 0 {{ block.settings.title_margin_bottom }}px; line-height:1.3; }
-  .ai-why-buy-column-description-{{ ai_gen_id }} { color: {{ block.settings.column_description_color }}; font-size: {{ block.settings.column_description_size }}px; margin:0; line-height:1.5; }
+  .ai-why-buy-column-title-{{ ai_gen_id }} {
+    color: {{ block.settings.column_title_color }};
+    font-size: {{ block.settings.column_title_size }}px;
+    font-weight:700;
+    margin:0 0 {{ block.settings.title_margin_bottom }}px;
+    line-height:1.3;
+  }
+
+  .ai-why-buy-column-description-{{ ai_gen_id }} {
+    color: {{ block.settings.column_description_color }};
+    font-size: {{ block.settings.column_description_size }}px;
+    margin:0;
+    line-height:1.5;
+  }
 
   /* MOBILE CAROUSEL - use wrapper padding (not item margins) for breathing room */
   .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
@@ -72,10 +110,11 @@
     will-change: transform;
     align-items: stretch;
     box-sizing: border-box;
-    /* Prevent track from overflowing container by using explicit pixel sizing in JS */
   }
 
-  .ai-why-buy-carousel-track-{{ ai_gen_id }}:active { cursor: grabbing; }
+  .ai-why-buy-carousel-track-{{ ai_gen_id }}:active {
+    cursor: grabbing;
+  }
 
   /* Items: remove horizontal margins (margins caused overflow) and use wrapper padding instead */
   .ai-why-buy-carousel-item-{{ ai_gen_id }} {
@@ -93,35 +132,82 @@
     box-sizing: border-box; /* critical */
   }
 
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}:focus { outline: 2px solid {{ block.settings.icon_color }}; outline-offset:2px; }
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered { transform: scale(1.05); z-index: 2; }
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.icon_color }};
+    outline-offset:2px;
+  }
 
-  .ai-why-buy-sr-only-{{ ai_gen_id }} { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  }
+
+  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered {
+    transform: scale(1.05);
+    z-index: 2;
+  }
+
+  .ai-why-buy-sr-only-{{ ai_gen_id }} {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
 
   @media screen and (max-width: 990px) {
-    .ai-why-buy-grid-{{ ai_gen_id }} { grid-template-columns: repeat(2, 1fr); gap: {{ block.settings.column_gap | times: 0.8 }}px; }
+    .ai-why-buy-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: {{ block.settings.column_gap | times: 0.8 }}px;
+    }
   }
 
   @media screen and (max-width: 749px) {
-      .ai-why-buy-carousel-item-{{ ai_gen_id }} {background-color: transparent;}
-    .ai-why-buy-section-{{ ai_gen_id }} { padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px; }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} { background-color: transparent; }
+
+    .ai-why-buy-section-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px;
+    }
+
     .ai-why-buy-container-{{ ai_gen_id }} { padding: 0 16px; }
 
     .ai-why-buy-grid-{{ ai_gen_id }} { display: none; }
-    .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} { display: block; margin-left: 0; margin-right: 0; padding: 0 24px; /* slightly smaller breathing room on smaller screens */ }
+    .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
+      display: block;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 0 24px; /* slightly smaller breathing room on smaller screens */
+    }
 
     .ai-why-buy-title-{{ ai_gen_id }} { font-size: {{ block.settings.title_size | times: 0.9 }}px; }
     .ai-why-buy-subtitle-{{ ai_gen_id }} { font-size: {{ block.settings.subtitle_size | times: 0.95 }}px; }
     .ai-why-buy-column-title-{{ ai_gen_id }} { font-size: {{ block.settings.column_title_size | times: 0.95 }}px; }
     .ai-why-buy-column-description-{{ ai_gen_id }} { font-size: {{ block.settings.column_description_size | times: 0.95 }}px; }
 
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 48px); max-width: calc(100vw - 48px); }
+    /* make each card exactly 100% viewport width (one card visible & centered) - remove margins */
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} {
+      flex: 0 0 100vw;
+      max-width: 100vw;
+      margin: 0;
+      padding-left: 20px;
+      padding-right: 20px;
+      box-sizing: border-box;
+    }
+
+    .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered { transform: none; }
+    .ai-why-buy-carousel-track-{{ ai_gen_id }} { box-sizing: border-box; will-change: transform; }
   }
 
   @media screen and (max-width: 480px) {
     .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} { padding: 0 18px; }
-    .ai-why-buy-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc(100vw - 36px); max-width: calc(100vw - 36px); }
+    .ai-why-buy-carousel-item-{{ ai_gen_id }} {
+      flex: 0 0 calc(100vw - 36px);
+      max-width: calc(100vw - 36px);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -129,113 +215,76 @@
   }
 
   /* Final defensive overflow fix scoped to this section */
-.ai-why-buy-section-{{ ai_gen_id }} {
-  position: relative !important;
-  width: 100% !important;
-  overflow-x: hidden !important;    /* prevent horizontal page scroll caused by anything inside */
-  overflow-y: visible !important;
-  box-sizing: border-box !important;
-}
-
-/* keep container bounded to viewport */
-.ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-container-{{ ai_gen_id }},
-.ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
-  max-width: 100vw !important;
-  box-sizing: border-box !important;
-  overflow-x: hidden !important;
-}
-
-/* Make images and svgs absolutely safe (prevent them from causing overflow) */
-.ai-why-buy-section-{{ ai_gen_id }} img,
-.ai-why-buy-section-{{ ai_gen_id }} picture,
-.ai-why-buy-section-{{ ai_gen_id }} svg {
-  max-width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  box-sizing: border-box !important;
-  object-fit: contain !important;
-}
-
-/* Force every child to not exceed viewport width (aggressive but scoped) */
-.ai-why-buy-section-{{ ai_gen_id }} * {
-  box-sizing: border-box !important;
-  max-width: 100vw !important;
-  word-break: break-word !important;
-}
-
-/* Carousel track and items: remove margins (margins were creating overflow); wrapper padding provides breathing room */
-.ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-track-{{ ai_gen_id }} {
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  -webkit-transform: translate3d(0,0,0); transform: translate3d(0,0,0);
-}
-
-.ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* Extra guard for any absolutely positioned children */
-.ai-why-buy-section-{{ ai_gen_id }} [style*="left"],
-.ai-why-buy-section-{{ ai_gen_id }} [style*="right"] {
-  max-width: 100vw !important;
-  box-sizing: border-box !important;
-}
-
-/* Small devices: tighten wrapper padding so centered card still fits */
-@media (max-width: 420px) {
-  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-    flex-basis: calc(100vw - 24px) !important;
-    max-width: calc(100vw - 27px) !important;
-  }
-}
-@media screen and (max-width: 749px) {
-  .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
-    display: block !important;
-    padding-left: 0 !important;   /* remove breathing-room padding so card is centered perfectly */
-    padding-right: 0 !important;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  /* item fills full viewport width so exactly one is visible */
-  .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-    flex: 0 0 100vw !important;
-    max-width: 100vw !important;
-    margin: 0 !important; /* no margins so no overflow & exact centering */
-    padding-left: 20px;   /* small inner padding if you want breathing inside the card */
-    padding-right: 20px;
+  .ai-why-buy-section-{{ ai_gen_id }} {
+    position: relative !important;
+    width: 100% !important;
+    overflow-x: hidden !important;    /* prevent horizontal page scroll caused by anything inside */
+    overflow-y: visible !important;
     box-sizing: border-box !important;
   }
 
-  /* ensure any earlier scaling doesn't make the centered card visually off */
-  .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered {
-    transform: none !important;
+  /* keep container bounded to viewport */
+  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-container-{{ ai_gen_id }},
+  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
 
-  /* ensure the track sits flush and won't create gaps */
-  .ai-why-buy-carousel-track-{{ ai_gen_id }} {
-    will-change: transform;
-    box-sizing: border-box;
+  /* Make images and svgs absolutely safe (prevent them from causing overflow) */
+  .ai-why-buy-section-{{ ai_gen_id }} img,
+  .ai-why-buy-section-{{ ai_gen_id }} picture,
+  .ai-why-buy-section-{{ ai_gen_id }} svg {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    object-fit: contain !important;
   }
-}
 
-/* extra small phones tweak */
-@media screen and (max-width: 420px) {
-  .ai-why-buy-carousel-item-{{ ai_gen_id }} {
-    padding-left: 14px;
-    padding-right: 14px;
+  /* Force every child to not exceed viewport width (aggressive but scoped) */
+  .ai-why-buy-section-{{ ai_gen_id }} * {
+    box-sizing: border-box !important;
+    max-width: 100vw !important;
+    word-break: break-word !important;
   }
-}
+
+  /* Carousel track and items: remove margins (margins were creating overflow); wrapper padding provides breathing room */
+  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-track-{{ ai_gen_id }} {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+
+  .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-item-{{ ai_gen_id }} {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Extra guard for any absolutely positioned children */
+  .ai-why-buy-section-{{ ai_gen_id }} [style*="left"],
+  .ai-why-buy-section-{{ ai_gen_id }} [style*="right"] {
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Small devices: tighten wrapper padding so centered card still fits */
+  @media (max-width: 420px) {
+    .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-wrapper-{{ ai_gen_id }} {
+      padding-left: 12px !important;
+      padding-right: 12px !important;
+    }
+    .ai-why-buy-section-{{ ai_gen_id }} .ai-why-buy-carousel-item-{{ ai_gen_id }} {
+      flex-basis: calc(100vw - 24px) !important;
+      max-width: calc(100vw - 27px) !important;
+    }
+  }
 {% endstyle %}
 
 
- <why-buy-carousel-{{ ai_gen_id }} class="ai-why-buy-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+<why-buy-carousel-{{ ai_gen_id }} class="ai-why-buy-section-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-why-buy-container-{{ ai_gen_id }}">
     {% if block.settings.section_title != blank or block.settings.section_subtitle != blank %}
       <div class="ai-why-buy-header-{{ ai_gen_id }}">
@@ -292,6 +341,7 @@
 
     <div class="ai-why-buy-carousel-wrapper-{{ ai_gen_id }}" role="region" aria-label="Features carousel">
       <div class="ai-why-buy-carousel-track-{{ ai_gen_id }}" role="group" aria-live="polite">
+        <!-- original 4 items (cloning is handled by JS) -->
         <div class="ai-why-buy-carousel-item-{{ ai_gen_id }}" tabindex="0" role="group" aria-label="Feature 1 of 4">
           <div class="ai-why-buy-icon-wrapper-{{ ai_gen_id }}">
             <svg class="ai-why-buy-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" aria-hidden="true">
@@ -331,57 +381,20 @@
           <h3 class="ai-why-buy-column-title-{{ ai_gen_id }}">{{ block.settings.column_4_title }}</h3>
           <p class="ai-why-buy-column-description-{{ ai_gen_id }}">{{ block.settings.column_4_description }}</p>
         </div>
-
-        <div class="ai-why-buy-carousel-item-{{ ai_gen_id }}" tabindex="-1" role="group" aria-label="Feature 1 of 4" aria-hidden="true">
-          <div class="ai-why-buy-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-why-buy-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/>
-            </svg>
-          </div>
-          <h3 class="ai-why-buy-column-title-{{ ai_gen_id }}">{{ block.settings.column_1_title }}</h3>
-          <p class="ai-why-buy-column-description-{{ ai_gen_id }}">{{ block.settings.column_1_description }}</p>
-        </div>
-
-        <div class="ai-why-buy-carousel-item-{{ ai_gen_id }}" tabindex="-1" role="group" aria-label="Feature 2 of 4" aria-hidden="true">
-          <div class="ai-why-buy-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-why-buy-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          </div>
-          <h3 class="ai-why-buy-column-title-{{ ai_gen_id }}">{{ block.settings.column_2_title }}</h3>
-          <p class="ai-why-buy-column-description-{{ ai_gen_id }}">{{ block.settings.column_2_description }}</p>
-        </div>
-
-        <div class="ai-why-buy-carousel-item-{{ ai_gen_id }}" tabindex="-1" role="group" aria-label="Feature 3 of 4" aria-hidden="true">
-          <div class="ai-why-buy-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-why-buy-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-          </div>
-          <h3 class="ai-why-buy-column-title-{{ ai_gen_id }}">{{ block.settings.column_3_title }}</h3>
-          <p class="ai-why-buy-column-description-{{ ai_gen_id }}">{{ block.settings.column_3_description }}</p>
-        </div>
-
-        <div class="ai-why-buy-carousel-item-{{ ai_gen_id }}" tabindex="-1" role="group" aria-label="Feature 4 of 4" aria-hidden="true">
-          <div class="ai-why-buy-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-why-buy-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-            </svg>
-          </div>
-          <h3 class="ai-why-buy-column-title-{{ ai_gen_id }}">{{ block.settings.column_4_title }}</h3>
-          <p class="ai-why-buy-column-description-{{ ai_gen_id }}">{{ block.settings.column_4_description }}</p>
-        </div>
       </div>
+
       <div class="ai-why-buy-sr-only-{{ ai_gen_id }}" aria-live="polite" aria-atomic="true"></div>
     </div>
   </div>
 </why-buy-carousel-{{ ai_gen_id }}>
+
 <script>
   (function(){
     class WhyBuyCarousel{{ ai_gen_id }} extends HTMLElement {
       constructor() {
         super();
         this.track = null;
+        this.items = [];
         this.originalCount = 4;
         this.currentIndex = 0;
         this.itemWidth = 0;
@@ -419,7 +432,9 @@
         this.announceCurrent();
       }
 
-      disconnectedCallback() { this.removeEventListeners(); }
+      disconnectedCallback() {
+        this.removeEventListeners();
+      }
 
       setupClones() {
         const children = Array.from(this.track.children);
@@ -429,12 +444,14 @@
         const firstN = children.slice(0, this.originalCount);
         const lastN = children.slice(-this.originalCount);
 
+        // clone lastN and prepend in same order
         lastN.forEach(node => {
           const clone = node.cloneNode(true);
           clone.classList.add('ai-clone');
           this.track.insertBefore(clone, this.track.firstChild);
         });
 
+        // clone firstN and append
         firstN.forEach(node => {
           const clone = node.cloneNode(true);
           clone.classList.add('ai-clone');
@@ -442,36 +459,34 @@
         });
       }
 
-  calculateItemWidth() {
-  if (!this.track || !this.track.children.length) return;
+      calculateItemWidth() {
+        if (!this.track || !this.track.children.length) return;
 
-  // Use parent container width so on mobile each item equals viewport width
-  const containerWidth = this.track.parentElement ? this.track.parentElement.offsetWidth : window.innerWidth;
+        // Use parent container width so on mobile each item equals viewport width
+        const containerWidth = this.track.parentElement ? this.track.parentElement.offsetWidth : window.innerWidth;
 
-  // measure first child content width and respect container width
-  const firstChildRect = this.track.children[0].getBoundingClientRect();
-  const measuredChildWidth = Math.round(firstChildRect.width);
+        // measure first child content width and respect container width
+        const firstChildRect = this.track.children[0].getBoundingClientRect();
+        const measuredChildWidth = Math.round(firstChildRect.width);
 
-  // On small screens, force itemWidth to container width (so one card = viewport)
-  if (window.matchMedia('(max-width: 749px)').matches) {
-    this.itemWidth = Math.round(containerWidth);
-    // set explicit width for each child to match container
-    Array.from(this.track.children).forEach(child => {
-      child.style.width = `${this.itemWidth}px`;
-    });
-  } else {
-    // desktop / tablet: use measured child width (keeps earlier behavior)
-    this.itemWidth = measuredChildWidth;
-    Array.from(this.track.children).forEach(child => {
-      child.style.width = `${measuredChildWidth}px`;
-    });
-  }
+        // On small screens, force itemWidth to container width (so one card = viewport)
+        if (window.matchMedia('(max-width: 749px)').matches) {
+          this.itemWidth = Math.round(containerWidth);
+          // set explicit width for each child to match container
+          Array.from(this.track.children).forEach(child => {
+            child.style.width = this.itemWidth + 'px';
+          });
+        } else {
+          // desktop / tablet: use measured child width (keeps earlier behavior)
+          this.itemWidth = measuredChildWidth;
+          Array.from(this.track.children).forEach(child => {
+            child.style.width = measuredChildWidth + 'px';
+          });
+        }
 
-  // Update track width accordingly
-  this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
-}
-
-      
+        // Update track width accordingly
+        this.track.style.width = (this.track.children.length * this.itemWidth) + 'px';
+      }
 
       setupEventListeners() {
         this._onPointerDown = this.onPointerDown.bind(this);
@@ -533,7 +548,7 @@
         this.currentX = e.clientX;
         const delta = this.currentX - this.startX;
         const newTransform = this.initialTransform + delta;
-        this.track.style.transform = `translateX(${newTransform}px)`;
+        this.track.style.transform = 'translateX(' + newTransform + 'px)';
       }
 
       onPointerUp() {
@@ -541,7 +556,7 @@
         this.isDragging = false;
         const delta = this.currentX - this.startX;
         const threshold = Math.max(30, this.itemWidth / 4);
-        this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
+        this.track.style.transition = 'transform ' + this.transitionDuration + 'ms ease';
         if (Math.abs(delta) > threshold) {
           if (delta > 0) this.prev();
           else this.next();
@@ -571,35 +586,46 @@
         return 0;
       }
 
+      // Move instantly without transition (used for initial placement and loop jump)
       jumpToCurrent() {
         this.track.style.transition = 'none';
         this.updatePosition(true);
       }
 
+      // updatePosition optionally instant (no transition)
       updatePosition(instant = false) {
         if (instant) this.track.style.transition = 'none';
         const containerWidth = this.track.parentElement.offsetWidth;
         const centerOffset = (containerWidth - this.itemWidth) / 2;
         const translateX = centerOffset - (this.currentIndex * this.itemWidth);
-        this.track.style.transform = `translateX(${translateX}px)`;
+        this.track.style.transform = 'translateX(' + translateX + 'px)';
         if (instant) {
+          // force reflow then restore transition
           void this.track.offsetWidth;
-          this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
+          this.track.style.transition = 'transform ' + this.transitionDuration + 'ms ease';
         }
         this.updateCentered();
       }
 
       updateCentered() {
-        const all = Array.from(this.track.children);
-        all.forEach((el, idx) => {
+        const allItems = Array.from(this.track.children);
+        allItems.forEach((el, idx) => {
           el.classList.toggle('centered', idx === this.currentIndex);
+          // Only original set (after clones) should be focusable as navigable features
           const originalStart = this.originalCount;
-          const originalEnd = originalStart + this.originalCount - 1;
+          const originalEnd = this.originalCount + this.originalCount - 1;
           if (idx >= originalStart && idx <= originalEnd) {
-            if (idx === this.currentIndex) { el.setAttribute('tabindex', '0'); el.removeAttribute('aria-hidden'); }
-            else { el.setAttribute('tabindex', '-1'); }
+            // this is one of the original items
+            if (idx === this.currentIndex) {
+              el.setAttribute('tabindex', '0');
+              el.removeAttribute('aria-hidden');
+            } else {
+              el.setAttribute('tabindex', '-1');
+            }
           } else {
-            el.setAttribute('aria-hidden', 'true'); el.setAttribute('tabindex', '-1');
+            // clones: hide from assistive tech
+            el.setAttribute('aria-hidden', 'true');
+            el.setAttribute('tabindex', '-1');
           }
         });
       }
@@ -616,24 +642,26 @@
         this.announceCurrent();
       }
 
+      // When transition ends, fix up if we moved into cloned region
       onTransitionEnd() {
         const total = this.track.children.length;
         const startOfOriginals = this.originalCount;
         const endOfOriginals = startOfOriginals + this.originalCount - 1;
 
-        // If we moved into clones appended after originals (index > endOfOriginals + clones)
-        if (this.currentIndex > endOfOriginals + this.originalCount) {
+        // If we've gone past the end clones (too high index), jump back to same logical original
+        if (this.currentIndex > endOfOriginals + (this.originalCount)) {
+          // map back
           this.currentIndex = this.currentIndex - this.originalCount;
           this.jumpToCurrent();
         }
 
-        // If we moved into clones before originals (index < startOfOriginals - clones)
+        // If we've gone before the start clones (too low), jump forward
         if (this.currentIndex < startOfOriginals - this.originalCount) {
           this.currentIndex = this.currentIndex + this.originalCount;
           this.jumpToCurrent();
         }
 
-        // Normalize immediate neighbors (cases when landing in appended/prepended clones)
+        // Normalize cases when landing in appended/prepended clones adjacent to originals
         if (this.currentIndex > endOfOriginals && this.currentIndex < total - this.originalCount) {
           const offsetIntoClones = this.currentIndex - (endOfOriginals + 1);
           this.currentIndex = startOfOriginals + offsetIntoClones;
@@ -645,16 +673,18 @@
           this.currentIndex = normalized;
           this.jumpToCurrent();
         }
-
+        // finally ensure classes/tabs synced
         this.updateCentered();
       }
 
+      // Announce for screen readers
       announceCurrent() {
         if (!this.srLiveRegion) return;
         const logicalIndex = ((this.currentIndex - this.originalCount) % this.originalCount + this.originalCount) % this.originalCount;
-        this.srLiveRegion.textContent = `Showing feature ${logicalIndex + 1} of ${this.originalCount}`;
+        this.srLiveRegion.textContent = 'Showing feature ' + (logicalIndex + 1) + ' of ' + this.originalCount;
       }
 
+      // Auto-scroll helpers
       startAuto() {
         this.stopAuto();
         this._autoTimer = setInterval(()=> { this.next(); }, 4000);
@@ -667,8 +697,6 @@
     customElements.define('why-buy-carousel-{{ ai_gen_id }}', WhyBuyCarousel{{ ai_gen_id }});
   })();
 </script>
-
-
 
 {% schema %}
 {
