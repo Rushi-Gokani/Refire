@@ -22,7 +22,7 @@
     </button>
   {% endif %}
 
-  <!-- Account Icon -->
+  <!-- Account Icon --> 
   {% if shop.customer_accounts_enabled %}
     <a
       href="{{ routes.account_url }}"
@@ -40,7 +40,7 @@
 
 
   <!-- Cart Icon -->
-  {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+  {% comment %} {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     {% render 'cart-drawer' %}
     <button
       class="header-actions__action header-actions__cart"
@@ -75,7 +75,7 @@
         {% endif %}
       </div>
     </a>
-  {% endif %}
+  {% endif %} {% endcomment %}
 </header-actions>
 
 {% stylesheet %}
