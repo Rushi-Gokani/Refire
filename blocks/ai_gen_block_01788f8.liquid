@@ -131,7 +131,106 @@ Each block represents a single FAQ item with question and answer.
     </div>
   </div>
 </div>
+<script>
+(function() {
+  class FaqAccordion extends HTMLElement {
+    constructor() {
+      super();
+      this.expandMode = this.dataset.expandMode || 'multi';
+      this.questions = [];
+      this.currentFocus = -1;
+    }
 
+    connectedCallback() {
+      this.questions = Array.from(this.querySelectorAll('[data-faq-question]'));
+      this.setupEventListeners();
+      this.setupKeyboardNavigation();
+    }
+
+    setupEventListeners() {
+      this.questions.forEach((question, index) => {
+        question.addEventListener('click', () => this.toggleAnswer(question, index));
+      });
+    }
+
+    setupKeyboardNavigation() {
+      this.questions.forEach((question, index) => {
+        question.addEventListener('keydown', (e) => {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              this.focusNext(index);
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              this.focusPrevious(index);
+              break;
+            case 'Home':
+              e.preventDefault();
+              this.focusFirst();
+              break;
+            case 'End':
+              e.preventDefault();
+              this.focusLast();
+              break;
+            case 'Enter':
+            case ' ':
+              e.preventDefault();
+              this.toggleAnswer(question, index);
+              break;
+          }
+        });
+      });
+    }
+
+    toggleAnswer(question, index) {
+      const isExpanded = question.getAttribute('aria-expanded') === 'true';
+      const answer = question.nextElementSibling;
+      
+      if (this.expandMode === 'single' && !isExpanded) {
+        this.closeAllAnswers();
+      }
+      
+      question.setAttribute('aria-expanded', !isExpanded);
+      answer.setAttribute('aria-hidden', isExpanded);
+      
+      if (isExpanded) {
+        answer.classList.remove('open');
+      } else {
+        answer.classList.add('open');
+      }}
+
+    closeAllAnswers() {
+      this.questions.forEach(question => {
+        const answer = question.nextElementSibling;
+        question.setAttribute('aria-expanded', 'false');
+        answer.setAttribute('aria-hidden', 'true');
+        answer.classList.remove('open');
+      });
+    }
+
+    focusNext(currentIndex) {
+      const nextIndex = (currentIndex + 1) % this.questions.length;
+      this.questions[nextIndex].focus();
+    }
+
+    focusPrevious(currentIndex) {
+      const prevIndex = currentIndex === 0 ? this.questions.length - 1 : currentIndex - 1;
+      this.questions[prevIndex].focus();
+    }
+
+    focusFirst() {
+      this.questions[0].focus();
+    }
+
+    focusLast() {
+      this.questions[this.questions.length - 1].focus();
+    }
+  }
+
+  customElements.define('faq-accordion', FaqAccordion);
+})();
+</script> 
 {% schema %}
 {
   "name": "FAQ item",
