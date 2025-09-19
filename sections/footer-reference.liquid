@@ -27,16 +27,16 @@
     <div class="footer-column footer-column--contact">
       <div class="contact-info">
         <p class="contact-address">
-          Cavitak Cliff Shanti Arcade, Sardar Patel Colony, Sundar Nagar, Naranpura, Ahmedabad, Gujarat 380014.
+          {{ section.settings.contact_address | default: 'Cavitak Cliff Shanti Arcade, Sardar Patel Colony, Sundar Nagar, Naranpura, Ahmedabad, Gujarat 380014.' }}
         </p>
         <p class="contact-email">
-          Email: <a href="mailto:services@ecoflowindia.com" title="mailto:services@ecoflowindia.com">services@ecoflowindia.com</a>
+          Email: <a href="mailto:{{ section.settings.contact_email | default: 'services@ecoflowindia.com' }}" title="mailto:{{ section.settings.contact_email | default: 'services@ecoflowindia.com' }}">{{ section.settings.contact_email | default: 'services@ecoflowindia.com' }}</a>
         </p>
         <p class="contact-phone">
-          Phone: <a href="tel:07969595009" title="tel:07969595009"><strong>079-69595009</strong></a>
+          Phone: <a href="tel:{{ section.settings.contact_phone | default: '07969595009' }}" title="tel:{{ section.settings.contact_phone | default: '07969595009' }}"><strong>{{ section.settings.contact_phone | default: '079-69595009' }}</strong></a>
         </p>
         <p class="contact-direction">
-          <a href="#" title="Get direction">Get direction</a>
+          <a href="{{ section.settings.contact_direction_url | default: '#' }}" title="{{ section.settings.contact_direction_text | default: 'Get direction' }}">{{ section.settings.contact_direction_text | default: 'Get direction' }}</a>
         </p>
       </div>
       
@@ -69,31 +69,42 @@
 
     <!-- Help Menu Column -->
     <div class="footer-column footer-column--help">
-      <h4 class="menu-heading">Help</h4>
-      <ul class="menu-list">
-        <li><a href="/pages/privacy-policy">Privacy policy</a></li>
-        <li><a href="/pages/return-exchange-policy">Return & Exchange Policy</a></li>
-        <li><a href="/pages/terms-of-use">Terms of Use</a></li>
-        <li><a href="/pages/shipping-policy">Shipping Policy</a></li>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="help-menu">
+        <h4 class="menu-heading">{{ section.settings.help_heading | default: 'Help' }}</h4>
+        <svg class="menu-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3L8.59 4.41 14.17 10l-5.58 5.59L10 17l7-7z"/>
+        </svg>
+      </button>
+      <ul class="menu-list" id="help-menu">
+        {% for block in section.blocks %}
+          {% if block.type == 'help_link' %}
+            <li><a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ block.settings.text }}</a></li>
+          {% endif %}
+        {% endfor %}
       </ul>
     </div>
 
     <!-- Useful Links Menu Column -->
     <div class="footer-column footer-column--links">
-      <h4 class="menu-heading">Useful Links</h4>
-      <ul class="menu-list">
-        <li><a href="/collections/all">Products</a></li>
-        <li><a href="/pages/usage-scenarios">Usage Scenarios</a></li>
-        <li><a href="/pages/support">Support</a></li>
-        <li><a href="/pages/b2b-inquiry">B2B inquiry</a></li>
-        <li><a href="/pages/about-us">About Us</a></li>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="useful-links-menu">
+        <h4 class="menu-heading">{{ section.settings.useful_links_heading | default: 'Useful Links' }}</h4>
+        <svg class="menu-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 3L8.59 4.41 14.17 10l-5.58 5.59L10 17l7-7z"/>
+        </svg>
+      </button>
+      <ul class="menu-list" id="useful-links-menu">
+        {% for block in section.blocks %}
+          {% if block.type == 'useful_link' %}
+            <li><a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ block.settings.text }}</a></li>
+          {% endif %}
+        {% endfor %}
       </ul>
     </div>
 
     <!-- Email Signup Column -->
     <div class="footer-column footer-column--email">
-      <h4 class="email-heading">Sign Up for Email</h4>
-      <p class="email-description">Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!</p>
+      <h4 class="email-heading">{{ section.settings.email_heading | default: 'Sign Up for Email' }}</h4>
+      <p class="email-description">{{ section.settings.email_description | default: 'Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!' }}</p>
       <form class="email-signup__form" action="/contact#contact_form" method="post" id="contact_form" accept-charset="UTF-8">
         <div class="email-signup__input-group">
           <label for="EmailInput" class="visually-hidden">Email</label>
@@ -102,7 +113,7 @@
             class="email-signup__input email-signup__input--underline"
             type="email"
             name="contact[email]"
-            placeholder="Enter email address"
+            placeholder="{{ section.settings.email_placeholder | default: 'Enter email address' }}"
             required
           >
           <button
@@ -123,8 +134,8 @@
   <div class="footer-utilities">
     <div class="footer-utilities__group footer-utilities__group--left">
       <div class="footer-copyright">
-        <span>&copy; {{ 'now' | date: '%Y' }} Ecomus. All rights reserved. Developed by Hashtechy</span>
-        <a href="/pages/privacy-policy" class="privacy-link">Privacy_policy</a>
+        <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text | default: 'Ecomus. All rights reserved. Developed by Hashtechy' }}</span>
+        <a href="{{ section.settings.privacy_link_url | default: '/pages/privacy-policy' }}" class="privacy-link">{{ section.settings.privacy_link_text | default: 'Privacy_policy' }}</a>
       </div>
     </div>
 
@@ -292,21 +303,46 @@
   }
 
   /* Menu Styling */
+  .menu-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+  }
+
   .menu-heading {
     font-weight: 600;
     font-size: 1.125rem;
-    margin-bottom: 1rem;
+    margin: 0;
     color: var(--color-foreground);
+  }
+
+  .menu-icon {
+    width: 16px;
+    height: 16px;
+    fill: var(--color-foreground);
+    transition: transform 0.3s ease;
+    margin-left: 0.5rem;
+  }
+
+  .menu-toggle[aria-expanded="true"] .menu-icon {
+    transform: rotate(180deg);
   }
 
   .menu-list {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 1rem 0 0 0;
+    display: block;
   }
 
   .menu-list li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .menu-list a {
@@ -314,10 +350,47 @@
     text-decoration: none;
     font-size: 0.875rem;
     transition: color 0.3s ease;
+    display: block;
+    padding: 0.25rem 0;
   }
 
   .menu-list a:hover {
     color: var(--color-foreground-muted);
+  }
+
+  /* Mobile Accordion */
+  @media screen and (max-width: 989px) {
+    .menu-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      margin: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"] + .menu-list {
+      max-height: 500px;
+      margin: 1rem 0 0 0;
+    }
+
+    .menu-toggle {
+      margin-bottom: 0;
+    }
+  }
+
+  /* Desktop - Always show menu */
+  @media screen and (min-width: 990px) {
+    .menu-toggle {
+      cursor: default;
+    }
+    
+    .menu-icon {
+      display: none;
+    }
+    
+    .menu-list {
+      margin: 1rem 0 0 0;
+      max-height: none !important;
+    }
   }
 
   /* Email Signup Styling */
@@ -546,6 +619,19 @@
   }
 {% endstylesheet %}
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggles = document.querySelectorAll('.menu-toggle');
+    
+    menuToggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+      });
+    });
+  });
+</script>
+
 {% schema %}
 {
   "name": "Footer Reference Design",
@@ -574,6 +660,100 @@
         }
       ],
       "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "Contact Information"
+    },
+    {
+      "type": "text",
+      "id": "contact_address",
+      "label": "Address",
+      "default": "Cavitak Cliff Shanti Arcade, Sardar Patel Colony, Sundar Nagar, Naranpura, Ahmedabad, Gujarat 380014."
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Email",
+      "default": "services@ecoflowindia.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone",
+      "label": "Phone",
+      "default": "079-69595009"
+    },
+    {
+      "type": "text",
+      "id": "contact_direction_text",
+      "label": "Direction Link Text",
+      "default": "Get direction"
+    },
+    {
+      "type": "url",
+      "id": "contact_direction_url",
+      "label": "Direction Link URL",
+      "default": "#"
+    },
+    {
+      "type": "header",
+      "content": "Menu Headings"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Help Section Heading",
+      "default": "Help"
+    },
+    {
+      "type": "text",
+      "id": "useful_links_heading",
+      "label": "Useful Links Section Heading",
+      "default": "Useful Links"
+    },
+    {
+      "type": "header",
+      "content": "Email Signup"
+    },
+    {
+      "type": "text",
+      "id": "email_heading",
+      "label": "Email Signup Heading",
+      "default": "Sign Up for Email"
+    },
+    {
+      "type": "textarea",
+      "id": "email_description",
+      "label": "Email Signup Description",
+      "default": "Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email Input Placeholder",
+      "default": "Enter email address"
+    },
+    {
+      "type": "header",
+      "content": "Footer Bottom"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "Ecomus. All rights reserved. Developed by Hashtechy"
+    },
+    {
+      "type": "text",
+      "id": "privacy_link_text",
+      "label": "Privacy Link Text",
+      "default": "Privacy_policy"
+    },
+    {
+      "type": "url",
+      "id": "privacy_link_url",
+      "label": "Privacy Link URL",
+      "default": "/pages/privacy-policy"
     },
     {
       "type": "header",
@@ -610,6 +790,56 @@
       "default": 0
     }
   ],
+  "blocks": [
+    {
+      "type": "help_link",
+      "name": "Help Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Link Text",
+          "default": "Privacy policy"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL",
+          "default": "/pages/privacy-policy"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "useful_link",
+      "name": "Useful Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Link Text",
+          "default": "Products"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL",
+          "default": "/collections/all"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_in_new_tab",
+          "label": "Open in new tab",
+          "default": false
+        }
+      ]
+    }
+  ],
   "presets": [
     {
       "name": "Footer — Default",
@@ -618,8 +848,81 @@
         "section_width": "page-width",
         "color_scheme": "scheme-1",
         "padding-block-start": 40,
-        "padding-block-end": 0
-      }
+        "padding-block-end": 0,
+        "help_heading": "Help",
+        "useful_links_heading": "Useful Links",
+        "email_heading": "Sign Up for Email",
+        "email_description": "Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!",
+        "email_placeholder": "Enter email address",
+        "copyright_text": "Ecomus. All rights reserved. Developed by Hashtechy",
+        "privacy_link_text": "Privacy_policy",
+        "privacy_link_url": "/pages/privacy-policy"
+      },
+      "blocks": [
+        {
+          "type": "help_link",
+          "settings": {
+            "text": "Privacy policy",
+            "link": "/pages/privacy-policy"
+          }
+        },
+        {
+          "type": "help_link",
+          "settings": {
+            "text": "Return & Exchange Policy",
+            "link": "/pages/return-exchange-policy"
+          }
+        },
+        {
+          "type": "help_link",
+          "settings": {
+            "text": "Terms of Use",
+            "link": "/pages/terms-of-use"
+          }
+        },
+        {
+          "type": "help_link",
+          "settings": {
+            "text": "Shipping Policy",
+            "link": "/pages/shipping-policy"
+          }
+        },
+        {
+          "type": "useful_link",
+          "settings": {
+            "text": "Products",
+            "link": "/collections/all"
+          }
+        },
+        {
+          "type": "useful_link",
+          "settings": {
+            "text": "Usage Scenarios",
+            "link": "/pages/usage-scenarios"
+          }
+        },
+        {
+          "type": "useful_link",
+          "settings": {
+            "text": "Support",
+            "link": "/pages/support"
+          }
+        },
+        {
+          "type": "useful_link",
+          "settings": {
+            "text": "B2B inquiry",
+            "link": "/pages/b2b-inquiry"
+          }
+        },
+        {
+          "type": "useful_link",
+          "settings": {
+            "text": "About Us",
+            "link": "/pages/about-us"
+          }
+        }
+      ]
     },
     {
       "name": "Footer — Dark Minimal",
