@@ -1,6 +1,330 @@
+{% doc %}
+  @prompt
+    Create a Shopify **section block** named "FAQ Item — Minimal" designed to be added as repeated blocks inside a parent FAQ section; each block should include a "Question" short text field and an "Answer" rich-text/textarea field, support an optional block-level toggle "open by default", output minimal accessible Liquid markup/CSS/vanilla JS that integrates with a parent accordion (questions as <button>, answers in region with aria-hidden/aria-expanded, keyboard support, chevron that rotates, smooth slide animation), adhere to mobile-first responsive design and modern minimalist style (ample whitespace, 1px dividers, 14–16px body, 18–24px heading), allow block-level color overrides for heading/text, include inline comments explaining customization, and return the full ready-to-paste single-file Liquid block code or block schema snippet (no external libraries) — ensure unlimited blocks can be added in the parent section.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-faq-item-{{ ai_gen_id }} {
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-faq-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .ai-faq-item__button-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 24px 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: {{ block.settings.question_font_size }}px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: {{ block.settings.question_color }};
+    transition: color 0.2s ease;
+  }
+
+  .ai-faq-item__button-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.question_hover_color }};
+  }
+
+  .ai-faq-item__button-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.question_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-faq-item__question-{{ ai_gen_id }} {
+    flex: 1;
+    margin: 0;
+  }
+
+  .ai-faq-item__chevron-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    color: {{ block.settings.chevron_color }};
+  }
+
+  .ai-faq-item__button-{{ ai_gen_id }}[aria-expanded="true"] .ai-faq-item__chevron-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .ai-faq-item__answer-{{ ai_gen_id }} {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;max-height: 0;
+    opacity: 0;
+  }
+
+  .ai-faq-item__answer-{{ ai_gen_id }}[aria-hidden="false"] {
+    max-height: 1000px;
+    opacity: 1;
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} {
+    padding: 0 0 24px 0;
+    font-size: {{ block.settings.answer_font_size }}px;
+    line-height: 1.5;
+    color: {{ block.settings.answer_color }};
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} p {
+    margin: 0 0 16px 0;
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} ul,
+  .ai-faq-item__answer-content-{{ ai_gen_id }} ol {
+    margin: 0 0 16px 20px;
+    padding: 0;
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} li {
+    margin-bottom: 8px;
+  }
+
+  .ai-faq-item__answer-content-{{ ai_gen_id }} strong {
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-faq-item__button-{{ ai_gen_id }} {
+      padding: 20px 0;
+      font-size: {{ block.settings.question_font_size | times: 0.9 }}px;
+    }
+
+    .ai-faq-item__answer-content-{{ ai_gen_id }} {
+      padding: 0 0 20px 0;
+      font-size: {{ block.settings.answer_font_size | times: 0.9 }}px;
+    }
+
+    .ai-faq-item__chevron-{{ ai_gen_id }} {
+      width: 18px;
+      height: 18px;
+    }
+  }
+{% endstyle %}<faq-item-{{ ai_gen_id }}
+  class="ai-faq-item-{{ ai_gen_id }}"
+  data-open-default="{{ block.settings.open_by_default }}"
+  {{ block.shopify_attributes }}
+>
+  <button
+    class="ai-faq-item__button-{{ ai_gen_id }}"
+    aria-expanded="false"
+    aria-controls="ai-faq-answer-{{ ai_gen_id }}"
+    type="button"
+  >
+    <h3 class="ai-faq-item__question-{{ ai_gen_id }}">
+      {{ block.settings.question | default: 'Add your question here' }}
+    </h3>
+    <svg
+      class="ai-faq-item__chevron-{{ ai_gen_id }}"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="6,9 12,15 18,9"></polyline>
+    </svg>
+  </button>
+
+  <div
+    id="ai-faq-answer-{{ ai_gen_id }}"
+    class="ai-faq-item__answer-{{ ai_gen_id }}"
+    aria-hidden="true"
+    role="region"
+    aria-labelledby="ai-faq-button-{{ ai_gen_id }}"
+  >
+    <div class="ai-faq-item__answer-content-{{ ai_gen_id }}">
+      {% if block.settings.answer != blank %}
+        {{ block.settings.answer }}
+      {% else %}
+        <p>Add your answer content here. You can use rich text formatting including <strong>bold text</strong>, lists, and paragraphs.</p>
+      {% endif %}
+    </div>
+  </div>
+</faq-item-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FaqItem{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.button = null;
+        this.answer = null;
+        this.isOpen = false;
+      }
+
+      connectedCallback() {
+        this.button = this.querySelector('.ai-faq-item__button-{{ ai_gen_id }}');
+        this.answer = this.querySelector('.ai-faq-item__answer-{{ ai_gen_id }}');
+        
+        if (!this.button || !this.answer) return;
+
+        this.setupEventListeners();
+        this.checkOpenDefault();
+      }
+
+      setupEventListeners() {
+        this.button.addEventListener('click', () => this.toggle());
+        
+        this.button.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            this.toggle();
+          }
+        });
+      }
+
+      checkOpenDefault() {
+        const openDefault = this.dataset.openDefault === 'true';
+        if (openDefault) {
+          this.open();
+        }
+      }
+
+      toggle() {
+        if (this.isOpen) {
+          this.close();
+        } else {
+          this.open();
+        }
+      }
+
+      open() {
+        this.isOpen = true;
+        this.button.setAttribute('aria-expanded', 'true');
+        this.answer.setAttribute('aria-hidden', 'false');
+        
+        this.answer.style.maxHeight = this.answer.scrollHeight + 'px';
+        
+        setTimeout(() => {
+          this.answer.style.maxHeight = '1000px';
+        }, 300);
+      }
+
+      close() {
+        this.isOpen = false;
+        this.button.setAttribute('aria-expanded', 'false');
+        this.answer.setAttribute('aria-hidden', 'true');
+        
+        this.answer.style.maxHeight = this.answer.scrollHeight + 'px';
+        
+        requestAnimationFrame(() => {
+          this.answer.style.maxHeight = '0';
+        });
+      }
+    }
+
+    customElements.define('faq-item-{{ ai_gen_id }}', FaqItem{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "FAQ item - Minimal",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Question",
+      "default": "What is your return policy?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer",
+      "label": "Answer",
+      "default": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "question_font_size",
+      "min": 16,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Question font size",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "answer_font_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Answer font size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "question_color",
+      "label": "Question color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "question_hover_color",
+      "label": "Question hover color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "answer_color",
+      "label": "Answer color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "chevron_color",
+      "label": "Chevron color",
+      "default": "#999999"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e6e6e6"
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ item - Minimal"
+    }
+  ]
+}
 {% endschema %}
