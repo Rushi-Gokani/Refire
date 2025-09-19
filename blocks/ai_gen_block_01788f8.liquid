@@ -156,31 +156,19 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
 </div>
 
 <script>
-/*
- Robust FAQ initializer:
- - Works whether items are inside a <faq-accordion data-expand-mode="single|multi"> container
-   OR when blocks exist without that wrapper.
- - Finds accordion containers (data-faq-accordion) or creates a virtual grouping by parent section element.
- - Adds click + keyboard handlers and manages aria-expanded / aria-hidden properly (strings).
-*/
-
 (function() {
   // Helper to convert boolean to "true"/"false"
   function boolStr(v) { return v ? 'true' : 'false'; }
 
   // Initialize a single accordion container (element) and its question buttons
   function initAccordionContainer(container, expandMode) {
-    // Find question buttons within container
     const questions = Array.from(container.querySelectorAll('[data-faq-question]'));
     if (!questions.length) return;
 
-    // Set container attribute to identify it's handled
     container.setAttribute('data-faq-initialized', 'true');
     container.dataset.expandMode = expandMode || container.dataset.expandMode || 'multi';
 
-    // Add click listeners and keyboard support
     questions.forEach((question, index) => {
-      // Ensure button has role/attributes (id is present in block)
       question.setAttribute('tabindex', '0');
 
       question.addEventListener('click', function() {
@@ -190,31 +178,20 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
       question.addEventListener('keydown', function(e) {
         switch (e.key) {
           case 'ArrowDown':
-            e.preventDefault();
-            focusNext(questions, index);
-            break;
+            e.preventDefault(); focusNext(questions, index); break;
           case 'ArrowUp':
-            e.preventDefault();
-            focusPrevious(questions, index);
-            break;
+            e.preventDefault(); focusPrevious(questions, index); break;
           case 'Home':
-            e.preventDefault();
-            questions[0].focus();
-            break;
+            e.preventDefault(); questions[0].focus(); break;
           case 'End':
-            e.preventDefault();
-            questions[questions.length - 1].focus();
-            break;
+            e.preventDefault(); questions[questions.length - 1].focus(); break;
           case 'Enter':
           case ' ':
-            e.preventDefault();
-            toggle(question, index, container);
-            break;
+            e.preventDefault(); toggle(question, index, container); break;
         }
       });
     });
 
-    // Close all helper
     function closeAll() {
       questions.forEach(q => {
         const ans = q.nextElementSibling;
@@ -226,19 +203,17 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
       });
     }
 
-    // Toggle single question
     function toggle(question, index, containerRef) {
       const isExpanded = question.getAttribute('aria-expanded') === 'true';
       const answer = question.nextElementSibling;
 
-      // If container is single expand, close others when opening one
       if (containerRef.dataset.expandMode === 'single' && !isExpanded) {
         closeAll();
       }
 
-      // Toggle attributes (use string values)
       question.setAttribute('aria-expanded', boolStr(!isExpanded));
       if (answer) {
+        // When opening, aria-hidden should be "false"; when closing, "true"
         answer.setAttribute('aria-hidden', boolStr(isExpanded));
         if (isExpanded) {
           answer.classList.remove('open');
@@ -248,7 +223,6 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
       }
     }
 
-    // Focus helpers
     function focusNext(arr, idx) {
       const next = (idx + 1) % arr.length;
       arr[next].focus();
@@ -259,86 +233,79 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
     }
   }
 
-  // Find or create accordion groups on the page
   function initializeAllFaqs() {
-    // 1) First, look for explicit wrappers: <faq-accordion> or any element with data-faq-accordion
     const explicitWrappers = Array.from(document.querySelectorAll('faq-accordion, [data-faq-accordion]'));
-
     explicitWrappers.forEach(wrapper => {
       const mode = wrapper.dataset.expandMode || wrapper.getAttribute('data-expand-mode') || 'multi';
-      // If not already initialized
       if (wrapper.getAttribute('data-faq-initialized') !== 'true') {
         initAccordionContainer(wrapper, mode);
       }
     });
 
-    // 2) Next, handle FAQ blocks not inside an explicit wrapper:
-    // Group by nearest section or common parent element that contains [data-faq-question] children.
-    // We search for any question buttons not yet initialized and group them by their nearest ancestor section element.
     const allQuestions = Array.from(document.querySelectorAll('[data-faq-question]'));
     const uninitializedQuestions = allQuestions.filter(q => {
-      // is the parent container already handled?
       let parent = q.parentElement;
       while (parent) {
         if (parent.getAttribute && parent.getAttribute('data-faq-initialized') === 'true') return false;
         parent = parent.parentElement;
       }
-      // also skip if question belongs to an explicit wrapper above (already handled)
       return true;
     });
 
-    // Group uninitialized questions by nearest section element (or top-level container)
     const groups = new Map();
     uninitializedQuestions.forEach(q => {
-      // find nearest ancestor that is a section, or .section, or element with data-section, or fallback to q.parentElement
       let ancestor = q.closest('section, [data-section], .section') || q.parentElement;
       const key = ancestor || document;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(q);
     });
 
-    // Initialize each group by creating a virtual wrapper element (a <div>) that contains those buttons
     groups.forEach((questions, ancestor) => {
-      // If questions already belong to a real wrapper, skip (shouldn't here)
-      // Create a lightweight container element to pass to the initializer (doesn't move DOM nodes)
+      questions.forEach(q => q.classList.add('faq-js-group-temp'));
       const container = document.createElement('div');
       container.dataset.expandMode = ancestor && ancestor.dataset ? (ancestor.dataset.expandMode || 'multi') : 'multi';
-
-      // To let selector queries inside initializer find the relevant buttons, append references:
-      // We'll temporarily attach the questions as a NodeList via a query: Instead, simpler approach:
-      // Append a marker class on each question to indicate group membership.
-      questions.forEach(q => q.classList.add('faq-js-group-temp'));
-      // Put the container into DOM (hidden) so querySelectorAll works relative to document
-      document.body.appendChild(container); // lightweight, will be removed
-      // Now initialize using a container that queries the document for the class
-      // To do that, we temporarily set container.querySelectorAll to function returning list (monkeypatch)
+      document.body.appendChild(container);
       container.querySelectorAll = function() {
         return Array.from(document.querySelectorAll('.faq-js-group-temp'));
       };
-      // Initialize
       initAccordionContainer(container, container.dataset.expandMode || 'multi');
-      // Cleanup: remove temporary marker and the container
       questions.forEach(q => q.classList.remove('faq-js-group-temp'));
       container.remove();
     });
   }
 
-  // Run on DOMContentLoaded and also if new blocks are injected later (basic mutation observer)
+  // NEW: Delegated click handler to forward clicks on chevrons to their question button.
+  // This avoids relying on inline onclick attributes and works for dynamically added nodes.
+  document.body.addEventListener('click', function(event) {
+    // If the click target is the chevron SVG (or inside it), find the nearest button with data-faq-question
+    const chevron = event.target.closest('[class*="faq-chevron-"]');
+    if (!chevron) return;
+    const btn = chevron.closest('button') || chevron.closest('[data-faq-question]') || chevron.closest('div').querySelector('[data-faq-question]');
+    if (btn) {
+      // prevent double-handling if click bubbled to the button itself
+      if (event.target !== btn) {
+        btn.click();
+        event.preventDefault();
+      }
+    }
+  }, true); // use capture to ensure early handling
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeAllFaqs);
   } else {
     initializeAllFaqs();
   }
 
-  // MutationObserver: if theme editor injects blocks after load, catch them
   const mo = new MutationObserver((mutations) => {
-    // If any added nodes contain [data-faq-question], re-run initializer
     let found = false;
     for (const m of mutations) {
       for (const n of m.addedNodes) {
         if (n.nodeType === 1) {
           if (n.matches && n.matches('[data-faq-question]')) found = true;
           if (n.querySelector && n.querySelector('[data-faq-question]')) found = true;
+          // also if an svg chevron was added (edge-case)
+          if (n.matches && n.matches('[class*="faq-chevron-"]')) found = true;
+          if (n.querySelector && n.querySelector('[class*="faq-chevron-"]')) found = true;
         }
       }
     }
@@ -350,6 +317,7 @@ Includes: CSS fixes, robust JS initializer, ARIA updates, chevron click forwardi
 
 })();
 </script>
+
 
 {% schema %}
 {
