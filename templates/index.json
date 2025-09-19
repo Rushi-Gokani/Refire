@@ -1384,6 +1384,139 @@
         "controls": false,
         "muted": true
       }
+    },
+    "17582874015fb32613": {
+      "type": "_blocks",
+      "blocks": {
+        "text_D8MaFE": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<h3>Frequently Asked Question</h3>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_bXEnYr": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": true,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_igBjKy": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_jFjEej": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_73YALP": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_kWzEkq": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
+        "ai_gen_block_01788f8_CyEDAg": {
+          "type": "ai_gen_block_01788f8",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_D8MaFE",
+        "ai_gen_block_01788f8_bXEnYr",
+        "ai_gen_block_01788f8_igBjKy",
+        "ai_gen_block_01788f8_jFjEej",
+        "ai_gen_block_01788f8_73YALP",
+        "ai_gen_block_01788f8_kWzEkq",
+        "ai_gen_block_01788f8_CyEDAg"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-2",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
@@ -1397,6 +1530,7 @@
     "175828250790f7a243",
     "collection_list_RXm6dL",
     "collection_list_KQLdNe",
-    "reel_customer_PgrkLG"
+    "reel_customer_PgrkLG",
+    "17582874015fb32613"
   ]
 }
