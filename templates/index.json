@@ -330,8 +330,8 @@
             "border_radius": 0,
             "padding-block-start": 25,
             "padding-block-end": 0,
-            "padding-inline-start": 25,
-            "padding-inline-end": 25
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
           },
           "blocks": {
             "product_card_gallery_Gn6P7T": {
@@ -572,7 +572,7 @@
         "carousel_on_mobile": false,
         "max_products": 4,
         "columns": 4,
-        "mobile_columns": "1",
+        "mobile_columns": "2",
         "mobile_card_size": "60cqw",
         "columns_gap": 1,
         "rows_gap": 1,
@@ -781,7 +781,7 @@
         "ai_gen_block_18e8c77_hxVfBd"
       ],
       "custom_css": [
-        "@media screen and (max-width: 749px) {.mobile-column {padding-left:15px; padding-right:15px; }}"
+        "@media screen and (max-width: 749px) {.mobile-column {padding-left: 15px; padding-right: 15px; }}"
       ],
       "name": "t:names.custom_section",
       "settings": {
@@ -849,6 +849,9 @@
         "video_LJqQpM",
         "video_6ydBce",
         "video_kkpNrF"
+      ],
+      "custom_css": [
+        "@media screen and (max-width: 749px) {.video-preview-section {padding-left: 15px; }}"
       ],
       "name": "Our Reels",
       "settings": {
