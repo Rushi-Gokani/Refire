@@ -97,3 +97,23 @@
     background-color: var(--color-background);
   }
 {% endstyle %}
+
+{% style %}
+  /* Brand overrides: primary = #2f6f4e, accents (primary buttons) = black */
+  :root,
+  [class*='color-'] {
+    /* Primary brand color */
+    --color-primary: #2f6f4e;
+    --color-primary-rgb: 47 111 78;
+    --color-primary-hover: #2a5e43;
+    --color-primary-hover-rgb: 42 94 67;
+
+    /* Primary button accent to black */
+    --color-primary-button-background: #000000;
+    --color-primary-button-border: #000000;
+    --color-primary-button-hover-background: #000000;
+    --color-primary-button-hover-border: #000000;
+    --color-primary-button-text: #ffffff;
+    --color-primary-button-hover-text: #ffffff;
+  }
+{% endstyle %}
