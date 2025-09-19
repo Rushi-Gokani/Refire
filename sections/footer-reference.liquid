@@ -1,5 +1,5 @@
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<div
+<footer id="footer-section-{{ section.id }}"
   class="
     section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}
     {% if section.settings.section_height != "" %} {{ section.settings.section_height | prepend: "section--height-" }}{% endif %}
@@ -42,24 +42,24 @@
       
       <!-- Social Media Icons -->
       <div class="social-icons__wrapper">
-        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
+        <a href="{{ section.settings.facebook_url | default: 'https://facebook.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M18.05.811q.445 0 .763.319.319.319.319.763v16.892q0 .445-.319.763-.318.319-.763.319h-4.732v-7.377h2.415l.362-2.813h-2.777V6.35q0-.693.293-1.04.293-.346.99-.346h1.494V2.275q-.693-.1-1.494-.1-1.04 0-1.64.693-.6.693-.6 1.84v2.1H9.5v2.813h2.415v7.377H7.183q-.445 0-.763-.319-.319-.318-.319-.763V1.893q0-.444.319-.763.318-.319.763-.319z"/>
           </svg>
         </a>
-        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon">
+        <a href="{{ section.settings.instagram_url | default: 'https://instagram.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M10 1.8c2.7 0 3.02.01 4.09.05 1.01.04 1.56.19 1.92.32.46.18.79.4 1.13.74.34.34.56.67.74 1.13.13.36.28.91.32 1.92.04 1.07.05 1.39.05 4.09s-.01 3.02-.05 4.09c-.04 1.01-.19 1.56-.32 1.92-.18.46-.4.79-.74 1.13-.34.34-.56.67-.74 1.13-.13-.36-.28-.91-.32-1.92-.04-1.07-.05-1.39-.05-4.09s.01-3.02.05-4.09c.04-1.01.19-1.56.32-1.92.18-.46.4-.79.74-1.13.34-.34.67-.56 1.13-.74.36-.13.91-.28 1.92-.32 1.07-.04 1.39-.05 4.09-.05z"/>
             <path d="M10 4.87c-2.83 0-5.13 2.3-5.13 5.13s2.3 5.13 5.13 5.13 5.13-2.3 5.13-5.13-2.3-5.13-5.13-5.13zm0 8.46c-1.84 0-3.33-1.49-3.33-3.33s1.49-3.33 3.33-3.33 3.33 1.49 3.33 3.33-1.49 3.33-3.33 3.33z"/>
             <circle cx="15.33" cy="4.67" r="1.2"/>
           </svg>
         </a>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
+        <a href="{{ section.settings.youtube_url | default: 'https://www.youtube.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M19.58 5.17a2.5 2.5 0 0 0-1.76-1.76C16.25 3 10 3 10 3s-6.25 0-7.82.41A2.5 2.5 0 0 0 .42 5.17C0 6.75 0 10 0 10s0 3.25.42 4.83a2.5 2.5 0 0 0 1.76 1.76C3.75 17 10 17 10 17s6.25 0 7.82-.41a2.5 2.5 0 0 0 1.76-1.76C20 13.25 20 10 20 10s0-3.25-.42-4.83zM8 13V7l5.5 3-5.5 3z"/>
           </svg>
         </a>
-        <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
+        <a href="{{ section.settings.linkedin_url | default: 'https://linkedin.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M18.5 0h-17C.7 0 0 .7 0 1.5v17c0 .8.7 1.5 1.5 1.5h17c.8 0 1.5-.7 1.5-1.5v-17c0-.8-.7-1.5-1.5-1.5zM6 17H3V6h3v11zM4.5 4.7c-.9 0-1.7-.8-1.7-1.7s.8-1.7 1.7-1.7 1.7.8 1.7 1.7-.8 1.7-1.7 1.7zM17 17h-3v-5.3c0-1.1-.4-1.7-1.3-1.7-.7 0-1.1.5-1.3 1-.1.2-.1.4-.1.7V17H8V6h3v1.2c.4-.6 1.1-1.2 2.4-1.2 1.8 0 3.1 1.2 3.1 3.7V17z"/>
           </svg>
@@ -69,47 +69,83 @@
 
     <!-- Help Menu Column -->
     <div class="footer-column footer-column--help">
-      <button class="menu-toggle" aria-expanded="false" aria-controls="help-menu">
+      <button class="menu-toggle" aria-expanded="false" aria-controls="help-menu-{{ section.id }}">
         <h4 class="menu-heading">{{ section.settings.help_heading | default: 'Help' }}</h4>
         <svg class="menu-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 3L8.59 4.41 14.17 10l-5.58 5.59L10 17l7-7z"/>
         </svg>
       </button>
-      <ul class="menu-list" id="help-menu">
-        {% for block in section.blocks %}
-          {% if block.type == 'help_link' %}
-            <li><a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ block.settings.text }}</a></li>
-          {% endif %}
-        {% endfor %}
-      </ul>
+
+      {% if section.settings.help_menu != blank and linklists[section.settings.help_menu] %}
+        {% assign help_links = linklists[section.settings.help_menu].links %}
+        <ul class="menu-list" id="help-menu-{{ section.id }}">
+          {% for link in help_links %}
+            <li>
+              <a href="{{ link.url }}" {% if link.target == '_blank' %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                {{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <ul class="menu-list" id="help-menu-{{ section.id }}">
+          {% for block in section.blocks %}
+            {% if block.type == 'help_link' %}
+              <li>
+                <a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                  {{ block.settings.text }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
 
     <!-- Useful Links Menu Column -->
     <div class="footer-column footer-column--links">
-      <button class="menu-toggle" aria-expanded="false" aria-controls="useful-links-menu">
+      <button class="menu-toggle" aria-expanded="false" aria-controls="useful-links-menu-{{ section.id }}">
         <h4 class="menu-heading">{{ section.settings.useful_links_heading | default: 'Useful Links' }}</h4>
         <svg class="menu-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 3L8.59 4.41 14.17 10l-5.58 5.59L10 17l7-7z"/>
         </svg>
       </button>
-      <ul class="menu-list" id="useful-links-menu">
-        {% for block in section.blocks %}
-          {% if block.type == 'useful_link' %}
-            <li><a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ block.settings.text }}</a></li>
-          {% endif %}
-        {% endfor %}
-      </ul>
+
+      {% if section.settings.useful_links_menu != blank and linklists[section.settings.useful_links_menu] %}
+        {% assign useful_links = linklists[section.settings.useful_links_menu].links %}
+        <ul class="menu-list" id="useful-links-menu-{{ section.id }}">
+          {% for link in useful_links %}
+            <li>
+              <a href="{{ link.url }}" {% if link.target == '_blank' %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                {{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <ul class="menu-list" id="useful-links-menu-{{ section.id }}">
+          {% for block in section.blocks %}
+            {% if block.type == 'useful_link' %}
+              <li>
+                <a href="{{ block.settings.link }}" {% if block.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                  {{ block.settings.text }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
 
     <!-- Email Signup Column -->
     <div class="footer-column footer-column--email">
       <h4 class="email-heading">{{ section.settings.email_heading | default: 'Sign Up for Email' }}</h4>
       <p class="email-description">{{ section.settings.email_description | default: 'Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!' }}</p>
-      <form class="email-signup__form" action="/contact#contact_form" method="post" id="contact_form" accept-charset="UTF-8">
+      <form class="email-signup__form" action="/contact#contact_form" method="post" id="contact_form-{{ section.id }}" accept-charset="UTF-8">
         <div class="email-signup__input-group">
-          <label for="EmailInput" class="visually-hidden">Email</label>
+          <label for="EmailInput-{{ section.id }}" class="visually-hidden">Email</label>
           <input
-            id="EmailInput"
+            id="EmailInput-{{ section.id }}"
             class="email-signup__input email-signup__input--underline"
             type="email"
             name="contact[email]"
@@ -171,30 +207,31 @@
 
     <div class="footer-utilities__group footer-utilities__group--right">
       <div class="social-icons__wrapper">
-        <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
+        <a href="{{ section.settings.facebook_url | default: 'https://facebook.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M18.05.811q.445 0 .763.319.319.319.319.763v16.892q0 .445-.319.763-.318.319-.763.319h-4.732v-7.377h2.415l.362-2.813h-2.777V6.35q0-.693.293-1.04.293-.346.99-.346h1.494V2.275q-.693-.1-1.494-.1-1.04 0-1.64.693-.6.693-.6 1.84v2.1H9.5v2.813h2.415v7.377H7.183q-.445 0-.763-.319-.319-.318-.319-.763V1.893q0-.444.319-.763.318-.319.763-.319z"/>
           </svg>
         </a>
-        <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon">
+        <a href="{{ section.settings.instagram_url | default: 'https://instagram.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-            <path d="M10 1.8c2.7 0 3.02.01 4.09.05 1.01.04 1.56.19 1.92.32.46.18.79.4 1.13.74.34.34.56.67.74 1.13.13.36.28.91.32 1.92.04 1.07.05 1.39.05 4.09s-.01 3.02-.05 4.09c-.04 1.01-.19 1.56-.32 1.92-.18.46-.4.79-.74 1.13-.34.34-.56.67-.74-1.13-.13-.36-.28-.91-.32-1.92-.04-1.07-.05-1.39-.05-4.09s.01-3.02.05-4.09c.04-1.01.19-1.56.32-1.92.18-.46.4-.79.74-1.13.34-.34.67-.56 1.13-.74.36-.13.91-.28 1.92-.32 1.07-.04 1.39-.05 4.09-.05z"/>
+            <path d="M10 1.8c2.7 0 3.02.01 4.09.05 1.01.04 1.56.19 1.92.32.46.18.79.4 1.13.74.34.34.56.67.74 1.13.13.36.28.91.32 1.92.04 1.07.05 1.39.05 4.09s-.01 3.02-.05 4.09c-.04 1.01-.19 1.56-.32 1.92-.18.46-.4.79-.74 1.13-.34.34-.56.67-.74 1.13-.13-.36-.28-.91-.32-1.92-.04-1.07-.05-1.39-.05-4.09s.01-3.02.05-4.09c.04-1.01.19-1.56.32-1.92.18-.46.4-.79.74-1.13.34-.34.67-.56 1.13-.74.36-.13.91-.28 1.92-.32 1.07-.04 1.39-.05 4.09-.05z"/>
             <path d="M10 4.87c-2.83 0-5.13 2.3-5.13 5.13s2.3 5.13 5.13 5.13 5.13-2.3 5.13-5.13-2.3-5.13-5.13-5.13zm0 8.46c-1.84 0-3.33-1.49-3.33-3.33s1.49-3.33 3.33-3.33 3.33 1.49 3.33 3.33-1.49 3.33-3.33 3.33z"/>
             <circle cx="15.33" cy="4.67" r="1.2"/>
           </svg>
         </a>
-        <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
+        <a href="{{ section.settings.youtube_url | default: 'https://www.youtube.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M19.58 5.17a2.5 2.5 0 0 0-1.76-1.76C16.25 3 10 3 10 3s-6.25 0-7.82.41A2.5 2.5 0 0 0 .42 5.17C0 6.75 0 10 0 10s0 3.25.42 4.83a2.5 2.5 0 0 0 1.76 1.76C3.75 17 10 17 10 17s6.25 0 7.82-.41a2.5 2.5 0 0 0 1.76-1.76C20 13.25 20 10 20 10s0-3.25-.42-4.83zM8 13V7l5.5 3-5.5 3z"/>
           </svg>
         </a>
-        <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
+        <a href="{{ section.settings.linkedin_url | default: 'https://linkedin.com/' }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
             <path d="M18.5 0h-17C.7 0 0 .7 0 1.5v17c0 .8.7 1.5 1.5 1.5h17c.8 0 1.5-.7 1.5-1.5v-17c0-.8-.7-1.5-1.5-1.5zM6 17H3V6h3v11zM4.5 4.7c-.9 0-1.7-.8-1.7-1.7s.8-1.7 1.7-1.7 1.7.8 1.7 1.7-.8 1.7-1.7 1.7zM17 17h-3v-5.3c0-1.1-.4-1.7-1.3-1.7-.7 0-1.1.5-1.3 1-.1.2-.1.4-.1.7V17H8V6h3v1.2c.4-.6 1.1-1.2 2.4-1.2 1.8 0 3.1 1.2 3.1 3.7V17z"/>
           </svg>
         </a>
       </div>
     </div>
+
   </div>
 
   <!-- Scroll to Top Button -->
@@ -207,7 +244,7 @@
       <path d="M10 3L8.59 4.41 14.17 10l-5.58 5.59L10 17l7-7z"/>
     </svg>
   </button>
-</div>
+</footer>
 
 {% stylesheet %}
   /* Responsive grid matching reference: 4 columns desktop, stacked on mobile */
@@ -476,14 +513,6 @@
     color: var(--color-foreground-muted);
     padding: 20px 0;
     margin-top: 2rem;
-
-    @media screen and (min-width: 750px) {
-      flex-direction: row;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      text-align: left;
-    }
   }
 
   .footer-utilities__group {
@@ -495,13 +524,6 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
-
-    @media screen and (min-width: 750px) {
-      flex-direction: row;
-      align-items: baseline;
-      gap: 0.5rem 1rem;
-      text-align: left;
-    }
   }
 
   .footer-utilities__group--center {
@@ -542,10 +564,6 @@
     margin: 0;
     padding: 0;
     list-style: none;
-
-    @media screen and (min-width: 750px) {
-      justify-content: center;
-    }
   }
 
   .payment-icons__item {
@@ -621,12 +639,25 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const menuToggles = document.querySelectorAll('.menu-toggle');
-    
+    const root = document.getElementById('footer-section-{{ section.id }}');
+    if (!root) return;
+
+    const menuToggles = Array.from(root.querySelectorAll('.menu-toggle'));
+
     menuToggles.forEach(toggle => {
+      // ensure keyboard activation and click both work
       toggle.addEventListener('click', function() {
         const isExpanded = this.getAttribute('aria-expanded') === 'true';
-        this.setAttribute('aria-expanded', !isExpanded);
+        // close other toggles in the same section
+        menuToggles.forEach(t => { if (t !== this) t.setAttribute('aria-expanded', 'false'); });
+        this.setAttribute('aria-expanded', (!isExpanded).toString());
+      });
+
+      toggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click();
+        }
       });
     });
   });
@@ -650,14 +681,8 @@
       "id": "section_width",
       "label": "Width",
       "options": [
-        {
-          "value": "page-width",
-          "label": "Page width"
-        },
-        {
-          "value": "full-width",
-          "label": "Full width"
-        }
+        { "value": "page-width", "label": "Page width" },
+        { "value": "full-width", "label": "Full width" }
       ],
       "default": "page-width"
     },
@@ -692,8 +717,7 @@
     {
       "type": "url",
       "id": "contact_direction_url",
-      "label": "Direction Link URL",
-      "default": "#"
+      "label": "Direction Link URL"
     },
     {
       "type": "header",
@@ -710,6 +734,16 @@
       "id": "useful_links_heading",
       "label": "Useful Links Section Heading",
       "default": "Useful Links"
+    },
+    {
+      "type": "link_list",
+      "id": "help_menu",
+      "label": "Help menu (choose a Navigation)"
+    },
+    {
+      "type": "link_list",
+      "id": "useful_links_menu",
+      "label": "Useful Links menu (choose a Navigation)"
     },
     {
       "type": "header",
@@ -752,8 +786,7 @@
     {
       "type": "url",
       "id": "privacy_link_url",
-      "label": "Privacy Link URL",
-      "default": "/pages/privacy-policy"
+      "label": "Privacy Link URL"
     },
     {
       "type": "header",
@@ -764,6 +797,30 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Social URLs (optional)"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "linkedin_url",
+      "label": "LinkedIn URL"
     },
     {
       "type": "header",
@@ -795,48 +852,18 @@
       "type": "help_link",
       "name": "Help Link",
       "settings": [
-        {
-          "type": "text",
-          "id": "text",
-          "label": "Link Text",
-          "default": "Privacy policy"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "Link URL",
-          "default": "/pages/privacy-policy"
-        },
-        {
-          "type": "checkbox",
-          "id": "open_in_new_tab",
-          "label": "Open in new tab",
-          "default": false
-        }
+        { "type": "text", "id": "text", "label": "Link Text", "default": "Privacy policy" },
+        { "type": "url", "id": "link", "label": "Link URL" },
+        { "type": "checkbox", "id": "open_in_new_tab", "label": "Open in new tab", "default": false }
       ]
     },
     {
       "type": "useful_link",
       "name": "Useful Link",
       "settings": [
-        {
-          "type": "text",
-          "id": "text",
-          "label": "Link Text",
-          "default": "Products"
-        },
-        {
-          "type": "url",
-          "id": "link",
-          "label": "Link URL",
-          "default": "/collections/all"
-        },
-        {
-          "type": "checkbox",
-          "id": "open_in_new_tab",
-          "label": "Open in new tab",
-          "default": false
-        }
+        { "type": "text", "id": "text", "label": "Link Text", "default": "Products" },
+        { "type": "url", "id": "link", "label": "Link URL" },
+        { "type": "checkbox", "id": "open_in_new_tab", "label": "Open in new tab", "default": false }
       ]
     }
   ],
@@ -855,73 +882,18 @@
         "email_description": "Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!",
         "email_placeholder": "Enter email address",
         "copyright_text": "Ecomus. All rights reserved. Developed by Hashtechy",
-        "privacy_link_text": "Privacy_policy",
-        "privacy_link_url": "/pages/privacy-policy"
+        "privacy_link_text": "Privacy_policy"
       },
       "blocks": [
-        {
-          "type": "help_link",
-          "settings": {
-            "text": "Privacy policy",
-            "link": "/pages/privacy-policy"
-          }
-        },
-        {
-          "type": "help_link",
-          "settings": {
-            "text": "Return & Exchange Policy",
-            "link": "/pages/return-exchange-policy"
-          }
-        },
-        {
-          "type": "help_link",
-          "settings": {
-            "text": "Terms of Use",
-            "link": "/pages/terms-of-use"
-          }
-        },
-        {
-          "type": "help_link",
-          "settings": {
-            "text": "Shipping Policy",
-            "link": "/pages/shipping-policy"
-          }
-        },
-        {
-          "type": "useful_link",
-          "settings": {
-            "text": "Products",
-            "link": "/collections/all"
-          }
-        },
-        {
-          "type": "useful_link",
-          "settings": {
-            "text": "Usage Scenarios",
-            "link": "/pages/usage-scenarios"
-          }
-        },
-        {
-          "type": "useful_link",
-          "settings": {
-            "text": "Support",
-            "link": "/pages/support"
-          }
-        },
-        {
-          "type": "useful_link",
-          "settings": {
-            "text": "B2B inquiry",
-            "link": "/pages/b2b-inquiry"
-          }
-        },
-        {
-          "type": "useful_link",
-          "settings": {
-            "text": "About Us",
-            "link": "/pages/about-us"
-          }
-        }
+        { "type": "help_link", "settings": { "text": "Privacy policy", "link": "/pages/privacy-policy" } },
+        { "type": "help_link", "settings": { "text": "Return & Exchange Policy", "link": "/pages/return-exchange-policy" } },
+        { "type": "help_link", "settings": { "text": "Terms of Use", "link": "/pages/terms-of-use" } },
+        { "type": "help_link", "settings": { "text": "Shipping Policy", "link": "/pages/shipping-policy" } },
+        { "type": "useful_link", "settings": { "text": "Products", "link": "/collections/all" } },
+        { "type": "useful_link", "settings": { "text": "Usage Scenarios", "link": "/pages/usage-scenarios" } },
+        { "type": "useful_link", "settings": { "text": "Support", "link": "/pages/support" } },
+        { "type": "useful_link", "settings": { "text": "B2B inquiry", "link": "/pages/b2b-inquiry" } },
+        { "type": "useful_link", "settings": { "text": "About Us", "link": "/pages/about-us" } }
       ]
     },
     {
@@ -957,4 +929,5 @@
   ]
 }
 {% endschema %}
+
 
