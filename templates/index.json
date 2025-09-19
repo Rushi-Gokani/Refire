@@ -403,7 +403,7 @@
                     "align_baseline": false,
                     "horizontal_alignment_flex_direction_column": "flex-start",
                     "vertical_alignment_flex_direction_column": "flex-start",
-                    "gap": 8,
+                    "gap": 0,
                     "width": "fill",
                     "custom_width": 75,
                     "width_mobile": "custom",
@@ -753,10 +753,11 @@
           "name": "Split screen section",
           "settings": {
             "background_color": "#ffffff",
-            "headline": "Split screen headline",
+            "image": "shopify://shop_images/3.jpg",
+            "headline": "Our Story",
             "headline_size": 36,
             "headline_color": "#000000",
-            "paragraph": "Add your paragraph content here. This text will appear below the headline and above the button.",
+            "paragraph": "Refire\nProduct/service\nPortable Power Stations 🔋\nPowering life anywhere anytime!  revolutionising the way India stays powered ⚡ #refiretheworld\nDelhi, India",
             "text_size": 16,
             "text_color": "#666666",
             "button_text": "Learn more",
@@ -804,8 +805,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 0,
-        "padding-block-end": 0
+        "padding-block-start": 50,
+        "padding-block-end": 50
       }
     },
     "reel_customer_PgrkLG": {
