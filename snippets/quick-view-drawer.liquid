@@ -153,6 +153,8 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     touch-action: pan-y;
+    /* Space at bottom so sticky actions are never covered by iOS home bar */
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 140px);
   }
 
   /* Loading State */
@@ -315,7 +317,7 @@
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     background: var(--color-background);
     position: sticky;
-    bottom: 0;
+    bottom: env(safe-area-inset-bottom, 0px);
     z-index: 5;
   }
 
