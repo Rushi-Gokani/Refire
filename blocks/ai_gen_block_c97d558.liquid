@@ -417,6 +417,12 @@
         // set explicit track width
         this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
       }
+      if (window.matchMedia('(max-width: 749px)').matches) {
+  this.itemWidth = this.track.parentElement.offsetWidth;
+  Array.from(this.track.children).forEach(c => c.style.width = `${this.itemWidth}px`);
+  this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
+}
+
 
       setupEventListeners() {
         this._onPointerDown = this.onPointerDown.bind(this);
