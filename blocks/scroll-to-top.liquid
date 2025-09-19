@@ -1,0 +1,72 @@
+<button
+  class="scroll-to-top-button"
+  aria-label="Scroll to top"
+  onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+  {{ block.shopify_attributes }}
+>
+  <svg
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+    focusable="false"
+    aria-hidden="true"
+    class="scroll-to-top-icon"
+  >
+    {% render 'icon', icon: 'arrow' %}
+  </svg>
+</button>
+
+{% stylesheet %}
+  .scroll-to-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .scroll-to-top-button:hover {
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .scroll-to-top-icon {
+    width: 20px;
+    height: 20px;
+    transform: rotate(-90deg);
+    fill: currentColor;
+  }
+
+  @media screen and (max-width: 750px) {
+    .scroll-to-top-button {
+      bottom: 15px;
+      right: 15px;
+      width: 45px;
+      height: 45px;
+    }
+    
+    .scroll-to-top-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Scroll to Top Button",
+  "tag": null,
+  "settings": []
+}
+{% endschema %}

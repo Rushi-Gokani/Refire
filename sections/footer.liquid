@@ -383,6 +383,13 @@
     }
   }
 
+  /* Mobile layout improvements */
+  @media screen and (max-width: 989px) {
+    .footer-grid {
+      gap: var(--gap-xl);
+    }
+  }
+
   /* Column spacing hygiene */
   .footer-grid > * {
     min-width: 0;
@@ -397,9 +404,21 @@
     margin-bottom: var(--gap-md);
   }
 
-  /* Social row */
+  /* Social row - positioned below contact info */
   .social-icons__wrapper {
     justify-content: flex-start;
+    margin-top: var(--gap-md);
+  }
+
+  /* Get direction link styling */
+  .footer-grid a[href="#"] {
+    text-decoration: underline;
+    color: var(--color-foreground);
+    font-size: 0.875rem;
+  }
+
+  .footer-grid a[href="#"]:hover {
+    color: var(--color-foreground-muted);
   }
 
   /* Email signup input + button inline */
@@ -418,6 +437,26 @@
 
     @media screen and (min-width: 990px) {
       justify-content: flex-end;
+    }
+  }
+
+  /* Footer utilities layout improvements */
+  .footer-utilities {
+    position: relative;
+  }
+
+  /* Scroll to top button positioning */
+  .scroll-to-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+
+  @media screen and (max-width: 750px) {
+    .scroll-to-top-button {
+      bottom: 15px;
+      right: 15px;
     }
   }
 {% endstylesheet %}
