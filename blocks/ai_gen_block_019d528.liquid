@@ -383,52 +383,87 @@
       }
 
       connectedCallback() {
+        if (!this.form) return;
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
         this.setupRealTimeValidation();
       }
 
       setupRealTimeValidation() {
-        const inputs = this.form.querySelectorAll('input');
+        // only bind to inputs that are part of the contact form (name starts with contact[)
+        const inputs = Array.from(this.form.querySelectorAll('input'))
+          .filter(i => i.name && i.name.startsWith('contact['));
         inputs.forEach(input => {
           input.addEventListener('blur', () => this.validateField(input));
           input.addEventListener('input', () => this.clearFieldError(input));
+          if (input.type === 'checkbox') {
+            input.addEventListener('change', () => this.validateField(input));
+          }
         });
       }
 
       validateField(field) {
-        const fieldName = field.name.replace('contact[', '').replace(']', '');
-        const errorElement = this.querySelector(`[data-field="${fieldName}"]`);
+        // derive canonical field key and map special names to data-field names
+        let fieldName = (field.name || '').replace('contact[', '').replace(']', '');
+        const dataFieldName = (fieldName === 'terms_accepted') ? 'terms' : fieldName;
+        const errorElement = this.querySelector(`[data-field="${dataFieldName}"]`);
         let isValid = true;
         let errorMessage = '';
 
-        if (field.hasAttribute('required') && !field.value.trim()) {
-          isValid = false;
-          errorMessage = 'This field is required';
-        } else if (field.type === 'email' && field.value && !this.isValidEmail(field.value)) {
-          isValid = false;
-          errorMessage = 'Please enter a valid email address';
-        } else if (field.type === 'tel' && field.value && !this.isValidPhone(field.value)) {
-          isValid = false;
-          errorMessage = 'Please enter a valid phone number';
+        // Handle checkbox separately
+        if (field.type === 'checkbox') {
+          if (field.hasAttribute('required') && !field.checked) {
+            isValid = false;
+            errorMessage = 'You must accept this to continue';
+          }
+        } else {
+          const value = (field.value || '').trim();
+          if (field.hasAttribute('required') && !value) {
+            isValid = false;
+            errorMessage = 'This field is required';
+          } else if (field.type === 'email' && value && !this.isValidEmail(value)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid email address';
+          } else if (field.type === 'tel' && value && !this.isValidPhone(value)) {
+            isValid = false;
+            errorMessage = 'Please enter a valid phone number';
+          }
         }
 
-        if (isValid) {
-          field.classList.remove('error');
-          errorElement.classList.remove('show');
+        // If the error element doesn't exist, avoid calling classList on null
+        if (errorElement) {
+          if (isValid) {
+            field.classList.remove('error');
+            errorElement.classList.remove('show');
+            errorElement.textContent = '';
+          } else {
+            field.classList.add('error');
+            errorElement.textContent = errorMessage;
+            errorElement.classList.add('show');
+          }
         } else {
-          field.classList.add('error');
-          errorElement.textContent = errorMessage;
-          errorElement.classList.add('show');
+          // graceful fallback: toggle input error class only and log once
+          if (isValid) {
+            field.classList.remove('error');
+          } else {
+            field.classList.add('error');
+            // only warn in dev console to avoid spamming logs in production
+            if (window && window.console && window.console.warn) {
+              console.warn(`No error container found for data-field="${dataFieldName}"`);
+            }
+          }
         }
 
         return isValid;
       }
 
       clearFieldError(field) {
-        const fieldName = field.name.replace('contact[', '').replace(']', '');
-        const errorElement = this.querySelector(`[data-field="${fieldName}"]`);
+        const fieldName = (field.name || '').replace('contact[', '').replace(']', '');
+        const dataFieldName = (fieldName === 'terms_accepted') ? 'terms' : fieldName;
+        const errorElement = this.querySelector(`[data-field="${dataFieldName}"]`);
+
         field.classList.remove('error');
-        errorElement.classList.remove('show');
+        if (errorElement) errorElement.classList.remove('show');
+        if (errorElement) errorElement.textContent = '';
       }
 
       isValidEmail(email) {
@@ -437,15 +472,16 @@
       }
 
       isValidPhone(phone) {
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-        const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
-        return phoneRegex.test(cleanPhone) && cleanPhone.length >= 10;
+        // allow + and digits, remove common separators, enforce min length
+        const cleanPhone = (phone || '').replace(/[\s\-\(\)\.]/g, '');
+        const phoneRegex = /^[\+]?[0-9]{10,16}$/;
+        return phoneRegex.test(cleanPhone);
       }
 
       async handleSubmit(event) {
         event.preventDefault();
-        
-        const inputs = this.form.querySelectorAll('input');
+        const inputs = Array.from(this.form.querySelectorAll('input'))
+          .filter(i => i.name && i.name.startsWith('contact['));
         let isFormValid = true;
 
         inputs.forEach(input => {
@@ -455,6 +491,9 @@
         });
 
         if (!isFormValid) {
+          // focus first error field for accessibility
+          const firstError = this.form.querySelector('input.error');
+          if (firstError) firstError.focus();
           return;
         }
 
@@ -462,45 +501,65 @@
 
         try {
           const formData = new FormData(this.form);
-          
+
           const response = await fetch('/', {
             method: 'POST',
-            body: formData,headers: {
-              'Accept': 'application/json',},
+            body: formData,
+            headers: {
+              'Accept': 'application/json'
+            }
           });
 
           if (response.ok) {
-            this.showSuccess();
+            if (this.successMessage) {
+              this.showSuccess();
+            }
             this.form.reset();
-            
+
             if (this.redirectUrl) {
+              // short delay for user to see success message
               setTimeout(() => {
                 window.location.href = this.redirectUrl;
-              }, 2000);
+              }, 1200);
             }
           } else {
-            throw new Error('Form submission failed');
+            // try reading json error message if available
+            let errText = 'Form submission failed';
+            try {
+              const json = await response.json();
+              if (json && json.error) errText = json.error;
+            } catch (e) {}
+            throw new Error(errText);
           }
         } catch (error) {
           console.error('Form submission error:', error);
-          alert('There was an error submitting the form. Please try again.');
+          // show a friendly inline error if successMessage exists; otherwise alert
+          if (this.successMessage) {
+            this.successMessage.textContent = 'There was an error submitting the form. Please try again.';
+            this.successMessage.classList.add('show');
+            setTimeout(() => this.successMessage.classList.remove('show'), 5000);
+          } else {
+            alert('There was an error submitting the form. Please try again.');
+          }
         } finally {
           this.setLoading(false);
         }
       }
 
       setLoading(loading) {
+        if (!this.submitButton) return;
         this.submitButton.disabled = loading;
-        if (loading) {
-          this.submitText.style.display = 'none';
-          this.loadingText.classList.add('show');
-        } else {
-          this.submitText.style.display = 'inline';
-          this.loadingText.classList.remove('show');
+        if (this.submitText) {
+          this.submitText.style.display = loading ? 'none' : 'inline';
+        }
+        if (this.loadingText) {
+          if (loading) this.loadingText.classList.add('show');
+          else this.loadingText.classList.remove('show');
         }
       }
 
       showSuccess() {
+        if (!this.successMessage) return;
         this.successMessage.classList.add('show');
         setTimeout(() => {
           this.successMessage.classList.remove('show');
@@ -511,6 +570,7 @@
     customElements.define('b2b-contact-form-{{ ai_gen_id }}', B2BContactForm{{ ai_gen_id }});
   })();
 </script>
+
 
 {% schema %}
 {
