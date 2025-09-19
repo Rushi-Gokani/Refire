@@ -13,7 +13,7 @@
 
 {% capture children %}
   {% unless closest.product == blank %}
-    {% render 'product-card-badges', product: closest.product %}
+    {% comment %} {% render 'product-card-badges', product: closest.product %} {% endcomment %}
     {%- comment -%}
       Quick-add buttons are disabled sitewide per request.
     {%- endcomment -%}
