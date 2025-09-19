@@ -33,7 +33,7 @@
             "show_location": true,
             "require_location": true,
             "show_terms_checkbox": true,
-            "terms_text": "<p>I agree to the <a href=\"/pages/terms\">Terms of Service</a> and <a href=\"/pages/privacy\">Privacy Policy</a></p>",
+            "terms_text": "<p>I agree to the <a href=\"/policies/terms-of-service\" target=\"_blank\" title=\"Terms of Service\">Terms of Service</a> and <a href=\"/policies/privacy-policy\" target=\"_blank\" title=\"Privacy Policy\">Privacy Policy</a></p>",
             "background_color": "#ffffff",
             "form_background_color": "#ffffff",
             "text_color": "#000000",
