@@ -44,6 +44,21 @@
     "slider_hero_xfxDHy": {
       "type": "slider-hero",
       "blocks": {
+        "slide_mQeQkK": {
+          "type": "slide",
+          "disabled": true,
+          "settings": {
+            "eyebrow": "",
+            "title": "DJI Mavic 3 Pro",
+            "subtitle": "Inspiration in focus",
+            "cta_label": "Learn More",
+            "cta_link": "",
+            "cta2_label": "Buy Now",
+            "cta2_link": "",
+            "side_label": "",
+            "side_subtext": ""
+          }
+        },
         "slide_D7Vaja": {
           "type": "slide",
           "settings": {
@@ -91,6 +106,7 @@
         }
       },
       "block_order": [
+        "slide_mQeQkK",
         "slide_D7Vaja",
         "slide_8jVD98",
         "slide_8tkpLA"
