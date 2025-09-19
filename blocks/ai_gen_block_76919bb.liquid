@@ -4,31 +4,41 @@
 
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
-
 {% style %}
+  /* Container: avoid horizontal padding that causes overflow; box-sizing and overflow hidden */
   .ai-testimonials-{{ ai_gen_id }} {
     position: relative;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: 60px 0; /* keep vertical padding only */
     background-color: {{ block.settings.background_color }};
+    box-sizing: border-box;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .ai-testimonials-slider-{{ ai_gen_id }} {
     position: relative;
     overflow: hidden;
     border-radius: {{ block.settings.border_radius }}px;
+    box-sizing: border-box;
   }
 
+  /* Track: no wrapping, smooth transform */
   .ai-testimonials-track-{{ ai_gen_id }} {
     display: flex;
     transition: transform 0.5s ease-in-out;
     will-change: transform;
+    backface-visibility: hidden;
+    flex-wrap: nowrap;
   }
 
+  /* Slide: each slide will be sized explicitly via JS to the container width */
   .ai-testimonials-slide-{{ ai_gen_id }} {
     flex: 0 0 100%;
-    padding: 40px 20px;
+    max-width: 100%;
+    box-sizing: border-box; /* critical to prevent horizontal overflow from padding */
+    padding: 30px 20px; /* horizontal padding moved here */
     text-align: center;
     background-color: {{ block.settings.card_background_color }};
     border: 1px solid {{ block.settings.border_color }};
@@ -37,6 +47,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    word-break: break-word;
   }
 
   .ai-testimonials-feedback-{{ ai_gen_id }} {
@@ -46,6 +58,12 @@
     margin-bottom: 20px;
     font-style: italic;
     max-width: 600px;
+    width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    hyphens: auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .ai-testimonials-name-{{ ai_gen_id }} {
@@ -59,7 +77,10 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 30px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+    padding: 6px 12px;
+    box-sizing: border-box;
   }
 
   .ai-testimonials-dot-{{ ai_gen_id }} {
@@ -69,7 +90,7 @@
     background-color: {{ block.settings.dot_color }};
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, opacity 0.2s ease;
     opacity: 0.5;
   }
 
@@ -105,13 +126,8 @@
     opacity: 0.8;
   }
 
-  .ai-testimonials-prev-{{ ai_gen_id }} {
-    left: 10px;
-  }
-
-  .ai-testimonials-next-{{ ai_gen_id }} {
-    right: 10px;
-  }
+  .ai-testimonials-prev-{{ ai_gen_id }} { left: 10px; }
+  .ai-testimonials-next-{{ ai_gen_id }} { right: 10px; }
 
   .ai-testimonials-empty-{{ ai_gen_id }} {
     text-align: center;
@@ -133,33 +149,17 @@
     opacity: 0.7;
   }
 
+  /* Mobile adjustments: hide arrow controls, reduce paddings and font-size */
   @media screen and (max-width: 768px) {
-    .ai-testimonials-{{ ai_gen_id }} {
-      padding: 40px 15px;
-    }
-
-    .ai-testimonials-slide-{{ ai_gen_id }} {
-      padding: 30px 15px;
-      min-height: 180px;
-    }
-
-    .ai-testimonials-feedback-{{ ai_gen_id }} {
-      font-size: {{ block.settings.feedback_font_size | times: 0.9 }}px;
-    }
-
-    .ai-testimonials-name-{{ ai_gen_id }} {
-      font-size: {{ block.settings.name_font_size | times: 0.9 }}px;
-    }
-
-    .ai-testimonials-controls-{{ ai_gen_id }} {
-      display: none;
-    }
+    .ai-testimonials-{{ ai_gen_id }} { padding: 30px 0; }
+    .ai-testimonials-slide-{{ ai_gen_id }} { padding: 24px 16px; min-height: 160px; }
+    .ai-testimonials-feedback-{{ ai_gen_id }} { font-size: {{ block.settings.feedback_font_size | times: 0.9 }}px; }
+    .ai-testimonials-name-{{ ai_gen_id }} { font-size: {{ block.settings.name_font_size | times: 0.9 }}px; }
+    .ai-testimonials-controls-{{ ai_gen_id }} { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ai-testimonials-track-{{ ai_gen_id }} {
-      transition: none;
-    }
+    .ai-testimonials-track-{{ ai_gen_id }} { transition: none; }
   }
 {% endstyle %}
 
@@ -275,57 +275,99 @@
         this.isPlaying = false;
         this.touchStartX = 0;
         this.touchEndX = 0;
+        this._resizeTimeout = null;
       }
 
       connectedCallback() {
+        // Element references
         this.track = this.querySelector('.ai-testimonials-track-{{ ai_gen_id }}');
         this.slides = this.querySelectorAll('.ai-testimonials-slide-{{ ai_gen_id }}');
         this.dots = this.querySelectorAll('.ai-testimonials-dot-{{ ai_gen_id }}');
         this.prevBtn = this.querySelector('.ai-testimonials-prev-{{ ai_gen_id }}');
         this.nextBtn = this.querySelector('.ai-testimonials-next-{{ ai_gen_id }}');
-        
+
+        // Make container focusable so keyboard arrow keys work
+        if (!this.hasAttribute('tabindex')) {
+          this.setAttribute('tabindex', '0');
+        }
+
+        // Autoplay settings
         this.autoplaySpeed = parseInt(this.dataset.autoplaySpeed) || 4000;
-        this.autoplayEnabled = this.dataset.autoplay === 'true';
+        this.autoplayEnabled = this.dataset.autoplay === 'true' || this.dataset.autoplay === true;
 
-        if (this.slides.length <= 1) return;
+        // If there are 0 or 1 slides, nothing to do
+        if (!this.slides || this.slides.length <= 1) {
+          // ensure first slide visible and aria states set
+          if (this.slides && this.slides[0]) {
+            this.slides[0].setAttribute('aria-hidden', 'false');
+          }
+          return;
+        }
 
+        // Setup & initial layout
         this.setupEventListeners();
+        this.updateSlideSizes();
         this.updateSlider();
-        
+
         if (this.autoplayEnabled) {
           this.startAutoplay();
         }
+
+        // Recalc sizes on orientation/resizes
+        this._boundResize = () => {
+          clearTimeout(this._resizeTimeout);
+          this._resizeTimeout = setTimeout(() => {
+            this.updateSlideSizes();
+            this.updateSlider();
+          }, 120);
+        };
+        window.addEventListener('resize', this._boundResize);
       }
 
       setupEventListeners() {
         if (this.prevBtn) {
           this.prevBtn.addEventListener('click', () => this.prevSlide());
         }
-        
         if (this.nextBtn) {
           this.nextBtn.addEventListener('click', () => this.nextSlide());
         }
 
         this.dots.forEach((dot, index) => {
-          dot.addEventListener('click', () => this.goToSlide(index));
+          dot.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.goToSlide(index);
+          });
         });
 
+        // Pause on hover/focus
         this.addEventListener('mouseenter', () => this.pauseAutoplay());
         this.addEventListener('mouseleave', () => {
           if (this.autoplayEnabled) this.startAutoplay();
         });
 
-        this.addEventListener('touchstart', (e) => {
-          this.touchStartX = e.changedTouches[0].screenX;
-          this.pauseAutoplay();
-        });
-
-        this.addEventListener('touchend', (e) => {
-          this.touchEndX = e.changedTouches[0].screenX;
-          this.handleSwipe();
+        // Focus/blur pause for accessibility
+        this.addEventListener('focusin', () => this.pauseAutoplay());
+        this.addEventListener('focusout', () => {
           if (this.autoplayEnabled) this.startAutoplay();
         });
 
+        // Touch swipe
+        this.addEventListener('touchstart', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            this.touchStartX = e.changedTouches[0].screenX;
+          }
+          this.pauseAutoplay();
+        }, { passive: true });
+
+        this.addEventListener('touchend', (e) => {
+          if (e.changedTouches && e.changedTouches[0]) {
+            this.touchEndX = e.changedTouches[0].screenX;
+          }
+          this.handleSwipe();
+          if (this.autoplayEnabled) this.startAutoplay();
+        }, { passive: true });
+
+        // Keyboard navigation
         this.addEventListener('keydown', (e) => {
           if (e.key === 'ArrowLeft') {
             e.preventDefault();
@@ -336,19 +378,20 @@
           }
         });
 
-        document.addEventListener('visibilitychange', () => {
+        // Visibility change to pause autoplay when tab not focused
+        this._boundVisibility = () => {
           if (document.hidden) {
             this.pauseAutoplay();
           } else if (this.autoplayEnabled) {
             this.startAutoplay();
           }
-        });
+        };
+        document.addEventListener('visibilitychange', this._boundVisibility);
       }
 
       handleSwipe() {
         const swipeThreshold = 50;
         const diff = this.touchStartX - this.touchEndX;
-
         if (Math.abs(diff) > swipeThreshold) {
           if (diff > 0) {
             this.nextSlide();
@@ -359,39 +402,69 @@
       }
 
       prevSlide() {
-        this.currentSlide = this.currentSlide === 0 ? this.slides.length - 1 : this.currentSlide - 1;
+        this.currentSlide = (this.currentSlide === 0) ? this.slides.length - 1 : this.currentSlide - 1;
         this.updateSlider();
       }
 
       nextSlide() {
-        this.currentSlide = this.currentSlide === this.slides.length - 1 ? 0 : this.currentSlide + 1;
+        this.currentSlide = (this.currentSlide === this.slides.length - 1) ? 0 : this.currentSlide + 1;
         this.updateSlider();
       }
 
       goToSlide(index) {
-        this.currentSlide = index;
+        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
         this.updateSlider();
+      }
+
+      updateSlideSizes() {
+        if (!this.track || !this.slides || !this.slides.length) return;
+
+        const sliderRect = this.getBoundingClientRect();
+        const sliderWidth = Math.max(0, Math.floor(sliderRect.width));
+
+        // Set slide width explicitly to avoid fractional px issues causing overflow
+        this.slides.forEach(slide => {
+          slide.style.width = `${sliderWidth}px`;
+        });
+
+        // Track width equals number_of_slides * slide width (pixels)
+        this.track.style.width = `${this.slides.length * sliderWidth}px`;
       }
 
       updateSlider() {
         if (!this.track) return;
 
-        const translateX = -this.currentSlide * 100;
-        this.track.style.transform = `translateX(${translateX}%)`;
+        // Prefer pixel-based translate if widths have been calculated
+        let sliderWidth = 0;
+        const firstSlide = this.slides && this.slides[0];
+        if (firstSlide && firstSlide.style && firstSlide.style.width) {
+          sliderWidth = parseInt(firstSlide.style.width, 10) || this.getBoundingClientRect().width;
+          const translateX = -this.currentSlide * sliderWidth;
+          // Use transform with pixels to avoid percent rounding issues on mobile
+          this.track.style.transform = `translateX(${translateX}px)`;
+        } else {
+          // Fallback to percent
+          const translatePercent = -this.currentSlide * 100;
+          this.track.style.transform = `translateX(${translatePercent}%)`;
+        }
 
-        this.dots.forEach((dot, index) => {
-          dot.classList.toggle('active', index === this.currentSlide);
-          dot.setAttribute('aria-selected', index === this.currentSlide ? 'true' : 'false');
-        });
+        // Update dots aria/state
+        if (this.dots && this.dots.length) {
+          this.dots.forEach((dot, index) => {
+            const isActive = index === this.currentSlide;
+            dot.classList.toggle('active', isActive);
+            dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          });
+        }
 
+        // Update slides aria-hidden
         this.slides.forEach((slide, index) => {
-          slide.setAttribute('aria-hidden', index !== this.currentSlide ? 'true' : 'false');
+          slide.setAttribute('aria-hidden', index === this.currentSlide ? 'false' : 'true');
         });
       }
 
       startAutoplay() {
-        if (this.isPlaying || this.slides.length <= 1) return;
-        
+        if (this.isPlaying || !this.autoplayEnabled || this.slides.length <= 1) return;
         this.isPlaying = true;
         this.autoplayTimer = setInterval(() => {
           this.nextSlide();
@@ -408,12 +481,16 @@
 
       disconnectedCallback() {
         this.pauseAutoplay();
+        // Clean up listeners
+        window.removeEventListener('resize', this._boundResize);
+        document.removeEventListener('visibilitychange', this._boundVisibility);
       }
     }
 
     customElements.define('testimonials-slider-{{ ai_gen_id }}', TestimonialsSlider{{ ai_gen_id }});
   })();
 </script>
+
 
 {% schema %}
 {
