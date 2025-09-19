@@ -40,24 +40,9 @@
 
 
   <!-- Cart Icon -->
-  {% comment %} {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
+  {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     {% render 'cart-drawer' %}
-    <button
-      class="header-actions__action header-actions__cart"
-      aria-label="{{ 'accessibility.cart' | t }} {{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}"
-      onclick="document.getElementById('cart-drawer').showModal()"
-    >
-      <div class="header-actions__icon-wrapper">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 3h1.5l1.7 9.4a1 1 0 001 .8h8.4a1 1 0 001-.8L17.5 5H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="7.5" cy="16.5" r="0.5" fill="currentColor"/>
-          <circle cx="14.5" cy="16.5" r="0.5" fill="currentColor"/>
-        </svg>
-        {% if cart.item_count > 0 %}
-          <span class="header-actions__count cart-count">{{ cart.item_count }}</span>
-        {% endif %}
-      </div>
-    </button>
+    
   {% else %}
     <a
       href="{{ routes.cart_url }}"
@@ -75,7 +60,7 @@
         {% endif %}
       </div>
     </a>
-  {% endif %} {% endcomment %}
+  {% endif %}
 </header-actions>
 
 {% stylesheet %}
