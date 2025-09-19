@@ -845,7 +845,7 @@
             "column_3_description": "Pay by debit or credit card, PayPal, or other secure platform",
             "column_4_title": "Multi-channel Support",
             "column_4_description": "Contact us via email, phone or online customer service",
-            "background_color": "#ffffff",
+            "background_color": "#f1f1f1",
             "title_color": "#000000",
             "subtitle_color": "#666666",
             "column_background_color": "#ffffff",
@@ -886,7 +886,7 @@
         "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
@@ -1325,7 +1325,7 @@
         "icons_shape": "none",
         "section_width": "page-width",
         "gap": 12,
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "padding-block-start": 24,
         "padding-block-end": 24
       }
