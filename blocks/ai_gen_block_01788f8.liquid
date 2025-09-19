@@ -103,7 +103,9 @@ Each block represents a single FAQ item with question and answer.
 {% endstyle %}
 
 <div class="faq-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+    <!-- give the button an ID (so aria-labelledby points to a real element) -->
   <button
+    id="faq-question-{{ ai_gen_id }}"
     class="faq-question-{{ ai_gen_id }}"
     aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
     aria-controls="faq-answer-{{ ai_gen_id }}"
@@ -111,17 +113,30 @@ Each block represents a single FAQ item with question and answer.
     <span class="faq-question-text-{{ ai_gen_id }}">
       {{ block.settings.question | default: 'Add your question here' }}
     </span>
-    <svg class="faq-chevron-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <!-- forward clicks on the SVG to the parent button so arrow clicks always toggle -->
+    <svg
+      class="faq-chevron-{{ ai_gen_id }}"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      role="img"
+      aria-hidden="true"
+      onclick="this.closest('button')?.click();">
       <path d="M6 9l6 6 6-6"/>
     </svg>
   </button>
-  
+
   <div
     id="faq-answer-{{ ai_gen_id }}"
     class="faq-answer-{{ ai_gen_id }}{% if block.settings.open_by_default %} open{% endif %}"
     aria-hidden="{% if block.settings.open_by_default %}false{% else %}true{% endif %}"
     role="region"
     aria-labelledby="faq-question-{{ ai_gen_id }}">
+
+  
+
     <div class="faq-answer-content-{{ ai_gen_id }}">
       {% if block.settings.answer != blank %}
         {{ block.settings.answer }}
