@@ -98,7 +98,7 @@
                   "type": "text",
                   "name": "t:names.text",
                   "settings": {
-                    "text": "<p>Cavitak Cliff Shanti Arcade, Sardar Patel Colony, Sundar Nagar, Naranpura, Ahmedabad, Gujarat 380014.</p><p>Email: <a href=\"mailto:services@ecoflowindia.com\" title=\"mailto:services@ecoflowindia.com\">services@ecoflowindia.com</a></p><p>Phone: <a href=\"tel:07969595009\" title=\"tel:07969595009\"><strong>079-69595009</strong></a></p><p><a href=\"#\" title=\"Get direction\">Get direction</a></p>",
+                    "text": "<p>Plot No. 38, Patparganj Industrial Area, Patparganj, New Delhi, 110092</p><p>Email: <a href=\"mailto:services@ecoflowindia.com\" title=\"mailto:services@ecoflowindia.com\">services@dummmy</a></p><p>Phone: <a href=\"tel:07969595009\" title=\"tel:07969595009\"><strong>079-69590000</strong></a></p><p></p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
@@ -146,7 +146,7 @@
                   "name": "t:names.menu",
                   "settings": {
                     "menu": "quick-link",
-                    "heading": "Useful Links",
+                    "heading": "Quick Link",
                     "menu_spacing": 4,
                     "show_as_accordion": false,
                     "accordion_icon": "caret",
@@ -176,8 +176,8 @@
                 "width": "custom",
                 "custom_width": 46,
                 "inherit_color_scheme": true,
-                "heading": "Sign Up for Email",
-                "text": "Sign up to get first dibs on new arrivals, sales, exclusive content, events and more!",
+                "heading": "We send tasty emails",
+                "text": "",
                 "heading_preset": "h4",
                 "color_scheme": "",
                 "border_style": "underline",
@@ -186,7 +186,7 @@
                 "input_type_preset": "paragraph",
                 "style_class": "button-unstyled",
                 "display_type": "arrow",
-                "label": "Subscribe",
+                "label": "Sign Up",
                 "integrated_button": false,
                 "button_type_preset": "paragraph",
                 "padding-block-start": 0,
@@ -225,6 +225,7 @@
               "type": "_footer-policy-list",
               "static": true,
               "settings": {
+                "render_as": "inline",
                 "font_size": "0.75rem",
                 "case": "none"
               },
@@ -232,9 +233,9 @@
             },
             "payment_icons": {
               "type": "payment-icons",
-              "name": "t:names.payment_icons",
+              "static": true,
               "settings": {
-                "horizontal_alignment": "flex-end",
+                "horizontal_alignment": "flex-start",
                 "gap": 10,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -252,7 +253,7 @@
                   "type": "_social-link",
                   "name": "Facebook",
                   "settings": {
-                    "link": "https://facebook.com/"
+                    "link": "http://facebook.com/"
                   },
                   "blocks": {}
                 },
@@ -260,7 +261,23 @@
                   "type": "_social-link",
                   "name": "Instagram",
                   "settings": {
-                    "link": "https://instagram.com/"
+                    "link": "http://instagram.com/"
+                  },
+                  "blocks": {}
+                },
+                "social_link_jigLEi": {
+                  "type": "_social-link",
+                  "name": "TikTok",
+                  "settings": {
+                    "link": "https://tiktok.com/"
+                  },
+                  "blocks": {}
+                },
+                "social_link_mpc8iX": {
+                  "type": "_social-link",
+                  "name": "X / Twitter",
+                  "settings": {
+                    "link": "https://x.com/"
                   },
                   "blocks": {}
                 },
@@ -271,37 +288,24 @@
                     "link": "https://www.youtube.com/"
                   },
                   "blocks": {}
-                },
-                "social_link_linkedin": {
-                  "type": "_social-link",
-                  "name": "LinkedIn",
-                  "settings": {
-                    "link": "https://linkedin.com/"
-                  },
-                  "blocks": {}
                 }
               },
               "block_order": [
                 "social_link_9CNUzQ",
                 "social_link_hEPbgU",
-                "social_link_YDz6K7",
-                "social_link_linkedin"
+                "social_link_jigLEi",
+                "social_link_mpc8iX",
+                "social_link_YDz6K7"
               ]
             },
             "scroll_to_top": {
               "type": "scroll-to-top",
-              "name": "Scroll to Top Button",
+              "static": true,
               "settings": {},
               "blocks": {}
             }
           },
-          "block_order": [
-            "copyright",
-            "policy_list",
-            "payment_icons",
-            "social_icons",
-            "scroll_to_top"
-          ]
+          "block_order": []
         }
       },
       "block_order": [
