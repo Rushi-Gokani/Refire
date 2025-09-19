@@ -256,183 +256,197 @@
     {% endif %}
   </div>
 
-  <script>
-    (function(){
-      const root = document.getElementById('hero-heroic-slider-{{ section.id }}');
-      if (!root) return;
-      const track = root.querySelector('[data-track]');
-      const slides = Array.from(root.querySelectorAll('.hh-slide'));
-      const dotsContainer = root.querySelector('[data-dots]');
-      const sideContainer = root.querySelector('[data-side]');
-      const prevBtn = root.querySelector('[data-prev]');
-      const nextBtn = root.querySelector('[data-next]');
+<script>
+  (function(){
+    const root = document.getElementById('hero-heroic-slider-{{ section.id }}');
+    if (!root) return;
+    const track = root.querySelector('[data-track]');
+    const slides = Array.from(root.querySelectorAll('.hh-slide'));
+    const dotsContainer = root.querySelector('[data-dots]');
+    const sideContainer = root.querySelector('[data-side]');
+    const prevBtn = root.querySelector('[data-prev]');
+    const nextBtn = root.querySelector('[data-next]');
 
-      const settings = {
-        autoplay: {{ section.settings.autoplay | default: true | json }},
-        interval: {{ section.settings.interval | default: 5000 }},
-        pauseOnHover: true,
-        startAt: 0
-      };
+    const settings = {
+      autoplay: {{ section.settings.autoplay | default: true | json }},
+      interval: {{ section.settings.interval | default: 5000 }},
+      pauseOnHover: true,
+      startAt: 0
+    };
 
-      let current = settings.startAt || 0;
-      let timer = null;
-      let isAnimating = false;
+    let current = settings.startAt || 0;
+    let timer = null;
+    let isAnimating = false;
 
-      function clampIndex(i){ return (i + slides.length) % slides.length; }
+    function clampIndex(i){ return (i + slides.length) % slides.length; }
 
-      function updateUI(){
-        track.style.transform = 'translateX(' + (-current*100) + '%)';
-        // dots
-        if (dotsContainer) {
-          Array.from(dotsContainer.children).forEach((d,i) => {
-            d.classList.toggle('active', i === current);
-            d.setAttribute('aria-selected', i === current ? 'true' : 'false');
-            d.setAttribute('tabindex', i === current ? '0' : '-1');
-          });
-        }
-        // side list
-        if (sideContainer) {
-          Array.from(sideContainer.children).forEach((item,i) => {
-            item.classList.toggle('active', i === current);
-          });
-          // ensure active side item visible on small screens
-          const active = sideContainer.querySelector('.hh-side-item.active');
-          if (active && typeof active.scrollIntoView === 'function') {
-            // center it within the strip
-            active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    function updateUI(){
+      track.style.transform = 'translateX(' + (-current*100) + '%)';
+      // dots
+      if (dotsContainer) {
+        Array.from(dotsContainer.children).forEach((d,i) => {
+          d.classList.toggle('active', i === current);
+          d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+          d.setAttribute('tabindex', i === current ? '0' : '-1');
+        });
+      }
+      // side list
+      if (sideContainer) {
+        Array.from(sideContainer.children).forEach((item,i) => {
+          item.classList.toggle('active', i === current);
+        });
+
+        // ensure active side item visible on small screens
+        const active = sideContainer.querySelector('.hh-side-item.active');
+        if (active) {
+          try {
+            // Only attempt horizontal centering if horizontal overflow exists
+            const canScrollHorizontally = sideContainer.scrollWidth > sideContainer.clientWidth;
+            if (canScrollHorizontally) {
+              // compute the left offset to center the active item inside the side container
+              const centerOffset = active.offsetLeft - (sideContainer.clientWidth / 2) + (active.clientWidth / 2);
+              const maxScrollLeft = sideContainer.scrollWidth - sideContainer.clientWidth;
+              const target = Math.max(0, Math.min(maxScrollLeft, centerOffset));
+              // smooth-scroll horizontally only — avoids vertical page movement
+              sideContainer.scrollTo({ left: target, behavior: 'smooth' });
+            }
+          } catch (err) {
+            // fail silently — we prefer no page jump over throwing an error
+            // console && console.warn && console.warn('Side list scroll center failed', err);
           }
         }
       }
+    }
 
-      function goTo(index, userInteraction){
-        if (isAnimating) return;
-        isAnimating = true;
-        current = clampIndex(index);
-        updateUI();
-        setTimeout(()=> { isAnimating = false; }, 560);
-        if (settings.autoplay && userInteraction) restartTimer();
-      }
-      function next(){ goTo(current+1, true); }
-      function prev(){ goTo(current-1, true); }
+    function goTo(index, userInteraction){
+      if (isAnimating) return;
+      isAnimating = true;
+      current = clampIndex(index);
+      updateUI();
+      setTimeout(()=> { isAnimating = false; }, 560);
+      if (settings.autoplay && userInteraction) restartTimer();
+    }
+    function next(){ goTo(current+1, true); }
+    function prev(){ goTo(current-1, true); }
 
-      // create dots
-      if (dotsContainer) {
-        slides.forEach((_,i) => {
-          const b = document.createElement('button');
-          b.className = 'hh-dot';
-          b.setAttribute('role','tab');
-          b.setAttribute('aria-label','Go to slide '+(i+1));
-          b.addEventListener('click', ()=> goTo(i, true));
-          b.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); goTo(i,true); }});
-          dotsContainer.appendChild(b);
-        });
-      }
+    // create dots
+    if (dotsContainer) {
+      slides.forEach((_,i) => {
+        const b = document.createElement('button');
+        b.className = 'hh-dot';
+        b.setAttribute('role','tab');
+        b.setAttribute('aria-label','Go to slide '+(i+1));
+        b.addEventListener('click', ()=> goTo(i, true));
+        b.addEventListener('keydown', (e)=> { if (e.key==='Enter' || e.key===' ') { e.preventDefault(); goTo(i,true); }});
+        dotsContainer.appendChild(b);
+      });
+    }
 
-      // side list click handlers
-      if (sideContainer) {
-        Array.from(sideContainer.children).forEach((item, i) => {
-          item.addEventListener('click', ()=> goTo(i, true));
-          item.addEventListener('keydown', (e)=> { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(i,true); }});
-        });
-      }
+    // side list click handlers
+    if (sideContainer) {
+      Array.from(sideContainer.children).forEach((item, i) => {
+        item.addEventListener('click', ()=> goTo(i, true));
+        item.addEventListener('keydown', (e)=> { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(i,true); }});
+      });
+    }
 
-      // arrows
-      if (prevBtn) prevBtn.addEventListener('click', prev);
-      if (nextBtn) nextBtn.addEventListener('click', next);
+    // arrows
+    if (prevBtn) prevBtn.addEventListener('click', prev);
+    if (nextBtn) nextBtn.addEventListener('click', next);
 
-      // keyboard nav
-      root.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') prev();
-        if (e.key === 'ArrowRight') next();
+    // keyboard nav
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+
+    // autoplay
+    function startTimer(){
+      stopTimer();
+      if (!settings.autoplay) return;
+      timer = setInterval(()=> goTo(current+1, false), Number(settings.interval) || 5000);
+    }
+    function stopTimer(){ if (timer) { clearInterval(timer); timer = null; } }
+    function restartTimer(){ stopTimer(); startTimer(); }
+    if (settings.pauseOnHover) {
+      // pause on pointer enter/down for better mobile support
+      root.addEventListener('pointerenter', stopTimer);
+      root.addEventListener('pointerleave', startTimer);
+      root.addEventListener('pointerdown', stopTimer);
+      root.addEventListener('pointerup', startTimer);
+    }
+
+    // touch / swipe support
+    (function addSwipe(){
+      let startX = 0, startY = 0, startTime = 0, isPointer = false;
+      const threshold = 50; // px
+      const restraint = 100; // vertical restraint
+
+      root.addEventListener('pointerdown', function(e){
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        isPointer = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startTime = Date.now();
+        // capture pointer to this element
+        try { e.target.setPointerCapture && e.target.setPointerCapture(e.pointerId); } catch(e){}
       });
 
-      // autoplay
-      function startTimer(){
-        stopTimer();
-        if (!settings.autoplay) return;
-        timer = setInterval(()=> goTo(current+1, false), Number(settings.interval) || 5000);
-      }
-      function stopTimer(){ if (timer) { clearInterval(timer); timer = null; } }
-      function restartTimer(){ stopTimer(); startTimer(); }
-      if (settings.pauseOnHover) {
-        // pause on pointer enter/down for better mobile support
-        root.addEventListener('pointerenter', stopTimer);
-        root.addEventListener('pointerleave', startTimer);
-        root.addEventListener('pointerdown', stopTimer);
-        root.addEventListener('pointerup', startTimer);
-      }
+      root.addEventListener('pointermove', function(e){
+        if (!isPointer) return;
+        // we intentionally don't translate track here to keep code simple and avoid layout thrash
+      });
 
-      // touch / swipe support
-      (function addSwipe(){
-        let startX = 0, startTime = 0, isPointer = false;
-        const threshold = 50; // px
-        const restraint = 100; // vertical restraint
-
-        root.addEventListener('pointerdown', function(e){
-          if (e.pointerType === 'mouse' && e.button !== 0) return;
-          isPointer = true;
-          startX = e.clientX;
-          startY = e.clientY;
-          startTime = Date.now();
-          // capture pointer to this element
-          try { e.target.setPointerCapture && e.target.setPointerCapture(e.pointerId); } catch(e){}
-        });
-
-        root.addEventListener('pointermove', function(e){
-          if (!isPointer) return;
-          // nothing else — we don't translate track manually to keep code simple
-        });
-
-        root.addEventListener('pointerup', function(e){
-          if (!isPointer) return;
-          isPointer = false;
-          const distX = e.clientX - startX;
-          const distY = (e.clientY || 0) - (startY || 0);
-          const elapsed = Date.now() - startTime;
-          // horizontal swipe detection
-          if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
-            if (distX < 0) { // left swipe -> next
-              next();
-            } else { // right swipe -> prev
-              prev();
-            }
+      root.addEventListener('pointerup', function(e){
+        if (!isPointer) return;
+        isPointer = false;
+        const distX = e.clientX - startX;
+        const distY = (e.clientY || 0) - (startY || 0);
+        // horizontal swipe detection
+        if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
+          if (distX < 0) { // left swipe -> next
+            next();
+          } else { // right swipe -> prev
+            prev();
           }
-          try { e.target.releasePointerCapture && e.target.releasePointerCapture(e.pointerId); } catch(e){}
-        });
+        }
+        try { e.target.releasePointerCapture && e.target.releasePointerCapture(e.pointerId); } catch(e){}
+      });
 
-        // fallback for touch-only browsers (optional)
-        root.addEventListener('touchstart', function(e){
-          const t = e.touches[0];
-          startX = t.clientX;
-          startY = t.clientY;
-          startTime = Date.now();
-        }, {passive:true});
-        root.addEventListener('touchend', function(e){
-          const t = (e.changedTouches && e.changedTouches[0]) || {};
-          const distX = (t.clientX || 0) - startX;
-          const distY = (t.clientY || 0) - startY;
-          if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
-            if (distX < 0) next(); else prev();
-          }
-        }, {passive:true});
-      })();
-
-      // init UI
-      updateUI();
-      startTimer();
-
-      // hide controls when 0/1 slides
-      if (slides.length <= 1) {
-        if (prevBtn) prevBtn.style.display = 'none';
-        if (nextBtn) nextBtn.style.display = 'none';
-        if (dotsContainer) dotsContainer.style.display = 'none';
-        if (sideContainer) sideContainer.style.display = 'none';
-      }
-
-      // expose for debugging
-      root.heroSlider = { goTo, next, prev, startTimer, stopTimer };
+      // fallback for touch-only browsers (optional)
+      root.addEventListener('touchstart', function(e){
+        const t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+        startTime = Date.now();
+      }, {passive:true});
+      root.addEventListener('touchend', function(e){
+        const t = (e.changedTouches && e.changedTouches[0]) || {};
+        const distX = (t.clientX || 0) - startX;
+        const distY = (t.clientY || 0) - startY;
+        if (Math.abs(distX) >= threshold && Math.abs(distY) < restraint) {
+          if (distX < 0) next(); else prev();
+        }
+      }, {passive:true});
     })();
-  </script>
+
+    // init UI
+    updateUI();
+    startTimer();
+
+    // hide controls when 0/1 slides
+    if (slides.length <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+      if (dotsContainer) dotsContainer.style.display = 'none';
+      if (sideContainer) sideContainer.style.display = 'none';
+    }
+
+    // expose for debugging
+    root.heroSlider = { goTo, next, prev, startTimer, stopTimer };
+  })();
+</script>
+
 
   {%- schema -%}
   {
