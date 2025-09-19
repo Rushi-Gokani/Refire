@@ -780,6 +780,9 @@
       "block_order": [
         "ai_gen_block_18e8c77_hxVfBd"
       ],
+      "custom_css": [
+        "@media screen and (max-width: 749px) {.mobile-column {padding-left:15px; padding-right:15px; }}"
+      ],
       "name": "t:names.custom_section",
       "settings": {
         "content_direction": "column",
