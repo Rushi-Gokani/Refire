@@ -11,6 +11,16 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "footer_reference_dkK7me": {
+      "type": "footer-reference",
+      "name": "Footer — Default",
+      "settings": {
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "padding-block-start": 40,
+        "padding-block-end": 0
+      }
+    },
     "custom_section_76dqAh": {
       "type": "section",
       "blocks": {
@@ -312,6 +322,7 @@
         "group_EUUkMF",
         "footer_utilities_B7cUpb"
       ],
+      "disabled": true,
       "name": "Footer",
       "settings": {
         "content_direction": "column",
@@ -343,6 +354,7 @@
     }
   },
   "order": [
+    "footer_reference_dkK7me",
     "custom_section_76dqAh"
   ]
 }
