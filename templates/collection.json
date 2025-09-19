@@ -165,8 +165,8 @@
                 "gradient_direction": "to top",
                 "padding-block-start": 12,
                 "padding-block-end": 12,
-                "padding-inline-start": 12,
-                "padding-inline-end": 12
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
               },
               "blocks": {
                 "group_i9KeQ7": {
