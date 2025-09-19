@@ -1,0 +1,246 @@
+<style>
+  .video-preview-section {
+position: relative;
+margin-top: 30px;
+margin: 0 auto; /* center horizontally */
+box-sizing: border-box;
+padding-top: {{ section.settings.padding_top }}px;
+padding-bottom: {{ section.settings.padding_bottom }}px;
+max-width: var(--max-width);
+
+  }
+
+  .video-preview-heading {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .video-preview-heading h2 {
+  color: #b4975a;
+    text-transform: uppercase;
+   font-size: clamp(28px, 5vw, 50px) !important;
+  font-weight: 800;
+  letter-spacing:1px;
+  }
+
+  .insta-reels-para {
+    margin-top: -20px;
+    font-size: {{ section.settings.subheading_font_size }}px !important;
+    font-weight: 400;
+  }
+
+  .video-preview-grid {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+  }
+
+  .video-preview-item {
+    flex: 0 0 70%;
+    scroll-snap-align: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .video-preview-item video {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+ @media screen and (max-width: 768px) {
+.video-preview-heading h2 {
+      
+      max-width: 354px;
+    margin: 0 auto;
+      }
+ }
+  @media (min-width: 786px) {
+      
+    .video-preview-grid {
+      overflow-x: unset;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .video-preview-item {
+      flex: 1 1 calc(20% - 16px);
+      max-width: calc(20% - 16px);
+    }
+
+    .video-preview-section {
+      padding-left: 20px;
+      padding-right: 20px;
+      margin-top: 30px;
+   
+    }
+  }
+</style>
+
+<section style="
+
+margin: 0 auto; /* center horizontally */
+max-width: var(--max-width);
+width:100%; background-color: {{ section.settings.bg_color }};">
+  <div class="video-preview-section" {{ section.shopify_attributes }}>
+    {% if section.settings.heading or section.settings.subheading %}
+      <div class="video-preview-heading">
+        {% if section.settings.heading != blank %}
+          <h2>{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subheading != blank %}
+          <br>
+          <p class="insta-reels-para">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="video-preview-grid">
+      {% for block in section.blocks %}
+        {% if block.settings.video_url != blank and block.settings.instagram_link != blank %}
+          <a
+            href="{{ block.settings.instagram_link }}"
+            target="_blank"
+            class="video-preview-item"
+            {{ block.shopify_attributes }}
+          >
+            <video
+              {% if section.settings.autoplay %}
+                autoplay loop
+              {% endif %}
+              {% if section.settings.controls %}
+                controls
+              {% endif %}
+              {% if section.settings.muted %}
+                muted
+              {% endif %}
+              playsinline
+              preload="metadata"
+            >
+              <source src="{{ block.settings.video_url }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Insta Reels",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Watch Our Reels"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading Font Size (px)",
+      "min": 10,
+      "max": 80,
+      "step": 1,
+      "default": 32
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Click any video to view it on Instagram"
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "label": "Subheading Font Size (px)",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding (px)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay videos",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show video controls (play, pause, volume, etc.)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute videos",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video File URL"
+        },
+        {
+          "type": "url",
+          "id": "instagram_link",
+          "label": "Instagram Video Link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "Our Reels",
+      "category": "Media",
+      "settings": {
+        "autoplay": false,
+        "controls": false,
+        "muted": true
+      },
+      "blocks": [
+        { "type": "video" },
+        { "type": "video" },
+        { "type": "video" }
+      ]
+    }
+  ]
+}
+{% endschema %}
