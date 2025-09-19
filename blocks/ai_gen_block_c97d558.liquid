@@ -276,17 +276,17 @@
       constructor() {
         super();
         this.track = null;
-        this.items = [];
-        this.originalCount = 4; // original features count
-        this.currentIndex = 0; // index into the cloned items array
+        this.originalCount = 4;
+        this.currentIndex = 0;
         this.itemWidth = 0;
         this.isDragging = false;
         this.startX = 0;
         this.currentX = 0;
         this.initialTransform = 0;
-        this.transitionDuration = 350; // ms
+        this.transitionDuration = 350;
         this._resizeTimer = null;
         this.srLiveRegion = null;
+        this._autoTimer = null;
       }
 
       connectedCallback() {
@@ -294,45 +294,41 @@
         this.srLiveRegion = this.querySelector('.ai-why-buy-sr-only-{{ ai_gen_id }}');
         if (!this.track) return;
 
-        // Build clones for infinite loop (prepend last N, append first N)
+        // If clones not created yet, build them
         this.setupClones();
 
-        // refresh items list & sizes
+        // update items list & sizes
         this.items = Array.from(this.track.children);
         this.calculateItemWidth();
-        // Start in the "first original" position after the prepended clones
+        // start at first original (after prepended clones)
         this.currentIndex = this.originalCount;
-        this.jumpToCurrent(); // instant set without transition
+        this.jumpToCurrent();
 
-        // events
+        // ensure wrapper hides overflow (defense)
+        const wrapper = this.track.parentElement;
+        if (wrapper) wrapper.style.overflow = 'hidden';
+
         this.setupEventListeners();
-        this.updateCenteredItem();
+        this.updateCentered();
         this.announceCurrent();
       }
 
-      disconnectedCallback() {
-        this.removeEventListeners();
-      }
+      disconnectedCallback() { this.removeEventListeners(); }
 
       setupClones() {
         const children = Array.from(this.track.children);
-        // guard: if track already has clones, do nothing
-        if (children.length >= this.originalCount * 3) {
-          // already cloned
-          return;
-        }
+        // don't double-clone
+        if (children.length >= this.originalCount * 3) return;
 
         const firstN = children.slice(0, this.originalCount);
         const lastN = children.slice(-this.originalCount);
 
-        // clone lastN and prepend in same order
         lastN.forEach(node => {
           const clone = node.cloneNode(true);
           clone.classList.add('ai-clone');
           this.track.insertBefore(clone, this.track.firstChild);
         });
 
-        // clone firstN and append
         firstN.forEach(node => {
           const clone = node.cloneNode(true);
           clone.classList.add('ai-clone');
@@ -341,26 +337,20 @@
       }
 
       calculateItemWidth() {
-        // ensure first item exists
         if (!this.track || !this.track.children.length) return;
+        // compute width based on the first child (no horizontal margins used)
         const item = this.track.children[0];
         const rect = item.getBoundingClientRect();
-        const style = window.getComputedStyle(item);
-        const ml = parseFloat(style.marginLeft) || 0;
-        const mr = parseFloat(style.marginRight) || 0;
-        // width includes margins (so translate math is consistent)
-        this.itemWidth = Math.round(rect.width + ml + mr);
-        // set explicit widths to avoid fractional rounding issues
+        this.itemWidth = Math.round(rect.width); // width without margins (we removed margins)
+        // set explicit width for each child to avoid fractional layout differences
         Array.from(this.track.children).forEach(child => {
-          child.style.width = `${rect.width}px`; // keep content width equal
-          // we rely on margins so track width calculation uses itemWidth
+          child.style.width = `${rect.width}px`;
         });
         // set explicit track width
         this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
       }
 
       setupEventListeners() {
-        // pointer events (support mice and touch via pointer)
         this._onPointerDown = this.onPointerDown.bind(this);
         this._onPointerMove = this.onPointerMove.bind(this);
         this._onPointerUp = this.onPointerUp.bind(this);
@@ -373,18 +363,25 @@
         window.addEventListener('resize', this._onResize);
         this.track.addEventListener('transitionend', this._onTransitionEnd);
 
-        // pause auto-scroll on hover/focus
         this.track.addEventListener('mouseenter', () => this.stopAuto());
         this.track.addEventListener('mouseleave', () => this.startAuto());
-        // keyboard support for visible (original) items
-        Array.from(this.querySelectorAll('.ai-why-buy-carousel-item-{{ ai_gen_id }}')).forEach((el, idx) => {
+
+        // keyboard for original items
+        const originalItems = Array.from(this.querySelectorAll('.ai-why-buy-carousel-item-{{ ai_gen_id }}')).slice(0, this.originalCount);
+        originalItems.forEach((el, idx) => {
           el.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') { e.preventDefault(); this.prev(); }
             if (e.key === 'ArrowRight') { e.preventDefault(); this.next(); }
           });
+          el.addEventListener('focus', () => {
+            // focus sets logical index properly (map original idx to cloned position)
+            this.currentIndex = this.originalCount + idx;
+            this.updatePosition();
+            this.announceCurrent();
+            this.stopAuto();
+          });
         });
 
-        // optional auto-scroll for user-friendliness
         this.startAuto();
       }
 
@@ -398,13 +395,12 @@
       }
 
       onPointerDown(e) {
-        // only left mouse or touch
         if (e.pointerType === 'mouse' && e.button !== 0) return;
         this.isDragging = true;
         this.startX = e.clientX;
+        this.currentX = this.startX;
         this.initialTransform = this.getCurrentTransform();
         this.track.style.transition = 'none';
-        // set pointer capture so move/up captured
         try { e.target.setPointerCapture(e.pointerId); } catch (err) {}
         this.stopAuto();
       }
@@ -417,21 +413,18 @@
         this.track.style.transform = `translateX(${newTransform}px)`;
       }
 
-      onPointerUp(e) {
+      onPointerUp() {
         if (!this.isDragging) return;
         this.isDragging = false;
-        const delta = (this.currentX || this.startX) - this.startX;
+        const delta = this.currentX - this.startX;
         const threshold = Math.max(30, this.itemWidth / 4);
         this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
-
         if (Math.abs(delta) > threshold) {
           if (delta > 0) this.prev();
           else this.next();
         } else {
-          // snap back to current
           this.updatePosition();
         }
-
         this.startAuto();
       }
 
@@ -455,22 +448,18 @@
         return 0;
       }
 
-      // Move instantly without transition (used for initial placement and loop jump)
       jumpToCurrent() {
         this.track.style.transition = 'none';
         this.updatePosition(true);
       }
 
-      // updatePosition optionally instant (no transition)
       updatePosition(instant = false) {
         if (instant) this.track.style.transition = 'none';
         const containerWidth = this.track.parentElement.offsetWidth;
         const centerOffset = (containerWidth - this.itemWidth) / 2;
         const translateX = centerOffset - (this.currentIndex * this.itemWidth);
-        // use pixel translate to avoid percent rounding issues
         this.track.style.transform = `translateX(${translateX}px)`;
         if (instant) {
-          // force reflow then restore transition
           void this.track.offsetWidth;
           this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
         }
@@ -478,33 +467,18 @@
       }
 
       updateCentered() {
-        // Remove centered class and set tabindex appropriately
-        const allItems = Array.from(this.track.children);
-        allItems.forEach((el, idx) => {
+        const all = Array.from(this.track.children);
+        all.forEach((el, idx) => {
           el.classList.toggle('centered', idx === this.currentIndex);
-          // Only original set (after clones) should be focusable as navigable features
           const originalStart = this.originalCount;
-          const originalEnd = this.originalCount + this.originalCount - 1;
+          const originalEnd = originalStart + this.originalCount - 1;
           if (idx >= originalStart && idx <= originalEnd) {
-            // this is one of the original items
-            const originalIdx = idx - originalStart;
-            // if this corresponds to the logical current index
-            if (idx === this.currentIndex) {
-              el.setAttribute('tabindex', '0');
-              el.removeAttribute('aria-hidden');
-            } else {
-              el.setAttribute('tabindex', '-1');
-            }
+            if (idx === this.currentIndex) { el.setAttribute('tabindex', '0'); el.removeAttribute('aria-hidden'); }
+            else { el.setAttribute('tabindex', '-1'); }
           } else {
-            // clones: hide from assistive tech
-            el.setAttribute('aria-hidden', 'true');
-            el.setAttribute('tabindex', '-1');
+            el.setAttribute('aria-hidden', 'true'); el.setAttribute('tabindex', '-1');
           }
         });
-      }
-
-      updateCenteredItem() {
-        this.updateCentered();
       }
 
       next() {
@@ -519,53 +493,45 @@
         this.announceCurrent();
       }
 
-      // When transition ends, fix up if we moved into cloned region
       onTransitionEnd() {
         const total = this.track.children.length;
         const startOfOriginals = this.originalCount;
         const endOfOriginals = startOfOriginals + this.originalCount - 1;
 
-        // If we've gone past the end clones (too high index), jump back to same logical original
-        if (this.currentIndex > endOfOriginals + (this.originalCount)) {
-          // excessive forward: map back to (currentIndex - originalCount)
+        // If we moved into clones appended after originals (index > endOfOriginals + clones)
+        if (this.currentIndex > endOfOriginals + this.originalCount) {
           this.currentIndex = this.currentIndex - this.originalCount;
           this.jumpToCurrent();
         }
 
-        // If we've gone before the start clones (too low), jump forward
+        // If we moved into clones before originals (index < startOfOriginals - clones)
         if (this.currentIndex < startOfOriginals - this.originalCount) {
           this.currentIndex = this.currentIndex + this.originalCount;
           this.jumpToCurrent();
         }
 
-        // Normalization if landed inside clone area adjacent to originals:
-        // If index points to last clone-after-original set or first clone-before-original set,
-        // map to the matching original index without transition.
+        // Normalize immediate neighbors (cases when landing in appended/prepended clones)
         if (this.currentIndex > endOfOriginals && this.currentIndex < total - this.originalCount) {
-          // in the appended clones section — normalize to the corresponding original index
           const offsetIntoClones = this.currentIndex - (endOfOriginals + 1);
           this.currentIndex = startOfOriginals + offsetIntoClones;
           this.jumpToCurrent();
         }
         if (this.currentIndex < startOfOriginals && this.currentIndex >= 0) {
-          // in the prepended clones section
           const offsetFromPrepended = this.currentIndex;
           const normalized = startOfOriginals + (offsetFromPrepended % this.originalCount);
           this.currentIndex = normalized;
           this.jumpToCurrent();
         }
-        // finally ensure classes/tabs synced
+
         this.updateCentered();
       }
 
-      // Announce for screen readers
       announceCurrent() {
         if (!this.srLiveRegion) return;
         const logicalIndex = ((this.currentIndex - this.originalCount) % this.originalCount + this.originalCount) % this.originalCount;
         this.srLiveRegion.textContent = `Showing feature ${logicalIndex + 1} of ${this.originalCount}`;
       }
 
-      // Auto-scroll helpers
       startAuto() {
         this.stopAuto();
         this._autoTimer = setInterval(()=> { this.next(); }, 4000);
@@ -578,6 +544,7 @@
     customElements.define('why-buy-carousel-{{ ai_gen_id }}', WhyBuyCarousel{{ ai_gen_id }});
   })();
 </script>
+
 
 
 {% schema %}
