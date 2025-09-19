@@ -247,12 +247,12 @@ export class QuickViewDrawer extends DialogComponent {
     if (comparePrice && comparePrice > price) {
       const originalPrice = (comparePrice / 100).toFixed(2);
       return `
-        <span class="price-current">$${currentPrice}</span>
-        <span class="price-compare">$${originalPrice}</span>
+        <span class="price-current">₹${currentPrice}</span>
+        <span class="price-compare">₹${originalPrice}</span>
       `;
     }
     
-    return `<span class="price-current">$${currentPrice}</span>`;
+    return `<span class="price-current">₹${currentPrice}</span>`;
   }
 
   /**
