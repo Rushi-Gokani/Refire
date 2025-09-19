@@ -1490,6 +1490,7 @@
         "ai_gen_block_01788f8_kWzEkq",
         "ai_gen_block_01788f8_CyEDAg"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -1517,6 +1518,62 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "faq_kHtNq6": {
+      "type": "faq",
+      "blocks": {
+        "topic_EPB3nq": {
+          "type": "topic",
+          "settings": {
+            "is_open": true,
+            "title": "Shipping details",
+            "text": "<p>Add additional information about shipping policy.</p>",
+            "page": ""
+          }
+        },
+        "topic_XiArcN": {
+          "type": "topic",
+          "settings": {
+            "is_open": false,
+            "title": "Delivery details",
+            "text": "<p>Add additional information about delivery policy.</p>",
+            "page": ""
+          }
+        },
+        "topic_arPXYi": {
+          "type": "topic",
+          "settings": {
+            "is_open": false,
+            "title": "Topic heading",
+            "text": "<p>Descriptive topic content body text</p>",
+            "page": ""
+          }
+        },
+        "topic_FymU84": {
+          "type": "topic",
+          "settings": {
+            "is_open": false,
+            "title": "Refund details",
+            "text": "<p>Add additional information about refund policy.</p>",
+            "page": ""
+          }
+        }
+      },
+      "block_order": [
+        "topic_EPB3nq",
+        "topic_XiArcN",
+        "topic_arPXYi",
+        "topic_FymU84"
+      ],
+      "name": "ingredients-faq",
+      "settings": {
+        "heading": "Frequently asked questions",
+        "heading_size": "h3",
+        "section_width": "max-w-narrower",
+        "color_scheme": "",
+        "spacing_top": "2",
+        "spacing_bottom": "2"
+      }
     }
   },
   "order": [
@@ -1531,6 +1588,7 @@
     "collection_list_RXm6dL",
     "collection_list_KQLdNe",
     "reel_customer_PgrkLG",
-    "17582874015fb32613"
+    "17582874015fb32613",
+    "faq_kHtNq6"
   ]
 }
