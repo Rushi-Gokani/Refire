@@ -1,6 +1,806 @@
+{% doc %}
+  @prompt
+    Create a minimalist, centered B2B contact section for Shopify with only these fields — Full Name (required), Company Name (required), Designation / Role (optional), Email Address (optional), Phone / WhatsApp Number (required), Location (City, State) (optional) — use clean rounded inputs, subtle hover/focus effects, accessible labels, single-column mobile and two-column desktop, simple validation for required fields and phone format, show a required-field asterisk, include a terms/privacy checkbox toggle in schema (off by default), ajax submit with success message and optional redirect, and include full section schema with per-field show/hide and required toggles so by default only Full Name, Company Name, and Phone/WhatsApp are required and visible.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-b2b-contact-{{ ai_gen_id }} {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: {{ block.settings.section_padding }}px 20px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-b2b-contact__container-{{ ai_gen_id }} {
+    background-color: {{ block.settings.form_background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    padding: {{ block.settings.form_padding }}px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .ai-b2b-contact__header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .ai-b2b-contact__title-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    margin: 0 0 8px 0;
+    font-size: {{ block.settings.title_size }}px;
+  }
+
+  .ai-b2b-contact__subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    opacity: 0.7;
+    margin: 0;
+    font-size: {{ block.settings.subtitle_size }}px;
+  }
+
+  .ai-b2b-contact__form-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media screen and (min-width: 768px) {
+    .ai-b2b-contact__form-{{ ai_gen_id }} {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ai-b2b-contact__field--full-width-{{ ai_gen_id }} {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .ai-b2b-contact__field-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-b2b-contact__label-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ai-b2b-contact__required-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+    font-size: 14px;
+  }
+
+  .ai-b2b-contact__input-{{ ai_gen_id }} {
+    padding: 14px 16px;
+    border: 2px solid {{ block.settings.input_border_color }};
+    border-radius: {{ block.settings.input_border_radius }}px;
+    background-color: {{ block.settings.input_background_color }};
+    color: {{ block.settings.text_color }};
+    font-size: 16px;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .ai-b2b-contact__input-{{ ai_gen_id }}:focus {
+    border-color: {{ block.settings.primary_color }};
+    box-shadow: 0 0 0 3px {{ block.settings.primary_color }}20;
+  }
+
+  .ai-b2b-contact__input-{{ ai_gen_id }}:hover {
+    border-color: {{ block.settings.input_hover_border_color }};
+  }
+
+  .ai-b2b-contact__input-{{ ai_gen_id }}.error {
+    border-color: {{ block.settings.error_color }};
+  }
+
+  .ai-b2b-contact__error-{{ ai_gen_id }} {
+    color: {{ block.settings.error_color }};
+    font-size: 12px;
+    margin-top: 4px;display: none;
+  }
+
+  .ai-b2b-contact__error-{{ ai_gen_id }}.show {
+    display: block;
+  }
+
+  .ai-b2b-contact__checkbox-field-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .ai-b2b-contact__checkbox-{{ ai_gen_id }} {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: {{ block.settings.primary_color }};
+  }
+
+  .ai-b2b-contact__checkbox-label-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .ai-b2b-contact__checkbox-label-{{ ai_gen_id }} a {
+    color: {{ block.settings.primary_color }};
+    text-decoration: underline;
+  }
+
+  .ai-b2b-contact__submit-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 12px;
+    width: 100%;
+  }
+
+  .ai-b2b-contact__submit-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};transform: translateY(-1px);
+  }
+
+  .ai-b2b-contact__submit-{{ ai_gen_id }}:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .ai-b2b-contact__success-{{ ai_gen_id }} {
+    background-color: {{ block.settings.success_color }}20;
+    color: {{ block.settings.success_color }};
+    padding: 16px;
+    border-radius: {{ block.settings.input_border_radius }}px;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+  }
+
+  .ai-b2b-contact__success-{{ ai_gen_id }}.show {
+    display: block;
+  }
+
+  .ai-b2b-contact__loading-{{ ai_gen_id }} {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .ai-b2b-contact__loading-{{ ai_gen_id }}.show {
+    display: flex;
+  }
+
+  .ai-b2b-contact__spinner-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: ai-b2b-contact-spin-{{ ai_gen_id }} 1s linear infinite;
+  }
+
+  @keyframes ai-b2b-contact-spin-{{ ai_gen_id }} {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+{% endstyle %}
+
+<b2b-contact-form-{{ ai_gen_id }}
+  class="ai-b2b-contact-{{ ai_gen_id }}"
+  data-redirect-url="{{ block.settings.redirect_url }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-b2b-contact__container-{{ ai_gen_id }}">
+    {% if block.settings.title != blank or block.settings.subtitle != blank %}
+      <div class="ai-b2b-contact__header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-b2b-contact__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <p class="ai-b2b-contact__subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <form class="ai-b2b-contact__form-{{ ai_gen_id }}" novalidate>
+      {% if block.settings.show_full_name %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="full-name-{{ ai_gen_id }}">
+            Full Name
+            {% if block.settings.require_full_name %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="text"
+            id="full-name-{{ ai_gen_id }}"
+            name="contact[full_name]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_full_name %}required{% endif %}
+            autocomplete="name"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="full_name"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_company_name %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="company-name-{{ ai_gen_id }}">
+            Company Name
+            {% if block.settings.require_company_name %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="text"
+            id="company-name-{{ ai_gen_id }}"
+            name="contact[company_name]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_company_name %}required{% endif %}
+            autocomplete="organization"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="company_name"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_designation %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="designation-{{ ai_gen_id }}">
+            Designation / Role
+            {% if block.settings.require_designation %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="text"
+            id="designation-{{ ai_gen_id }}"
+            name="contact[designation]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_designation %}required{% endif %}
+            autocomplete="organization-title"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="designation"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_email %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="email-{{ ai_gen_id }}">
+            Email Address
+            {% if block.settings.require_email %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="email"
+            id="email-{{ ai_gen_id }}"
+            name="contact[email]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_email %}required{% endif %}
+            autocomplete="email"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="email"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_phone %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="phone-{{ ai_gen_id }}">
+            Phone / WhatsApp Number
+            {% if block.settings.require_phone %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="tel"
+            id="phone-{{ ai_gen_id }}"
+            name="contact[phone]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_phone %}required{% endif %}
+            autocomplete="tel"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="phone"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_location %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }} ai-b2b-contact__field--full-width-{{ ai_gen_id }}">
+          <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="location-{{ ai_gen_id }}">
+            Location (City, State)
+            {% if block.settings.require_location %}
+              <span class="ai-b2b-contact__required-{{ ai_gen_id }}">*</span>
+            {% endif %}
+          </label>
+          <input
+            type="text"
+            id="location-{{ ai_gen_id }}"
+            name="contact[location]"
+            class="ai-b2b-contact__input-{{ ai_gen_id }}"
+            {% if block.settings.require_location %}required{% endif %}
+            placeholder="e.g., New York, NY"
+            autocomplete="address-level2"
+          >
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="location"></div>
+        </div>
+      {% endif %}
+
+      {% if block.settings.show_terms_checkbox %}
+        <div class="ai-b2b-contact__field-{{ ai_gen_id }} ai-b2b-contact__field--full-width-{{ ai_gen_id }}">
+          <div class="ai-b2b-contact__checkbox-field-{{ ai_gen_id }}">
+            <input
+              type="checkbox"
+              id="terms-{{ ai_gen_id }}"
+              name="contact[terms_accepted]"
+              class="ai-b2b-contact__checkbox-{{ ai_gen_id }}"
+              required
+            >
+            <label class="ai-b2b-contact__checkbox-label-{{ ai_gen_id }}" for="terms-{{ ai_gen_id }}">
+              {{ block.settings.terms_text }}
+            </label>
+          </div>
+          <div class="ai-b2b-contact__error-{{ ai_gen_id }}" data-field="terms"></div>
+        </div>
+      {% endif %}
+
+      <div class="ai-b2b-contact__field-{{ ai_gen_id }} ai-b2b-contact__field--full-width-{{ ai_gen_id }}">
+        <button type="submit" class="ai-b2b-contact__submit-{{ ai_gen_id }}"><span class="ai-b2b-contact__submit-text-{{ ai_gen_id }}">{{ block.settings.submit_text }}</span>
+          <span class="ai-b2b-contact__loading-{{ ai_gen_id }}">
+            <span class="ai-b2b-contact__spinner-{{ ai_gen_id }}"></span>
+            Submitting...
+          </span>
+        </button>
+      </div>
+    </form><div class="ai-b2b-contact__success-{{ ai_gen_id }}">
+      {{ block.settings.success_message }}</div>
+  </div>
+</b2b-contact-form-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class B2BContactForm{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.form = this.querySelector('form');
+        this.submitButton = this.querySelector('.ai-b2b-contact__submit-{{ ai_gen_id }}');
+        this.submitText = this.querySelector('.ai-b2b-contact__submit-text-{{ ai_gen_id }}');
+        this.loadingText = this.querySelector('.ai-b2b-contact__loading-{{ ai_gen_id }}');
+        this.successMessage = this.querySelector('.ai-b2b-contact__success-{{ ai_gen_id }}');
+        this.redirectUrl = this.dataset.redirectUrl;
+      }
+
+      connectedCallback() {
+        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+        this.setupRealTimeValidation();
+      }
+
+      setupRealTimeValidation() {
+        const inputs = this.form.querySelectorAll('input');
+        inputs.forEach(input => {
+          input.addEventListener('blur', () => this.validateField(input));
+          input.addEventListener('input', () => this.clearFieldError(input));
+        });
+      }
+
+      validateField(field) {
+        const fieldName = field.name.replace('contact[', '').replace(']', '');
+        const errorElement = this.querySelector(`[data-field="${fieldName}"]`);
+        let isValid = true;
+        let errorMessage = '';
+
+        if (field.hasAttribute('required') && !field.value.trim()) {
+          isValid = false;
+          errorMessage = 'This field is required';
+        } else if (field.type === 'email' && field.value && !this.isValidEmail(field.value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid email address';
+        } else if (field.type === 'tel' && field.value && !this.isValidPhone(field.value)) {
+          isValid = false;
+          errorMessage = 'Please enter a valid phone number';
+        }
+
+        if (isValid) {
+          field.classList.remove('error');
+          errorElement.classList.remove('show');
+        } else {
+          field.classList.add('error');
+          errorElement.textContent = errorMessage;
+          errorElement.classList.add('show');
+        }
+
+        return isValid;
+      }
+
+      clearFieldError(field) {
+        const fieldName = field.name.replace('contact[', '').replace(']', '');
+        const errorElement = this.querySelector(`[data-field="${fieldName}"]`);
+        field.classList.remove('error');
+        errorElement.classList.remove('show');
+      }
+
+      isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      isValidPhone(phone) {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+        return phoneRegex.test(cleanPhone) && cleanPhone.length >= 10;
+      }
+
+      async handleSubmit(event) {
+        event.preventDefault();
+        
+        const inputs = this.form.querySelectorAll('input');
+        let isFormValid = true;
+
+        inputs.forEach(input => {
+          if (!this.validateField(input)) {
+            isFormValid = false;
+          }
+        });
+
+        if (!isFormValid) {
+          return;
+        }
+
+        this.setLoading(true);
+
+        try {
+          const formData = new FormData(this.form);
+          
+          const response = await fetch('/', {
+            method: 'POST',
+            body: formData,headers: {
+              'Accept': 'application/json',},
+          });
+
+          if (response.ok) {
+            this.showSuccess();
+            this.form.reset();
+            
+            if (this.redirectUrl) {
+              setTimeout(() => {
+                window.location.href = this.redirectUrl;
+              }, 2000);
+            }
+          } else {
+            throw new Error('Form submission failed');
+          }
+        } catch (error) {
+          console.error('Form submission error:', error);
+          alert('There was an error submitting the form. Please try again.');
+        } finally {
+          this.setLoading(false);
+        }
+      }
+
+      setLoading(loading) {
+        this.submitButton.disabled = loading;
+        if (loading) {
+          this.submitText.style.display = 'none';
+          this.loadingText.classList.add('show');
+        } else {
+          this.submitText.style.display = 'inline';
+          this.loadingText.classList.remove('show');
+        }
+      }
+
+      showSuccess() {
+        this.successMessage.classList.add('show');
+        setTimeout(() => {
+          this.successMessage.classList.remove('show');
+        }, 5000);
+      }
+    }
+
+    customElements.define('b2b-contact-form-{{ ai_gen_id }}', B2BContactForm{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "B2B Contact Form",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Get in Touch"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Let's discuss your business needs"
+    },
+    {
+      "type": "text",
+      "id": "submit_text",
+      "label": "Submit button text",
+      "default": "Send Message"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you! We'll get back to you soon."
+    },
+    {
+      "type": "url",
+      "id": "redirect_url",
+      "label": "Redirect URL after submission"
+    },
+    {
+      "type": "header",
+      "content": "Field visibility"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_full_name",
+      "label": "Show full name field",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "require_full_name",
+      "label": "Require full name",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_company_name",
+      "label": "Show company name field",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "require_company_name",
+      "label": "Require company name",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_designation",
+      "label": "Show designation field",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "require_designation",
+      "label": "Require designation",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_email",
+      "label": "Show email field",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "require_email",
+      "label": "Require email",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show phone field",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "require_phone",
+      "label": "Require phone",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_location",
+      "label": "Show location field",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "require_location",
+      "label": "Require location",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Terms and privacy"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_terms_checkbox",
+      "label": "Show terms checkbox",
+      "default": false
+    },
+    {
+      "type": "richtext",
+      "id": "terms_text",
+      "label": "Terms text",
+      "default": "<p>I agree to the <a href=\"/pages/terms\">Terms of Service</a> and <a href=\"/pages/privacy\">Privacy Policy</a></p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "form_background_color",
+      "label": "Form background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary color",
+      "default": "#2f6f4e"
+    },
+    {
+      "type": "color",
+      "id": "input_background_color",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "input_hover_border_color",
+      "label": "Input hover border",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#2f6f4e"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button hover background",
+      "default": "#1a4a32"
+    },
+    {
+      "type": "color",
+      "id": "success_color",
+      "label": "Success color",
+      "default": "#008060"
+    },
+    {
+      "type": "color",
+      "id": "error_color",
+      "label": "Error color",
+      "default": "#D82C0D"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "form_padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Form padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Form border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "min": 0,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Input border radius",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 14,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "B2B Contact Form"
+    }
+  ]
+}
 {% endschema %}
