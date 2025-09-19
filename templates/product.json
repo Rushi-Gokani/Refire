@@ -368,6 +368,32 @@
     "product_recommendations_iA6pyd": {
       "type": "product-recommendations",
       "blocks": {
+        "text_BLm4x3": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<h2>Recommeded Product</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 50,
+            "padding-block-end": 50,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
         "static-product-card": {
           "type": "_product-card",
           "name": "t:names.product_card",
@@ -617,6 +643,9 @@
           ]
         }
       },
+      "block_order": [
+        "text_BLm4x3"
+      ],
       "name": "t:names.product_recommendations",
       "settings": {
         "product": "{{ closest.product }}",
@@ -625,7 +654,7 @@
         "carousel_on_mobile": false,
         "max_products": 6,
         "columns": 3,
-        "mobile_columns": "1",
+        "mobile_columns": "2",
         "columns_gap": 15,
         "rows_gap": 15,
         "icons_style": "arrow",
