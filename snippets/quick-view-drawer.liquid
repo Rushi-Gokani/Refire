@@ -148,7 +148,10 @@
   .quick-view-drawer__body {
     flex: 1;
     padding: 0;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
   }
 
   /* Loading State */

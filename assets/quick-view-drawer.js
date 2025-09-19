@@ -131,6 +131,9 @@ export class QuickViewDrawer extends DialogComponent {
     this.#initializeQuantitySelector();
     this.#initializeAddToCart(productData);
     this.#initializeBuyNow(productData);
+
+    // Initialize availability state immediately
+    this.#initializeAvailabilityState(productData);
   }
 
   /**
@@ -277,6 +280,9 @@ export class QuickViewDrawer extends DialogComponent {
     // Select first option of each group by default
     const firstOptions = this.refs.drawerContent.querySelectorAll('.quick-view-variant-group .quick-view-variant-option:first-child');
     firstOptions.forEach(option => option.classList.add('selected'));
+
+    // Reflect initial selection in buttons
+    this.#updateSelectedVariant(product);
   }
 
   /**
@@ -534,6 +540,7 @@ export class QuickViewDrawer extends DialogComponent {
     let isDragging = false;
     
     const { dialog } = this.refs;
+    const header = dialog?.querySelector('.quick-view-drawer__header');
     
     const handleTouchStart = (e) => {
       startY = e.touches[0].clientY;
@@ -571,9 +578,35 @@ export class QuickViewDrawer extends DialogComponent {
       isDragging = false;
     };
     
-    dialog.addEventListener('touchstart', handleTouchStart, { passive: true });
-    dialog.addEventListener('touchmove', handleTouchMove, { passive: true });
-    dialog.addEventListener('touchend', handleTouchEnd, { passive: true });
+    // Limit swipe-to-close to header area to avoid blocking content scroll
+    (header || dialog).addEventListener('touchstart', handleTouchStart, { passive: true });
+    (header || dialog).addEventListener('touchmove', handleTouchMove, { passive: true });
+    (header || dialog).addEventListener('touchend', handleTouchEnd, { passive: true });
+  }
+
+  /**
+   * Sets initial disabled state for buttons based on availability
+   * @param {Object} product - The product data
+   */
+  #initializeAvailabilityState(product) {
+    const addToCartBtn = this.refs.drawerContent.querySelector('.quick-view-add-to-cart');
+    const buyNowBtn = this.refs.drawerContent.querySelector('.quick-view-buy-now');
+
+    // If the product has variants, respect variant availability. Otherwise fallback to product.available
+    const initialVariant = this.#getSelectedVariant(product) || product.variants?.[0];
+    const isAvailable = initialVariant ? !!initialVariant.available : !!product.available;
+
+    if (addToCartBtn) {
+      addToCartBtn.disabled = !isAvailable;
+      const addToCartText = addToCartBtn.querySelector('.add-to-cart-text');
+      if (addToCartText) addToCartText.textContent = isAvailable ? 'Add to cart' : 'Sold Out';
+    }
+
+    if (buyNowBtn) {
+      buyNowBtn.disabled = !isAvailable;
+      const buyNowText = buyNowBtn.querySelector('.buy-now-text');
+      if (buyNowText) buyNowText.textContent = isAvailable ? 'BUY IT NOW' : 'SOLD OUT';
+    }
   }
 }
 
