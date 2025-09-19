@@ -1490,6 +1490,7 @@
         "ai_gen_block_01788f8_kWzEkq",
         "ai_gen_block_01788f8_CyEDAg"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -1521,59 +1522,77 @@
     "faq_kHtNq6": {
       "type": "faq",
       "blocks": {
-        "topic_EPB3nq": {
-          "type": "topic",
+        "faq_item_Tckh9M": {
+          "type": "faq_item",
           "settings": {
-            "is_open": true,
-            "title": "Shipping details",
-            "text": "<p>Add additional information about shipping policy.</p>",
-            "page": ""
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
           }
         },
-        "topic_XiArcN": {
-          "type": "topic",
+        "faq_item_9wCCfQ": {
+          "type": "faq_item",
           "settings": {
-            "is_open": false,
-            "title": "Delivery details",
-            "text": "<p>Add additional information about delivery policy.</p>",
-            "page": ""
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
           }
         },
-        "topic_arPXYi": {
-          "type": "topic",
+        "faq_item_wTc9T4": {
+          "type": "faq_item",
           "settings": {
-            "is_open": false,
-            "title": "Topic heading",
-            "text": "<p>Descriptive topic content body text</p>",
-            "page": ""
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
           }
         },
-        "topic_FymU84": {
-          "type": "topic",
+        "faq_item_GVCiMB": {
+          "type": "faq_item",
           "settings": {
-            "is_open": false,
-            "title": "Refund details",
-            "text": "<p>Add additional information about refund policy.</p>",
-            "page": ""
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_JYex3g": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_KAcbC8": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
           }
         }
       },
       "block_order": [
-        "topic_EPB3nq",
-        "topic_XiArcN",
-        "topic_arPXYi",
-        "topic_FymU84"
+        "faq_item_Tckh9M",
+        "faq_item_9wCCfQ",
+        "faq_item_wTc9T4",
+        "faq_item_GVCiMB",
+        "faq_item_JYex3g",
+        "faq_item_KAcbC8"
       ],
-      "disabled": true,
       "name": "ingredients-faq",
-      "settings": {
-        "heading": "Frequently asked questions",
-        "heading_size": "h3",
-        "section_width": "max-w-narrower",
-        "color_scheme": "",
-        "spacing_top": "2",
-        "spacing_bottom": "2"
-      }
+      "settings": {}
     }
   },
   "order": [
