@@ -337,271 +337,315 @@
     </div>
   </div>
 </why-buy-carousel-{{ ai_gen_id }}>
-
 <script>
-  (function() {
+  (function(){
     class WhyBuyCarousel{{ ai_gen_id }} extends HTMLElement {
       constructor() {
         super();
         this.track = null;
         this.items = [];
-        this.currentIndex = 0;
-        this.totalItems = 4;
+        this.originalCount = 4; // original features count
+        this.currentIndex = 0; // index into the cloned items array
         this.itemWidth = 0;
         this.isDragging = false;
         this.startX = 0;
         this.currentX = 0;
         this.initialTransform = 0;
-        this.autoScrollInterval = null;
+        this.transitionDuration = 350; // ms
+        this._resizeTimer = null;
         this.srLiveRegion = null;
       }
 
       connectedCallback() {
         this.track = this.querySelector('.ai-why-buy-carousel-track-{{ ai_gen_id }}');
-        this.items = Array.from(this.querySelectorAll('.ai-why-buy-carousel-item-{{ ai_gen_id }}'));
         this.srLiveRegion = this.querySelector('.ai-why-buy-sr-only-{{ ai_gen_id }}');
-        
-        if (this.track && this.items.length > 0) {
-          this.setupCarousel();
-          this.setupEventListeners();
-          this.updateCenteredItem();
-          this.startAutoScroll();
-        }
+        if (!this.track) return;
+
+        // Build clones for infinite loop (prepend last N, append first N)
+        this.setupClones();
+
+        // refresh items list & sizes
+        this.items = Array.from(this.track.children);
+        this.calculateItemWidth();
+        // Start in the "first original" position after the prepended clones
+        this.currentIndex = this.originalCount;
+        this.jumpToCurrent(); // instant set without transition
+
+        // events
+        this.setupEventListeners();
+        this.updateCenteredItem();
+        this.announceCurrent();
       }
 
       disconnectedCallback() {
-        this.stopAutoScroll();
+        this.removeEventListeners();
       }
 
-      setupCarousel() {
-        this.calculateItemWidth();
-        this.updateTransform();
+      setupClones() {
+        const children = Array.from(this.track.children);
+        // guard: if track already has clones, do nothing
+        if (children.length >= this.originalCount * 3) {
+          // already cloned
+          return;
+        }
+
+        const firstN = children.slice(0, this.originalCount);
+        const lastN = children.slice(-this.originalCount);
+
+        // clone lastN and prepend in same order
+        lastN.forEach(node => {
+          const clone = node.cloneNode(true);
+          clone.classList.add('ai-clone');
+          this.track.insertBefore(clone, this.track.firstChild);
+        });
+
+        // clone firstN and append
+        firstN.forEach(node => {
+          const clone = node.cloneNode(true);
+          clone.classList.add('ai-clone');
+          this.track.appendChild(clone);
+        });
       }
 
       calculateItemWidth() {
-        if (this.items.length > 0) {
-          const itemRect = this.items[0].getBoundingClientRect();
-          const itemStyle = window.getComputedStyle(this.items[0]);
-          const marginLeft = parseFloat(itemStyle.marginLeft);
-          const marginRight = parseFloat(itemStyle.marginRight);
-          this.itemWidth = itemRect.width + marginLeft + marginRight;
-        }
+        // ensure first item exists
+        if (!this.track || !this.track.children.length) return;
+        const item = this.track.children[0];
+        const rect = item.getBoundingClientRect();
+        const style = window.getComputedStyle(item);
+        const ml = parseFloat(style.marginLeft) || 0;
+        const mr = parseFloat(style.marginRight) || 0;
+        // width includes margins (so translate math is consistent)
+        this.itemWidth = Math.round(rect.width + ml + mr);
+        // set explicit widths to avoid fractional rounding issues
+        Array.from(this.track.children).forEach(child => {
+          child.style.width = `${rect.width}px`; // keep content width equal
+          // we rely on margins so track width calculation uses itemWidth
+        });
+        // set explicit track width
+        this.track.style.width = `${this.track.children.length * this.itemWidth}px`;
       }
 
       setupEventListeners() {
-        this.track.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-        this.track.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-        this.track.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: false });
-        
-        this.track.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.track.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        this.track.addEventListener('mouseup', this.handleMouseUp.bind(this));
-        this.track.addEventListener('mouseleave', this.handleMouseUp.bind(this));
+        // pointer events (support mice and touch via pointer)
+        this._onPointerDown = this.onPointerDown.bind(this);
+        this._onPointerMove = this.onPointerMove.bind(this);
+        this._onPointerUp = this.onPointerUp.bind(this);
+        this._onResize = this.onResize.bind(this);
+        this._onTransitionEnd = this.onTransitionEnd.bind(this);
 
-        this.track.addEventListener('mouseenter', this.stopAutoScroll.bind(this));
-        this.track.addEventListener('mouseleave', this.startAutoScroll.bind(this));
+        this.track.addEventListener('pointerdown', this._onPointerDown, { passive: true });
+        window.addEventListener('pointermove', this._onPointerMove, { passive: true });
+        window.addEventListener('pointerup', this._onPointerUp);
+        window.addEventListener('resize', this._onResize);
+        this.track.addEventListener('transitionend', this._onTransitionEnd);
 
-        this.items.forEach((item, index) => {
-          if (index < this.totalItems) {
-            item.addEventListener('keydown', this.handleKeyDown.bind(this));
-            item.addEventListener('focus', () => {
-              this.currentIndex = index;
-              this.updateTransform();
-              this.updateCenteredItem();
-              this.stopAutoScroll();
-            });
-            item.addEventListener('blur', () => {
-              this.startAutoScroll();
-            });
-          }
+        // pause auto-scroll on hover/focus
+        this.track.addEventListener('mouseenter', () => this.stopAuto());
+        this.track.addEventListener('mouseleave', () => this.startAuto());
+        // keyboard support for visible (original) items
+        Array.from(this.querySelectorAll('.ai-why-buy-carousel-item-{{ ai_gen_id }}')).forEach((el, idx) => {
+          el.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); this.prev(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); this.next(); }
+          });
         });
 
-        window.addEventListener('resize', this.handleResize.bind(this));
+        // optional auto-scroll for user-friendliness
+        this.startAuto();
       }
 
-      handleKeyDown(e) {
-        switch (e.key) {
-          case 'ArrowLeft':
-            e.preventDefault();
-            this.goToPrevious();
-            break;
-          case 'ArrowRight':
-            e.preventDefault();
-            this.goToNext();
-            break;
-          case 'Home':
-            e.preventDefault();
-            this.goToSlide(0);
-            break;
-          case 'End':
-            e.preventDefault();
-            this.goToSlide(this.totalItems - 1);
-            break;
-        }
+      removeEventListeners() {
+        this.track.removeEventListener('pointerdown', this._onPointerDown);
+        window.removeEventListener('pointermove', this._onPointerMove);
+        window.removeEventListener('pointerup', this._onPointerUp);
+        window.removeEventListener('resize', this._onResize);
+        this.track.removeEventListener('transitionend', this._onTransitionEnd);
+        this.stopAuto();
       }
 
-      handleTouchStart(e) {
-        this.stopAutoScroll();
-        this.isDragging = true;
-        this.startX = e.touches[0].clientX;
-        this.initialTransform = this.getCurrentTransform();
-        this.track.style.transition = 'none';
-      }
-
-      handleTouchMove(e) {
-        if (!this.isDragging) return;
-        e.preventDefault();
-        
-        this.currentX = e.touches[0].clientX;
-        const deltaX = this.currentX - this.startX;
-        const newTransform = this.initialTransform + deltaX;
-        this.track.style.transform = `translateX(${newTransform}px)`;
-      }
-
-      handleTouchEnd(e) {
-        if (!this.isDragging) return;
-        this.isDragging = false;
-        
-        const deltaX = this.currentX - this.startX;
-        const threshold = this.itemWidth / 3;
-        
-        if (Math.abs(deltaX) > threshold) {
-          if (deltaX > 0) {
-            this.goToPrevious();
-          } else {
-            this.goToNext();
-          }
-        } else {
-          this.updateTransform();
-        }
-        
-        this.startAutoScroll();
-      }
-
-      handleMouseDown(e) {
-        this.stopAutoScroll();
+      onPointerDown(e) {
+        // only left mouse or touch
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
         this.isDragging = true;
         this.startX = e.clientX;
         this.initialTransform = this.getCurrentTransform();
         this.track.style.transition = 'none';
-        e.preventDefault();
+        // set pointer capture so move/up captured
+        try { e.target.setPointerCapture(e.pointerId); } catch (err) {}
+        this.stopAuto();
       }
 
-      handleMouseMove(e) {
+      onPointerMove(e) {
         if (!this.isDragging) return;
-        
         this.currentX = e.clientX;
-        const deltaX = this.currentX - this.startX;
-        const newTransform = this.initialTransform + deltaX;
+        const delta = this.currentX - this.startX;
+        const newTransform = this.initialTransform + delta;
         this.track.style.transform = `translateX(${newTransform}px)`;
       }
 
-      handleMouseUp(e) {
+      onPointerUp(e) {
         if (!this.isDragging) return;
         this.isDragging = false;
-        
-        const deltaX = this.currentX - this.startX;
-        const threshold = this.itemWidth / 3;
-        
-        if (Math.abs(deltaX) > threshold) {
-          if (deltaX > 0) {
-            this.goToPrevious();
-          } else {
-            this.goToNext();
-          }
+        const delta = (this.currentX || this.startX) - this.startX;
+        const threshold = Math.max(30, this.itemWidth / 4);
+        this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
+
+        if (Math.abs(delta) > threshold) {
+          if (delta > 0) this.prev();
+          else this.next();
         } else {
-          this.updateTransform();
+          // snap back to current
+          this.updatePosition();
         }
-        
-        this.startAutoScroll();
+
+        this.startAuto();
       }
 
-      handleResize() {
-        this.calculateItemWidth();
-        this.updateTransform();
+      onResize() {
+        clearTimeout(this._resizeTimer);
+        this._resizeTimer = setTimeout(() => {
+          this.calculateItemWidth();
+          this.updatePosition(true);
+        }, 120);
       }
 
       getCurrentTransform() {
-        const transform = window.getComputedStyle(this.track).transform;
+        const style = window.getComputedStyle(this.track);
+        const transform = style.transform || 'none';
         if (transform === 'none') return 0;
-        const matrix = transform.match(/matrix.*\((.+)\)/)[1].split(', ');
-        return parseFloat(matrix[4]) || 0;
+        const match = transform.match(/matrix\((.+)\)/);
+        if (match) {
+          const values = match[1].split(', ');
+          return parseFloat(values[4]) || 0;
+        }
+        return 0;
       }
 
-      goToNext() {
-        this.currentIndex = (this.currentIndex + 1) % this.totalItems;
-        this.updateTransform();
-        this.updateCenteredItem();
-        this.announceCurrentSlide();
+      // Move instantly without transition (used for initial placement and loop jump)
+      jumpToCurrent() {
+        this.track.style.transition = 'none';
+        this.updatePosition(true);
       }
 
-      goToPrevious() {
-        this.currentIndex = (this.currentIndex - 1 + this.totalItems) % this.totalItems;
-        this.updateTransform();
-        this.updateCenteredItem();
-        this.announceCurrentSlide();
-      }
-
-      goToSlide(index) {
-        this.currentIndex = index;
-        this.updateTransform();
-        this.updateCenteredItem();
-        this.announceCurrentSlide();
-      }
-
-      updateTransform() {
-        this.track.style.transition = 'transform 0.3s ease';
+      // updatePosition optionally instant (no transition)
+      updatePosition(instant = false) {
+        if (instant) this.track.style.transition = 'none';
         const containerWidth = this.track.parentElement.offsetWidth;
         const centerOffset = (containerWidth - this.itemWidth) / 2;
         const translateX = centerOffset - (this.currentIndex * this.itemWidth);
+        // use pixel translate to avoid percent rounding issues
         this.track.style.transform = `translateX(${translateX}px)`;
+        if (instant) {
+          // force reflow then restore transition
+          void this.track.offsetWidth;
+          this.track.style.transition = `transform ${this.transitionDuration}ms ease`;
+        }
+        this.updateCentered();
       }
 
-      updateCenteredItem() {
-        this.items.forEach((item, index) => {
-          const actualIndex = index % this.totalItems;
-          if (actualIndex === this.currentIndex) {
-            item.classList.add('centered');
-            if (index < this.totalItems) {
-              item.setAttribute('tabindex', '0');
-              item.removeAttribute('aria-hidden');
+      updateCentered() {
+        // Remove centered class and set tabindex appropriately
+        const allItems = Array.from(this.track.children);
+        allItems.forEach((el, idx) => {
+          el.classList.toggle('centered', idx === this.currentIndex);
+          // Only original set (after clones) should be focusable as navigable features
+          const originalStart = this.originalCount;
+          const originalEnd = this.originalCount + this.originalCount - 1;
+          if (idx >= originalStart && idx <= originalEnd) {
+            // this is one of the original items
+            const originalIdx = idx - originalStart;
+            // if this corresponds to the logical current index
+            if (idx === this.currentIndex) {
+              el.setAttribute('tabindex', '0');
+              el.removeAttribute('aria-hidden');
+            } else {
+              el.setAttribute('tabindex', '-1');
             }
           } else {
-            item.classList.remove('centered');
-            if (index < this.totalItems) {
-              item.setAttribute('tabindex', '-1');
-            } else {
-              item.setAttribute('aria-hidden', 'true');
-            }
+            // clones: hide from assistive tech
+            el.setAttribute('aria-hidden', 'true');
+            el.setAttribute('tabindex', '-1');
           }
         });
       }
 
-      announceCurrentSlide() {
-        if (this.srLiveRegion) {
-          const currentSlide = this.currentIndex + 1;
-          this.srLiveRegion.textContent = `Showing feature ${currentSlide} of ${this.totalItems}`;
-        }
+      updateCenteredItem() {
+        this.updateCentered();
       }
 
-      startAutoScroll() {
-        this.stopAutoScroll();
-        this.autoScrollInterval = setInterval(() => {
-          this.goToNext();
-        }, 4000);
+      next() {
+        this.currentIndex += 1;
+        this.updatePosition();
+        this.announceCurrent();
       }
 
-      stopAutoScroll() {
-        if (this.autoScrollInterval) {
-          clearInterval(this.autoScrollInterval);
-          this.autoScrollInterval = null;
+      prev() {
+        this.currentIndex -= 1;
+        this.updatePosition();
+        this.announceCurrent();
+      }
+
+      // When transition ends, fix up if we moved into cloned region
+      onTransitionEnd() {
+        const total = this.track.children.length;
+        const startOfOriginals = this.originalCount;
+        const endOfOriginals = startOfOriginals + this.originalCount - 1;
+
+        // If we've gone past the end clones (too high index), jump back to same logical original
+        if (this.currentIndex > endOfOriginals + (this.originalCount)) {
+          // excessive forward: map back to (currentIndex - originalCount)
+          this.currentIndex = this.currentIndex - this.originalCount;
+          this.jumpToCurrent();
         }
+
+        // If we've gone before the start clones (too low), jump forward
+        if (this.currentIndex < startOfOriginals - this.originalCount) {
+          this.currentIndex = this.currentIndex + this.originalCount;
+          this.jumpToCurrent();
+        }
+
+        // Normalization if landed inside clone area adjacent to originals:
+        // If index points to last clone-after-original set or first clone-before-original set,
+        // map to the matching original index without transition.
+        if (this.currentIndex > endOfOriginals && this.currentIndex < total - this.originalCount) {
+          // in the appended clones section — normalize to the corresponding original index
+          const offsetIntoClones = this.currentIndex - (endOfOriginals + 1);
+          this.currentIndex = startOfOriginals + offsetIntoClones;
+          this.jumpToCurrent();
+        }
+        if (this.currentIndex < startOfOriginals && this.currentIndex >= 0) {
+          // in the prepended clones section
+          const offsetFromPrepended = this.currentIndex;
+          const normalized = startOfOriginals + (offsetFromPrepended % this.originalCount);
+          this.currentIndex = normalized;
+          this.jumpToCurrent();
+        }
+        // finally ensure classes/tabs synced
+        this.updateCentered();
+      }
+
+      // Announce for screen readers
+      announceCurrent() {
+        if (!this.srLiveRegion) return;
+        const logicalIndex = ((this.currentIndex - this.originalCount) % this.originalCount + this.originalCount) % this.originalCount;
+        this.srLiveRegion.textContent = `Showing feature ${logicalIndex + 1} of ${this.originalCount}`;
+      }
+
+      // Auto-scroll helpers
+      startAuto() {
+        this.stopAuto();
+        this._autoTimer = setInterval(()=> { this.next(); }, 4000);
+      }
+      stopAuto() {
+        if (this._autoTimer) { clearInterval(this._autoTimer); this._autoTimer = null; }
       }
     }
 
     customElements.define('why-buy-carousel-{{ ai_gen_id }}', WhyBuyCarousel{{ ai_gen_id }});
   })();
 </script>
+
 
 {% schema %}
 {
