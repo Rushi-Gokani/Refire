@@ -1,6 +1,482 @@
+{% doc %}
+  @prompt
+    Create a Shopify **section block** named "FAQ Item — Minimal" (block fields: "Question" short text, "Answer" rich-text/textarea, "Open by default" boolean, optional heading/text color overrides) designed to be added repeatedly inside a parent FAQ section; output a single-file Liquid block + example parent section wrapper that demonstrates 10 pre-populated FAQ blocks (so you can paste the block and see 10 items), use theme variables/classes (color_scheme, typography, spacing) so it blends with the current theme, produce minimal CSS and vanilla JS (no external libraries) that integrates with the parent accordion (questions as `<button>`, answers in a region with `aria-hidden`/`aria-expanded`, keyboard support: Enter/Space toggle, Arrow Up/Down to move focus, Home/End to jump), support "single expand" or "multi expand" modes via section setting, respect block-level "open by default", include smooth slide animation toggle, subtle 1px dividers, 14–16px body text and 18–24px heading, simple chevron that rotates on open, mobile-first responsive styles, SEO-friendly markup, include inline comments explaining customization, and return the full ready-to-paste Liquid code (block + example parent section wrapper with 10 sample FAQ blocks and schema) in one file.
+
+{% enddoc %}
+{% comment %}
+FAQ Item - Minimal Block
+This block is designed to be used within an FAQ section.
+Each block represents a single FAQ item with question and answer.
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .faq-item-{{ ai_gen_id }} {
+    border-bottom: 1px solid rgb(var(--color-border) / 0.2);
+  }
+
+  .faq-item-{{ ai_gen_id }}:last-child {
+    border-bottom: none;
+  }
+
+  .faq-question-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: {% if block.settings.heading_color != blank %}{{ block.settings.heading_color }}{% else %}rgb(var(--color-foreground)){% endif %};
+    transition: color 0.2s ease;}
+
+  .faq-question-{{ ai_gen_id }}:hover {
+    color: rgb(var(--color-primary));
+  }
+
+  .faq-question-{{ ai_gen_id }}:focus {
+    outline: 2px solid rgb(var(--color-primary));
+    outline-offset: 2px;
+  }
+
+  .faq-question-text-{{ ai_gen_id }} {
+    flex: 1;
+    margin-right: 1rem;
+  }
+
+  .faq-chevron-{{ ai_gen_id }} {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.3s ease;
+    color: rgb(var(--color-foreground) / 0.6);
+  }
+
+  .faq-question-{{ ai_gen_id }}[aria-expanded="true"] .faq-chevron-{{ ai_gen_id }} {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer-{{ ai_gen_id }} {
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding0.3s ease;
+    max-height: 0;
+    padding: 0;}
+
+  .faq-answer-{{ ai_gen_id }}.open {
+    max-height: 500px;
+    padding-bottom: 1.5rem;
+  }
+
+  .faq-answer-content-{{ ai_gen_id }} {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground) / 0.8){% endif %};
+  }
+
+  .faq-answer-content-{{ ai_gen_id }} p {
+    margin: 00 1rem 0;
+  }
+
+  .faq-answer-content-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .faq-question-{{ ai_gen_id }} {
+      font-size: 1rem;
+      padding: 1.25rem 0;
+    }
+
+    .faq-answer-content-{{ ai_gen_id }} {
+      font-size: 0.875rem;
+    }
+
+    .faq-answer-{{ ai_gen_id }}.open {
+      padding-bottom: 1.25rem;
+    }
+  }
+{% endstyle %}
+
+<div class="faq-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <button
+    class="faq-question-{{ ai_gen_id }}"
+    aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
+    aria-controls="faq-answer-{{ ai_gen_id }}"
+    data-faq-question>
+    <span class="faq-question-text-{{ ai_gen_id }}">
+      {{ block.settings.question | default: 'Add your question here' }}
+    </span>
+    <svg class="faq-chevron-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </button>
+  
+  <div
+    id="faq-answer-{{ ai_gen_id }}"
+    class="faq-answer-{{ ai_gen_id }}{% if block.settings.open_by_default %} open{% endif %}"
+    aria-hidden="{% if block.settings.open_by_default %}false{% else %}true{% endif %}"
+    role="region"
+    aria-labelledby="faq-question-{{ ai_gen_id }}">
+    <div class="faq-answer-content-{{ ai_gen_id }}">
+      {% if block.settings.answer != blank %}
+        {{ block.settings.answer }}
+      {% else %}
+        <p>Add your answer here. You can include multiple paragraphs and formatting.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "FAQ item",
+  "settings": [
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Question",
+      "default": "What is your return policy?"
+    },
+    {
+      "type": "richtext",
+      "id": "answer",
+      "label": "Answer",
+      "default": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Color overrides"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Question color"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Answer color"
+    }
+  ]
+}
 {% endschema %}
+
+{% comment %}
+EXAMPLE PARENT SECTION WRAPPER
+Copy the section below to see the FAQ block in action with 10 sample items.
+Save this as sections/faq-example.liquid in your theme.
+{% endcomment %}
+
+{% comment %}
+<div class="faq-section color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {% if section.settings.heading != blank %}
+      <h2 class="faq-section__heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+    
+    <faq-accordion 
+      class="faq-accordion" 
+      data-expand-mode="{{ section.settings.expand_mode }}"
+    >
+      {% for block in section.blocks %}
+        {% render 'faq-item-minimal', block: block %}
+      {% endfor %}
+    </faq-accordion>
+  </div>
+</div>
+
+<script>
+(function() {
+  class FaqAccordion extends HTMLElement {
+    constructor() {
+      super();
+      this.expandMode = this.dataset.expandMode || 'multi';
+      this.questions = [];
+      this.currentFocus = -1;
+    }
+
+    connectedCallback() {
+      this.questions = Array.from(this.querySelectorAll('[data-faq-question]'));
+      this.setupEventListeners();
+      this.setupKeyboardNavigation();
+    }
+
+    setupEventListeners() {
+      this.questions.forEach((question, index) => {
+        question.addEventListener('click', () => this.toggleAnswer(question, index));
+      });
+    }
+
+    setupKeyboardNavigation() {
+      this.questions.forEach((question, index) => {
+        question.addEventListener('keydown', (e) => {
+          switch(e.key) {
+            case 'ArrowDown':
+              e.preventDefault();
+              this.focusNext(index);
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              this.focusPrevious(index);
+              break;
+            case 'Home':
+              e.preventDefault();
+              this.focusFirst();
+              break;
+            case 'End':
+              e.preventDefault();
+              this.focusLast();
+              break;
+            case 'Enter':
+            case ' ':
+              e.preventDefault();
+              this.toggleAnswer(question, index);
+              break;
+          }
+        });
+      });
+    }
+
+    toggleAnswer(question, index) {
+      const isExpanded = question.getAttribute('aria-expanded') === 'true';
+      const answer = question.nextElementSibling;
+      
+      if (this.expandMode === 'single' && !isExpanded) {
+        this.closeAllAnswers();
+      }
+      
+      question.setAttribute('aria-expanded', !isExpanded);
+      answer.setAttribute('aria-hidden', isExpanded);
+      
+      if (isExpanded) {
+        answer.classList.remove('open');
+      } else {
+        answer.classList.add('open');
+      }}
+
+    closeAllAnswers() {
+      this.questions.forEach(question => {
+        const answer = question.nextElementSibling;
+        question.setAttribute('aria-expanded', 'false');
+        answer.setAttribute('aria-hidden', 'true');
+        answer.classList.remove('open');
+      });
+    }
+
+    focusNext(currentIndex) {
+      const nextIndex = (currentIndex + 1) % this.questions.length;
+      this.questions[nextIndex].focus();
+    }
+
+    focusPrevious(currentIndex) {
+      const prevIndex = currentIndex === 0 ? this.questions.length - 1 : currentIndex - 1;
+      this.questions[prevIndex].focus();
+    }
+
+    focusFirst() {
+      this.questions[0].focus();
+    }
+
+    focusLast() {
+      this.questions[this.questions.length - 1].focus();
+    }
+  }
+
+  customElements.define('faq-accordion', FaqAccordion);
+})();
+</script><style>
+  .faq-section {
+    padding: 3rem 0;
+  }
+
+  .faq-section__heading {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .faq-accordion {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    .faq-section {
+      padding: 2rem 0;
+    }
+
+    .faq-section__heading {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "FAQ Section",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "select",
+      "id": "expand_mode",
+      "label": "Expand mode",
+      "options": [
+        {
+          "value": "single",
+          "label": "Single expand"
+        },
+        {
+          "value": "multi",
+          "label": "Multi expand"
+        }
+      ],
+      "default": "single"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>We offer a 30-day return policy for all unused items in their original packaging.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Color overrides"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Question color"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Answer color"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Section",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Items must be returned in the same condition as received.</p>",
+            "open_by_default": true
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Standard shipping typically takes 3-5 business days. Express shipping options are available for faster delivery.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer international shipping?",
+            "answer": "<p>Yes, we ship to most countries worldwide. Shipping costs and delivery times vary by location.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What payment methods do you accept?",
+            "answer": "<p>We accept all major credit cards, PayPal, Apple Pay, Google Pay, and Shop Pay for your convenience.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "<p>Once your order ships, you'll receive a tracking number via email. You can also track your order in your account dashboard.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Can I cancel or modify my order?",
+            "answer": "<p>Orders can be cancelled or modified within 1 hour of placement. After this time, please contact customer service for assistance.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer size exchanges?",
+            "answer": "<p>Yes, we offer free size exchanges within 30 days of purchase. The item must be unworn and in original condition.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What if my item arrives damaged?",
+            "answer": "<p>If your item arrives damaged, please contact us within 48 hours with photos. We'll arrange a replacement or full refund immediately.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you have a customer service phone number?",
+            "answer": "<p>Yes, our customer service team is available Monday-Friday9AM-6PM EST at 1-800-EXAMPLE. You can also reach us via email or live chat.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are your products ethically sourced?",
+            "answer": "<p>Absolutely. We work only with suppliers who meet our strict ethical standards for fair labor practices and sustainable manufacturing.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+{% endcomment %}
