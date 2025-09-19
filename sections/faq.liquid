@@ -1,276 +1,248 @@
-{%- if section.blocks.size > 0 -%}
-  {{- 'section-ingredients-faq.css' | asset_url | stylesheet_tag -}}
+{% comment %}
+FAQ — 6 Items (single-file section)
+- Pre-populated with 6 FAQ blocks (editable in the theme editor)
+- Accessible button / region markup
+- Robust JS initializer + delegated chevron click forwarding
+- Works whether or not wrapped by a <faq-accordion>
+{% endcomment %}
 
-  {%- style -%}
-    #shopify-section-{{ section.id }} > div {
-      padding-block-start: 60px;
-      padding-block-end: 60px;
-      padding: 60px 10px;
-      margin-left: auto;
-      margin-right: auto;
-      max-width:fit-content;
-    }
-    .container1{
-      max-width: 800px !important;
-    }
-    .section__heading134{
-      font-size: clamp(28px, 5vw, 50px) !important;
-      font-weight: 700 !important;
-      color: #b4975a !important;
-      padding-bottom: 30px;
-      text-transform: uppercase !important;
-      position: relative;
-      z-index: 9999;
-    }
+<section id="shopify-section-{{ section.id }}" class="ai-faq-section" data-faq-accordion data-expand-mode="multi" {{ section.shopify_attributes }}>
+  <div class="ai-faq-inner" style="max-width:900px; margin-left:auto; margin-right:auto; padding:40px 16px;">
+    <h2 class="ai-faq-heading" style="font-size:1.5rem; margin-bottom:1rem;">Frequently asked questions</h2>
 
-    @media (max-width: 767px) {
-      .accordion__button-text{
-        line-height:1.4;
-        font-size:21px;
-      }
-      .accordion__body p{
-        font-size:16px !important;
-      }
-    }
-  {%- endstyle -%}
+    <div class="ai-faq-list" data-faq-list>
+      {% for block in section.blocks %}
+        {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
-  <div class="accordions color-{{ section.settings.color_scheme }} gradient js-animation-fade-in">
-    <div class="container1 {{ section.settings.section_width }}">
-      {%- if section.settings.heading != blank -%}
-        <h2 class="section__heading section__heading134 {{ section.settings.heading_size }}">
-          {{- section.settings.heading -}}
-        </h2>
-      {%- endif -%}
+        <style>
+          /* Scoped minimal styles for each block (keeps names unique by id) */
+          .faq-item-{{ ai_gen_id }}{ border-bottom: 1px solid rgb(var(--color-border) / 0.2); }
+          .faq-item-{{ ai_gen_id }}:last-child{ border-bottom: none; }
 
-      <accordion-default class="accordion" data-hide-multiple>
-        {%- for block in section.blocks -%}
-          {%- liquid
-            if block.settings.title == blank
-              continue
-            elsif block.settings.text == blank and block.settings.page == blank
-              continue
-            endif
+          .faq-question-{{ ai_gen_id }}{
+            width:100%; display:flex; align-items:center; justify-content:space-between;
+            padding:1.5rem 0; background:none; border:none; text-align:left; cursor:pointer;
+            font-size:1.125rem; font-weight:500; line-height:1.4;
+            color: {% if block.settings.heading_color != blank %}{{ block.settings.heading_color }}{% else %}rgb(var(--color-foreground)){% endif %};
+            transition: color .2s ease;
+          }
+          .faq-question-{{ ai_gen_id }}:hover{ color: rgb(var(--color-primary)); }
+          .faq-question-{{ ai_gen_id }}:focus{ outline:2px solid rgb(var(--color-primary)); outline-offset:2px; }
 
-            if block.settings.is_open
-              assign details_class = ' is-active default-active'
-              assign details_attr = 'open'
-            else
-              assign details_class = blank
-              assign details_attr = blank
-            endif
-          -%}
+          .faq-question-text-{{ ai_gen_id }}{ flex:1; margin-right:1rem; }
 
-          <details class="accordion__section1 {{ details_class }}" id="Details-{{- block.id -}}" {{ details_attr }} {{- block.shopify_attributes -}}>
-            <summary class="accordion__button h6 js-btn" id="Details-Summary-{{- block.id -}}">
-              <div class="accordion__button-text">
-                {{- block.settings.title | escape -}}
-              </div>
-              <div class="accordion__icon">
-                {% render 'icon', icon_name: 'theme-chevron-down' %}
-              </div>
-            </summary>
+          .faq-chevron-{{ ai_gen_id }}{ width:1.25rem; height:1.25rem; transition:transform .3s ease; color: rgb(var(--color-foreground) / 0.6); flex-shrink:0; pointer-events:auto; }
+          .faq-question-{{ ai_gen_id }}[aria-expanded="true"] .faq-chevron-{{ ai_gen_id }}{ transform: rotate(180deg); }
 
-            <div class="accordion__body" id="Details-Content-{{- block.id -}}">
-              <div class="accordion__body-inner">
-                {%- if block.settings.page != blank and block.settings.page.content != blank -%}
-                  {{- block.settings.page.content -}}
-                {%- elsif block.settings.text != blank -%}
-                  {{- block.settings.text -}}
-                {%- endif -%}
-              </div>
+          .faq-answer-{{ ai_gen_id }}{ overflow:hidden; transition: max-height .33s ease, padding .33s ease; max-height:0; padding-top:0; padding-bottom:0; }
+          .faq-answer-{{ ai_gen_id }}.open{ max-height: 600px; padding-bottom:1.5rem; }
+
+          .faq-answer-content-{{ ai_gen_id }}{ font-size:.9375rem; line-height:1.6; color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground) / 0.8){% endif %}; padding-right:.25rem; }
+          .faq-answer-content-{{ ai_gen_id }} p{ margin:0 0 .75rem 0; }
+          .faq-answer-content-{{ ai_gen_id }} p:last-child{ margin-bottom:0; }
+
+          @media screen and (max-width:749px){
+            .faq-question-{{ ai_gen_id }}{ font-size:1rem; padding:1.25rem 0; }
+            .faq-answer-content-{{ ai_gen_id }}{ font-size:.875rem; }
+            .faq-answer-{{ ai_gen_id }}.open{ padding-bottom:1.25rem; }
+          }
+        </style>
+
+        <div class="faq-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+          <button
+            id="faq-question-{{ ai_gen_id }}"
+            class="faq-question-{{ ai_gen_id }}"
+            aria-expanded="{% if block.settings.open_by_default %}true{% else %}false{% endif %}"
+            aria-controls="faq-answer-{{ ai_gen_id }}"
+            data-faq-question
+            type="button">
+            <span class="faq-question-text-{{ ai_gen_id }}">
+              {{ block.settings.question | default: 'Add your question here' }}
+            </span>
+
+            <!-- Chevron (no inline onclick — handled by delegated listener) -->
+            <svg
+              class="faq-chevron-{{ ai_gen_id }}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              role="img"
+              aria-hidden="true">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+
+          <div
+            id="faq-answer-{{ ai_gen_id }}"
+            class="faq-answer-{{ ai_gen_id }}{% if block.settings.open_by_default %} open{% endif %}"
+            aria-hidden="{% if block.settings.open_by_default %}false{% else %}true{% endif %}"
+            role="region"
+            aria-labelledby="faq-question-{{ ai_gen_id }}">
+            <div class="faq-answer-content-{{ ai_gen_id }}">
+              {% if block.settings.answer != blank %}
+                {{ block.settings.answer }}
+              {% else %}
+                <p>Add your answer here. You can include multiple paragraphs and formatting.</p>
+              {% endif %}
             </div>
-          </details>
-        {%- endfor -%}
-      </accordion-default>
+          </div>
+        </div>
+      {% endfor %}
     </div>
   </div>
-{%- endif -%}
+</section>
+
+<script>
+(function(){
+  function boolStr(v){ return v ? 'true' : 'false'; }
+
+  function initAccordionContainer(container, expandMode){
+    const questions = Array.from(container.querySelectorAll('[data-faq-question]'));
+    if (!questions.length) return;
+    container.setAttribute('data-faq-initialized','true');
+    container.dataset.expandMode = expandMode || container.dataset.expandMode || 'multi';
+
+    questions.forEach((question, index) => {
+      question.setAttribute('tabindex', '0');
+      question.addEventListener('click', function(){ toggle(question, index, container); });
+      question.addEventListener('keydown', function(e){
+        switch(e.key){
+          case 'ArrowDown': e.preventDefault(); focusNext(questions, index); break;
+          case 'ArrowUp': e.preventDefault(); focusPrevious(questions, index); break;
+          case 'Home': e.preventDefault(); questions[0].focus(); break;
+          case 'End': e.preventDefault(); questions[questions.length - 1].focus(); break;
+          case 'Enter':
+          case ' ': e.preventDefault(); toggle(question, index, container); break;
+        }
+      });
+    });
+
+    function closeAll(){
+      questions.forEach(q => {
+        const ans = q.nextElementSibling;
+        q.setAttribute('aria-expanded','false');
+        if (ans){ ans.setAttribute('aria-hidden','true'); ans.classList.remove('open'); }
+      });
+    }
+
+    function toggle(question, index, containerRef){
+      const isExpanded = question.getAttribute('aria-expanded') === 'true';
+      const answer = question.nextElementSibling;
+      if (containerRef.dataset.expandMode === 'single' && !isExpanded){ closeAll(); }
+      question.setAttribute('aria-expanded', boolStr(!isExpanded));
+      if (answer){
+        answer.setAttribute('aria-hidden', boolStr(isExpanded));
+        if (isExpanded){ answer.classList.remove('open'); } else { answer.classList.add('open'); }
+      }
+    }
+
+    function focusNext(arr, idx){ const next = (idx + 1) % arr.length; arr[next].focus(); }
+    function focusPrevious(arr, idx){ const prev = idx === 0 ? arr.length - 1 : idx - 1; arr[prev].focus(); }
+  }
+
+  function initializeAllFaqs(){
+    const explicitWrappers = Array.from(document.querySelectorAll('faq-accordion, [data-faq-accordion]'));
+    explicitWrappers.forEach(wrapper => {
+      const mode = wrapper.dataset.expandMode || wrapper.getAttribute('data-expand-mode') || 'multi';
+      if (wrapper.getAttribute('data-faq-initialized') !== 'true') initAccordionContainer(wrapper, mode);
+    });
+
+    const allQuestions = Array.from(document.querySelectorAll('[data-faq-question]'));
+    const uninitializedQuestions = allQuestions.filter(q => {
+      let parent = q.parentElement;
+      while(parent){
+        if (parent.getAttribute && parent.getAttribute('data-faq-initialized') === 'true') return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    });
+
+    const groups = new Map();
+    uninitializedQuestions.forEach(q => {
+      let ancestor = q.closest('section, [data-section], .section') || q.parentElement;
+      const key = ancestor || document;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(q);
+    });
+
+    groups.forEach((questions, ancestor) => {
+      questions.forEach(q => q.classList.add('faq-js-group-temp'));
+      const container = document.createElement('div');
+      container.dataset.expandMode = ancestor && ancestor.dataset ? (ancestor.dataset.expandMode || 'multi') : 'multi';
+      document.body.appendChild(container);
+      container.querySelectorAll = function(){ return Array.from(document.querySelectorAll('.faq-js-group-temp')); };
+      initAccordionContainer(container, container.dataset.expandMode || 'multi');
+      questions.forEach(q => q.classList.remove('faq-js-group-temp'));
+      container.remove();
+    });
+  }
+
+  // Delegated chevron click forwarding (no inline onclick needed)
+  document.body.addEventListener('click', function(event){
+    const chevron = event.target.closest('[class*="faq-chevron-"]');
+    if (!chevron) return;
+    const btn = chevron.closest('button') || chevron.closest('[data-faq-question]') || chevron.closest('div') && chevron.closest('div').querySelector('[data-faq-question]');
+    if (btn){
+      if (event.target !== btn){
+        btn.click();
+        event.preventDefault();
+      }
+    }
+  }, true);
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initializeAllFaqs);
+  } else {
+    initializeAllFaqs();
+  }
+
+  const mo = new MutationObserver((mutations) => {
+    let found = false;
+    for (const m of mutations){
+      for (const n of m.addedNodes){
+        if (n.nodeType === 1){
+          if (n.matches && n.matches('[data-faq-question]')) found = true;
+          if (n.querySelector && n.querySelector('[data-faq-question]')) found = true;
+          if (n.matches && n.matches('[class*="faq-chevron-"]')) found = true;
+          if (n.querySelector && n.querySelector('[class*="faq-chevron-"]')) found = true;
+        }
+      }
+    }
+    if (found) initializeAllFaqs();
+  });
+  mo.observe(document.body, { childList:true, subtree:true });
+})();
+</script>
 
 {% schema %}
 {
-  "name": "ingredients-faq",
-  "tag": "section",
-  "class": "section-accordions",
-  "settings": [
-    {
-      "type": "inline_richtext",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Frequently asked questions"
-    },
-    {
-      "type": "select",
-      "id": "heading_size",
-      "label": "Heading size",
-      "options": [
-        {
-          "value": "h6",
-          "label": "XS"
-        },
-        {
-          "value": "h5",
-          "label": "S"
-        },
-        {
-          "value": "h4",
-          "label": "M"
-        },
-        {
-          "value": "h3",
-          "label": "L"
-        },
-        {
-          "value": "h2",
-          "label": "XL"
-        }
-      ],
-      "default": "h3"
-    },
-    {
-      "type": "header",
-      "content": "Header settings",
-      "info": "Configure header and general section options"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "Section width",
-      "options": [
-        {
-          "value": "max-w-page",
-          "label": "Page width"
-        },
-        {
-          "value": "max-w-narrower",
-          "label": "Narrower"
-        },
-        {
-          "value": "max-w-fluid",
-          "label": "Fluid"
-        }
-      ],
-      "default": "max-w-narrower"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "select",
-      "id": "spacing_top",
-      "label": "Top spacing",
-      "options": [
-        {
-          "value": "0",
-          "label": "No"
-        },
-        {
-          "value": "1",
-          "label": "S"
-        },
-        {
-          "value": "2",
-          "label": "M"
-        },
-        {
-          "value": "4",
-          "label": "L"
-        },
-        {
-          "value": "6",
-          "label": "XL"
-        }
-      ],
-      "default": "2"
-    },
-    {
-      "type": "select",
-      "id": "spacing_bottom",
-      "label": "Bottom spacing",
-      "options": [
-        {
-          "value": "0",
-          "label": "No"
-        },
-        {
-          "value": "1",
-          "label": "S"
-        },
-        {
-          "value": "2",
-          "label": "M"
-        },
-        {
-          "value": "4",
-          "label": "L"
-        },
-        {
-          "value": "6",
-          "label": "XL"
-        }
-      ],
-      "default": "2"
-    }
-  ],
+  "name": "FAQ — 6 items",
+  "settings": [],
   "blocks": [
     {
-      "type": "topic",
-      "name": "Topic",
+      "type": "faq_item",
+      "name": "FAQ item",
       "settings": [
-        {
-          "type": "checkbox",
-          "id": "is_open",
-          "label": "Open by default"
-        },
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Question",
-          "default": "Topic heading"
-        },
-        {
-          "type": "richtext",
-          "id": "text",
-          "label": "Answer",
-          "default": "<p>Descriptive topic content body text</p>"
-        },
-        {
-          "type": "page",
-          "id": "page",
-          "label": "Link to page",
-          "info": "Optional: select a page whose content will be used as the answer"
-        }
+        { "id": "question", "type": "text", "label": "Question", "default": "What is your return policy?" },
+        { "id": "answer", "type": "richtext", "label": "Answer", "default": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>" },
+        { "id": "open_by_default", "type": "checkbox", "label": "Open by default", "default": false },
+        { "id": "heading_color", "type": "color", "label": "Question color" },
+        { "id": "text_color", "type": "color", "label": "Answer color" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "ingredients-faq",
+      "name": "FAQ — 6 items (pre-populated)",
+      "category": "FAQ",
       "blocks": [
-        {
-          "type": "topic",
-          "settings": {
-            "is_open": true,
-            "title": "Shipping details",
-            "text": "<p>Add additional information about shipping policy.</p>"
-          }
-        },
-        {
-          "type": "topic",
-          "settings": {
-            "title": "Delivery details",
-            "text": "<p>Add additional information about delivery policy.</p>"
-          }
-        },
-        {
-          "type": "topic",
-          "settings": {
-            "title": "Refund details",
-            "text": "<p>Add additional information about refund policy.</p>"
-          }
-        }
+        { "type": "faq_item", "settings": { "question": "What is your return policy?", "answer": "<p>We accept returns within 30 days of purchase for unused items in original packaging.</p>" } },
+        { "type": "faq_item", "settings": { "question": "Do you ship internationally?", "answer": "<p>Yes — we ship to many countries. Shipping times and rates vary per destination.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How long does delivery take?", "answer": "<p>Domestic deliveries usually arrive within 3–7 business days; international deliveries take longer.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How can I track my order?", "answer": "<p>After dispatch you will receive an email with tracking information.</p>" } },
+        { "type": "faq_item", "settings": { "question": "What payment methods do you accept?", "answer": "<p>We accept major credit cards, PayPal, and other payment methods depending on your region.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How do I contact support?", "answer": "<p>Contact our support team via the Contact page or email support@example.com.</p>" } }
       ]
     }
   ]
