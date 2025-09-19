@@ -1527,7 +1527,7 @@
           "settings": {
             "question": "What is your return policy?",
             "answer": "<p>We offer a 30-day return policy for all unused items in their original packaging. Please contact our customer service team to initiate a return.</p>",
-            "open_by_default": false,
+            "open_by_default": true,
             "heading_color": "",
             "text_color": ""
           }
