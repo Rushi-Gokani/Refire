@@ -716,6 +716,7 @@
         "video_NqWNaD",
         "group_TEanyT"
       ],
+      "disabled": true,
       "name": "t:names.video_section",
       "settings": {
         "content_direction": "row",
