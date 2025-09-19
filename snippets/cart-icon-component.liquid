@@ -12,7 +12,12 @@
     class="svg-wrapper"
     aria-hidden="true"
   >
-    {{ 'icon-cart.svg' | inline_asset_content }}
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3h1.5l1.7 9.4a1 1 0 001 .8h8.4a1 1 0 001-.8L17.5 5H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="7.5" cy="16.5" r="0.5" fill="currentColor"/>
+          <circle cx="14.5" cy="16.5" r="0.5" fill="currentColor"/>
+        </svg>
+       
   </span>
 
   {% render 'cart-bubble', limit: 100, live_region: true, test_id: test_id %}
