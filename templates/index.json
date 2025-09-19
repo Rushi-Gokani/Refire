@@ -808,6 +808,50 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "reel_customer_PgrkLG": {
+      "type": "reel-customer",
+      "blocks": {
+        "video_a7TB4L": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "instagram_link": ""
+          }
+        },
+        "video_LJqQpM": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "instagram_link": ""
+          }
+        },
+        "video_6ydBce": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "instagram_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_a7TB4L",
+        "video_LJqQpM",
+        "video_6ydBce"
+      ],
+      "name": "Our Reels",
+      "settings": {
+        "bg_color": "#f5f5f5",
+        "heading": "Watch Our Reels",
+        "heading_font_size": 32,
+        "subheading": "Click any video to view it on Instagram",
+        "subheading_font_size": 16,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "autoplay": false,
+        "controls": false,
+        "muted": true
+      }
     }
   },
   "order": [
@@ -816,6 +860,7 @@
     "hero_RkimKJ",
     "product_list_X8Q7bi",
     "section_RhpYRt",
-    "section_GMU7BC"
+    "section_GMU7BC",
+    "reel_customer_PgrkLG"
   ]
 }
