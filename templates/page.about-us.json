@@ -304,11 +304,146 @@
         "padding-block-end": 0
       }
     },
+    "1758351094569f789e": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_908c3b8_pdJNxx": {
+          "type": "ai_gen_block_908c3b8",
+          "settings": {
+            "layout": "image_right",
+            "background_color": "#ffffff",
+            "section_padding": 60,
+            "image": "shopify://shop_images/6_de0c14a4-e348-43c3-8490-5a3fe8301ec8.jpg",
+            "image_border_radius": 8,
+            "headline": "Power That Never Quits.",
+            "headline_color": "#000000",
+            "headline_size": 36,
+            "headline_weight": "600",
+            "paragraph": "<p>At Refire, we’re not just building portable power stations — we’re redefining freedom itself. Born in India, engineered for the world, Refire is a movement to break away from noisy, polluting, unreliable generators and to put clean, limitless energy in your hands.</p>",
+            "text_color": "#666666",
+            "text_size": 16,
+            "button_text": "Learn more",
+            "button_link": "",
+            "button_background_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_hover_background_color": "#333333",
+            "button_hover_text_color": "#ffffff",
+            "button_border_width": 0,
+            "button_border_color": "#000000",
+            "button_hover_border_color": "#333333",
+            "button_border_radius": 6,
+            "button_padding_vertical": 12,
+            "button_padding_horizontal": 24,
+            "button_text_size": 14,
+            "button_text_weight": "500"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_908c3b8_pdJNxx"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "blocks_j9YThc": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_908c3b8_beVpnW": {
+          "type": "ai_gen_block_908c3b8",
+          "settings": {
+            "layout": "image_left",
+            "background_color": "#ffffff",
+            "section_padding": 60,
+            "image": "shopify://shop_images/6_de0c14a4-e348-43c3-8490-5a3fe8301ec8.jpg",
+            "image_border_radius": 8,
+            "headline": "Who We Are",
+            "headline_color": "#000000",
+            "headline_size": 36,
+            "headline_weight": "600",
+            "paragraph": "<p>We are innovators, engineers, and dreamers obsessed with one mission: to ignite a revolution in portable power. From powering remote villages to fueling adventure travelers, from juice stalls on highways to creators shooting in the wild — we exist for everyone who refuses to be limited by power cuts, dead batteries, or outdated technology.</p>",
+            "text_color": "#666666",
+            "text_size": 16,
+            "button_text": "",
+            "button_link": "",
+            "button_background_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_hover_background_color": "#333333",
+            "button_hover_text_color": "#ffffff",
+            "button_border_width": 0,
+            "button_border_color": "#000000",
+            "button_hover_border_color": "#333333",
+            "button_border_radius": 6,
+            "button_padding_vertical": 12,
+            "button_padding_horizontal": 24,
+            "button_text_size": 14,
+            "button_text_weight": "500"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_908c3b8_beVpnW"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "section_XAYftk": {
       "type": "section",
       "blocks": {
         "ai_gen_block_18e8c77_rnjw97": {
           "type": "ai_gen_block_18e8c77",
+          "disabled": true,
           "settings": {
             "background_color": "#ffffff",
             "headline": "Power That Never Quits.",
@@ -337,6 +472,7 @@
       "block_order": [
         "ai_gen_block_18e8c77_rnjw97"
       ],
+      "disabled": true,
       "name": "t:names.custom_section",
       "settings": {
         "content_direction": "column",
@@ -619,7 +755,7 @@
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
-        "section_height": "small",
+        "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "",
         "background_media": "none",
@@ -686,7 +822,7 @@
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
-        "section_height": "small",
+        "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "",
         "background_media": "none",
@@ -748,7 +884,7 @@
         "vertical_alignment_flex_direction_column": "center",
         "gap": 12,
         "section_width": "page-width",
-        "section_height": "small",
+        "section_height": "",
         "section_height_custom": 50,
         "color_scheme": "",
         "background_media": "none",
@@ -772,6 +908,8 @@
     "main",
     "marquee_w4HcJ6",
     "featured_blog_posts_cB6Hf4",
+    "1758351094569f789e",
+    "blocks_j9YThc",
     "section_XAYftk",
     "section_LE3hHx",
     "featured_blog_posts_rxiRTg",
