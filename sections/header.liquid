@@ -278,6 +278,11 @@
       {{ navigation_bar }}
     </div>
   {% endif %}
+
+  <!-- Search Modal -->
+  {% if section.settings.show_search %}
+    {% render 'search-modal' %}
+  {% endif %}
 </header-component>
 
 <script
