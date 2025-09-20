@@ -584,21 +584,29 @@
         "video_CyeyfG": {
           "type": "video",
           "settings": {
-            "video_url": "",
-            "instagram_link": ""
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4"
+          }
+        },
+        "video_f4wDdY": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4"
           }
         },
         "video_QYxR7W": {
           "type": "video",
           "settings": {
-            "video_url": "",
-            "instagram_link": ""
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4"
           }
         }
       },
       "block_order": [
         "video_ixdbxD",
         "video_CyeyfG",
+        "video_f4wDdY",
         "video_QYxR7W"
       ],
       "name": "Our Reels",
