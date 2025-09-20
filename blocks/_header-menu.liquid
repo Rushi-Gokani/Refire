@@ -324,7 +324,7 @@
     padding-inline: var(--padding-inline);
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
   }
 
   /* Show the submenus on hover */
@@ -335,7 +335,10 @@
   .menu-list__submenu:is(:hover),
   .overflow-menu::part(overflow):hover,
   /* Keep submenu open when hovering over the parent menu item */
-  .menu-list__list-item:hover > .menu-list__submenu {
+  .menu-list__list-item:hover > .menu-list__submenu,
+  /* Show submenu when hovering over the menu link itself */
+  .menu-list__link--has-submenu:hover + .menu-list__submenu,
+  .menu-list__list-item:hover .menu-list__submenu {
     --submenu-content-opacity: 1;
     visibility: visible;
     opacity: 1;
@@ -439,6 +442,15 @@
     visibility: visible !important;
     z-index: 99999 !important;
     background-color: white !important;
+  }
+
+  /* Ensure submenu stays open when moving from menu item to submenu */
+  .menu-list__list-item:hover .menu-list__submenu,
+  .menu-list__submenu:hover {
+    --submenu-content-opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
   }
 
   .menu-list__submenu-inner {
