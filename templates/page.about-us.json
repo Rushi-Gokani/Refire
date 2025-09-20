@@ -540,6 +540,7 @@
       "block_order": [
         "ai_gen_block_0e9fd79_Eie87W"
       ],
+      "disabled": true,
       "name": "t:names.custom_section",
       "settings": {
         "content_direction": "column",
