@@ -175,6 +175,7 @@
     justify-content: center;
     width: 100%;
     position: relative;
+    margin: 0 auto;
   }
 
   .menu-list__list {
@@ -183,12 +184,15 @@
     align-items: center;
     gap: 8px;
     position: relative;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .menu-list__list-item {
     flex-shrink: 0;
     white-space: nowrap;
     position: relative;
+    z-index: 1;
   }
 
   .menu-list__list-item[aria-hidden='true'] {
@@ -336,6 +340,7 @@
     transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    display: none;
   }
 
   /* Show the submenus on hover */
@@ -349,7 +354,7 @@
   .menu-list__list-item:hover > .menu-list__submenu {
     --submenu-content-opacity: 1;
     visibility: visible;
-    display: block;
+    display: block !important;
   }
 
   .menu-list__list-item:has([data-animating]) > .menu-list__submenu {
