@@ -267,17 +267,17 @@
       High specificity selectors to subdue non-hovered links without javascript.
       If the need for js-generated `hovered` and `focused` classes arises for another reason we can simplify these.
     */
-  .menu-list:where(:has(.menu-list__list-item:hover)),
-  .menu-list:where(:has(.menu-list__list-item:focus-within)),
-  .menu-list:where(:has(.menu-list__list-item:not([aria-hidden='true']) .menu-list__link--active)) {
+  .menu-list:where(:has(.menu-list__link:hover)),
+  .menu-list:where(:has(.menu-list__link:focus-within)),
+  .menu-list:where(:has(.menu-list__link--active)) {
     .menu-list__link {
       color: rgb(var(--menu-top-level-font-color-rgb) / var(--opacity-subdued-text));
     }
   }
 
   /* stylelint-disable-next-line selector-max-specificity */
-  .menu-list:not(:has(.menu-list__list-item:hover)) .menu-list__link--active,
-  .menu-list .menu-list__list-item:where(:hover, :focus-within) .menu-list__link,
+  .menu-list:not(:has(.menu-list__link:hover)) .menu-list__link--active,
+  .menu-list .menu-list__link:where(:hover, :focus-within),
   .menu-list .menu-list__list-item[slot='overflow'] .menu-list__link[aria-expanded='true'] {
     color: var(--menu-top-level-font-color);
   }
@@ -330,21 +330,26 @@
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: opacity 0.3s ease, visibility 0.3s ease;
+    /* Ensure submenu is completely hidden by default */
+    display: none;
+    pointer-events: none;
   }
 
-  /* Show the submenus on hover - only on the actual menu link text */
+  /* Show the submenus on hover - ONLY on the actual menu link text */
   .menu-list__list-item:has([aria-expanded='true']) > .menu-list__submenu,
   /* Show the overflow menu when a menu item is hovered */
   .overflow-menu:has([slot="overflow"] [aria-expanded='true'])::part(overflow),
   /* Keep the submenus open when they are hovered */
   .menu-list__submenu:is(:hover),
   .overflow-menu::part(overflow):hover,
-  /* Show submenu ONLY when hovering over the menu link text that has children */
+  /* Show submenu ONLY when hovering over the menu link text that has children - VERY SPECIFIC */
   .menu-list__link--has-submenu:hover + .menu-list__submenu {
     --submenu-content-opacity: 1;
     visibility: visible;
     opacity: 1;
     z-index: 99999;
+    display: block !important;
+    pointer-events: auto;
   }
 
   .menu-list__list-item:has([data-animating]) > .menu-list__submenu {
@@ -438,12 +443,13 @@
     --submenu-content-opacity: 0;
   }
 
-  /* Force submenu visibility for debugging - only show when menu link is hovered */
+  /* Force submenu visibility - only show when menu link is hovered */
   .menu-list__link--has-submenu:hover + .menu-list__submenu {
     display: block !important;
     visibility: visible !important;
     z-index: 99999 !important;
     background-color: white !important;
+    pointer-events: auto !important;
   }
 
   .menu-list__submenu-inner {
