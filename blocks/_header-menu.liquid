@@ -194,6 +194,9 @@
     white-space: nowrap;
     position: relative;
     z-index: 1;
+    /* Remove any invisible hover areas */
+    padding: 0;
+    margin: 0;
   }
 
   .menu-list__list-item[aria-hidden='true'] {
@@ -218,6 +221,9 @@
     position: relative;
     gap: 6px;
     visibility: visible;
+    /* Ensure precise hover area */
+    box-sizing: border-box;
+    width: fit-content;
 
     &:hover {
       color: #000;
@@ -326,15 +332,15 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
-  /* Show the submenus on hover */
+  /* Show the submenus on hover - only on the actual menu link text */
   .menu-list__list-item:has([aria-expanded='true']) > .menu-list__submenu,
   /* Show the overflow menu when a menu item is hovered */
   .overflow-menu:has([slot="overflow"] [aria-expanded='true'])::part(overflow),
   /* Keep the submenus open when they are hovered */
   .menu-list__submenu:is(:hover),
   .overflow-menu::part(overflow):hover,
-  /* Keep submenu open when hovering over the parent menu item */
-  .menu-list__list-item:hover > .menu-list__submenu {
+  /* Show submenu ONLY when hovering over the menu link text that has children */
+  .menu-list__link--has-submenu:hover + .menu-list__submenu {
     --submenu-content-opacity: 1;
     visibility: visible;
     opacity: 1;
@@ -432,8 +438,8 @@
     --submenu-content-opacity: 0;
   }
 
-  /* Force submenu visibility for debugging */
-  .menu-list__list-item:has(.menu-list__submenu) .menu-list__submenu {
+  /* Force submenu visibility for debugging - only show when menu link is hovered */
+  .menu-list__link--has-submenu:hover + .menu-list__submenu {
     display: block !important;
     visibility: visible !important;
     z-index: 99999 !important;
