@@ -29,6 +29,19 @@ class HeaderMenu extends Component {
       signal: this.#abortController.signal,
     });
 
+    // Add hover listeners to submenus to prevent deactivation
+    this.addEventListener('pointerenter', (event) => {
+      if (event.target.closest('.menu-list__submenu')) {
+        this.#debouncedDeactivate.cancel();
+      }
+    }, { signal: this.#abortController.signal });
+
+    this.addEventListener('pointerleave', (event) => {
+      if (event.target.closest('.menu-list__submenu')) {
+        this.#debouncedDeactivate();
+      }
+    }, { signal: this.#abortController.signal });
+
     onDocumentLoaded(this.#preloadImages);
   }
 
@@ -135,6 +148,12 @@ class HeaderMenu extends Component {
     if (!(event.target instanceof Element)) return;
 
     const item = findMenuItem(event.target);
+    const submenu = findSubmenu(item);
+
+    // Don't deactivate if hovering over the submenu
+    if (submenu && submenu.contains(event.relatedTarget)) {
+      return;
+    }
 
     // Make sure the item to be deactivated is still the active one. Ideally
     // we cancelled the debounce before the item was changed, but just in case.

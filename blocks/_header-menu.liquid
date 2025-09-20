@@ -208,8 +208,7 @@
     padding: 8px 24px;
     border-radius: 6px;
     position: relative;
-
-
+    gap: 8px;
 
     &::after {
       content: '';
@@ -243,6 +242,21 @@
 
     &.menu-list__link--active::after {
       width: 100%;
+    }
+
+    /* Arrow styling for submenu items */
+    &.menu-list__link--has-submenu {
+      .menu-list__link-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        margin-left: 4px;
+      }
+
+      &:hover .menu-list__link-arrow {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -292,7 +306,7 @@
     opacity: var(--submenu-opacity, 1);
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic),
       opacity var(--animation-speed-slow) var(--ease-out-cubic) var(--animation-speed-fast);
-    z-index: calc(var(--layer-header-menu) - 1);
+    z-index: 9998;
   }
 
   /** mega menu **/
@@ -323,10 +337,12 @@
     width: 100%;
     left: 0;
     top: calc(100% - 1px + var(--border-bottom-width));
-    z-index: var(--layer-header-menu);
+    z-index: 9999;
     padding-inline: var(--padding-inline);
     clip-path: rect(0 100% var(--submenu-height) 0); /* stylelint-disable-line */
     transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
+    border-radius: 8px;
+    margin-top: 8px;
   }
 
   /* Show the submenus on hover */
@@ -335,7 +351,9 @@
   .overflow-menu:has([slot="overflow"] [aria-expanded='true'])::part(overflow),
   /* Keep the submenus open when they are hovered */
   .menu-list__submenu:is(:hover),
-  .overflow-menu::part(overflow):hover {
+  .overflow-menu::part(overflow):hover,
+  /* Keep submenu open when hovering over the parent menu item */
+  .menu-list__list-item:hover > .menu-list__submenu {
     --submenu-content-opacity: 1;
 
     visibility: visible;
@@ -439,6 +457,8 @@
     flex-wrap: wrap;
     opacity: var(--submenu-content-opacity);
     transition: var(--submenu-content-animation);
+    padding: 20px;
+    min-width: 200px;
   }
 
   .mega-menu__link {
@@ -454,9 +474,13 @@
     display: inline-flex;
     padding: var(--padding-2xs) 0;
     transition: color var(--animation-speed) var(--animation-easing);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 2px 0;
 
     &:hover {
       color: var(--menu-child-active-font-color);
+      background-color: rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -468,9 +492,12 @@
     line-height: var(--menu-parent-font-line-height);
     text-transform: var(--menu-parent-font-case);
     color: var(--menu-parent-font-color);
+    font-weight: 600;
+    margin-bottom: 8px;
 
     &:hover {
       color: var(--menu-parent-active-font-color);
+      background-color: rgba(0, 0, 0, 0.05);
     }
   }
 
