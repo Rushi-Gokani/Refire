@@ -203,7 +203,7 @@
     line-height: 1.4;
     text-transform: none;
     color: #333;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     text-decoration: none;
     display: flex;
     min-height: 44px;
@@ -213,25 +213,8 @@
     position: relative;
     gap: 6px;
 
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background-color: #333;
-      transition: all 0.2s ease;
-      transform: translateX(-50%);
-    }
-
     &:hover {
       color: #000;
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    &:hover::after {
-      width: 100%;
     }
 
     @media screen and (min-width: 750px) {
@@ -248,10 +231,6 @@
     &.menu-list__link--active {
       color: #000;
       font-weight: 600;
-    }
-
-    &.menu-list__link--active::after {
-      width: 100%;
     }
 
     /* Arrow styling for submenu items */
@@ -318,7 +297,7 @@
     opacity: var(--submenu-opacity, 1);
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic),
       opacity var(--animation-speed-slow) var(--ease-out-cubic) var(--animation-speed-fast);
-    z-index: 9998;
+    z-index: 9999;
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
   }
@@ -351,7 +330,7 @@
     width: 100%;
     left: 0;
     top: calc(100% + 8px);
-    z-index: 9999;
+    z-index: 10000;
     padding-inline: var(--padding-inline);
     clip-path: rect(0 100% var(--submenu-height) 0); /* stylelint-disable-line */
     transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
@@ -369,8 +348,8 @@
   /* Keep submenu open when hovering over the parent menu item */
   .menu-list__list-item:hover > .menu-list__submenu {
     --submenu-content-opacity: 1;
-
     visibility: visible;
+    display: block;
   }
 
   .menu-list__list-item:has([data-animating]) > .menu-list__submenu {
@@ -486,15 +465,12 @@
     white-space: normal;
     text-decoration: none;
     display: inline-flex;
-    padding: var(--padding-2xs) 0;
-    transition: color var(--animation-speed) var(--animation-easing);
-    border-radius: 4px;
     padding: 8px 12px;
     margin: 2px 0;
+    transition: color var(--animation-speed) var(--animation-easing);
 
     &:hover {
       color: var(--menu-child-active-font-color);
-      background-color: rgba(0, 0, 0, 0.05);
     }
   }
 
@@ -511,7 +487,6 @@
 
     &:hover {
       color: var(--menu-parent-active-font-color);
-      background-color: rgba(0, 0, 0, 0.05);
     }
   }
 
