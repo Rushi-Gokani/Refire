@@ -13,7 +13,7 @@
     <button
       class="header-actions__action header-actions__search"
       aria-label="{{ 'accessibility.search' | t }}"
-      onclick="document.querySelector('#search-modal dialog-component').showDialog()"
+      onclick="handleSearchClick()"
     >
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -390,3 +390,16 @@
     animation: cartBubbleSlideIn var(--animation-speed) var(--animation-easing);
   }
 {% endstylesheet %}
+
+<script>
+  function handleSearchClick() {
+    // Try to open the search modal first
+    const searchModal = document.querySelector('#search-modal dialog-component');
+    if (searchModal && typeof searchModal.showDialog === 'function') {
+      searchModal.showDialog();
+    } else {
+      // Fallback: redirect to search page
+      window.location.href = '{{ routes.search_url }}';
+    }
+  }
+</script>

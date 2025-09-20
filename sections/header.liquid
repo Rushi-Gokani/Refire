@@ -290,6 +290,13 @@
   type="module"
 ></script>
 
+{% if section.settings.show_search %}
+<script
+  src="{{ 'dialog.js' | asset_url }}"
+  type="module"
+></script>
+{% endif %}
+
 {% stylesheet %}
   body {
     --header-height: 0px;
