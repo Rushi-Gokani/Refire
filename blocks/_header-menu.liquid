@@ -290,23 +290,6 @@
   }
 
   /* the submenu background element to animate */
-  .overflow-menu::after {
-    content: '';
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    width: 100%;
-    height: var(--submenu-height);
-    background-color: var(--color-background);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    clip-path: inset(0.5px 0 -100px 0); /* stylelint-disable-line */
-    opacity: var(--submenu-opacity, 1);
-    transition: height var(--submenu-animation-speed) var(--ease-out-cubic),
-      opacity var(--animation-speed-slow) var(--ease-out-cubic) var(--animation-speed-fast);
-    z-index: 9999;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
 
   /** mega menu **/
   .menu-list__submenu,
