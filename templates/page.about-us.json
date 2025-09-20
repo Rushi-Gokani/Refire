@@ -505,58 +505,6 @@
         "padding-block-end": 0
       }
     },
-    "reel_customer_mAUAtY": {
-      "type": "reel-customer",
-      "blocks": {
-        "video_ixdbxD": {
-          "type": "video",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/b1855a401b6d438fb4ac253688f1f47f.mp4",
-            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/b1855a401b6d438fb4ac253688f1f47f.mp4"
-          }
-        },
-        "video_CyeyfG": {
-          "type": "video",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4",
-            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4"
-          }
-        },
-        "video_f4wDdY": {
-          "type": "video",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4",
-            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4"
-          }
-        },
-        "video_QYxR7W": {
-          "type": "video",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4",
-            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4"
-          }
-        }
-      },
-      "block_order": [
-        "video_ixdbxD",
-        "video_CyeyfG",
-        "video_f4wDdY",
-        "video_QYxR7W"
-      ],
-      "name": "Our Reels",
-      "settings": {
-        "bg_color": "#ffffff",
-        "heading": "Watch Our Reels",
-        "heading_font_size": 32,
-        "subheading": "",
-        "subheading_font_size": 16,
-        "padding_top": 40,
-        "padding_bottom": 40,
-        "autoplay": true,
-        "controls": false,
-        "muted": true
-      }
-    },
     "blocks_FEbHGT": {
       "type": "_blocks",
       "blocks": {
@@ -624,6 +572,58 @@
         "padding-block-end": 0
       }
     },
+    "reel_customer_mAUAtY": {
+      "type": "reel-customer",
+      "blocks": {
+        "video_ixdbxD": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/b1855a401b6d438fb4ac253688f1f47f.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/b1855a401b6d438fb4ac253688f1f47f.mp4"
+          }
+        },
+        "video_CyeyfG": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/ea8ed11112be464aa39bcf033c986ffb.mp4"
+          }
+        },
+        "video_f4wDdY": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/92eb2ef7942f45e2a683abb7359bff92.mp4"
+          }
+        },
+        "video_QYxR7W": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4"
+          }
+        }
+      },
+      "block_order": [
+        "video_ixdbxD",
+        "video_CyeyfG",
+        "video_f4wDdY",
+        "video_QYxR7W"
+      ],
+      "name": "Our Reels",
+      "settings": {
+        "bg_color": "#ffffff",
+        "heading": "Watch Our Reels",
+        "heading_font_size": 32,
+        "subheading": "",
+        "subheading_font_size": 16,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "autoplay": true,
+        "controls": false,
+        "muted": true
+      }
+    },
     "blocks_rzUyf7": {
       "type": "_blocks",
       "blocks": {
@@ -631,7 +631,7 @@
           "type": "ai_gen_block_908c3b8",
           "settings": {
             "layout": "image_right",
-            "background_color": "#ffffff",
+            "background_color": "#f1f1f1",
             "section_padding": 60,
             "image": "shopify://shop_images/6_de0c14a4-e348-43c3-8490-5a3fe8301ec8.jpg",
             "image_border_radius": 8,
@@ -675,7 +675,7 @@
         "section_width": "page-width",
         "section_height": "",
         "section_height_custom": 50,
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "background_media": "none",
         "video_position": "cover",
         "background_image_position": "cover",
@@ -700,8 +700,8 @@
     "1758351094569f789e",
     "featured_blog_posts_rxiRTg",
     "blocks_jkjREx",
-    "reel_customer_mAUAtY",
     "blocks_FEbHGT",
+    "reel_customer_mAUAtY",
     "blocks_rzUyf7"
   ]
 }
