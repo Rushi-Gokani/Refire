@@ -336,12 +336,13 @@
     width: 100%;
     left: 0;
     top: calc(100% + 8px);
-    z-index: 10000;
+    z-index: 99999;
     padding-inline: var(--padding-inline);
     clip-path: rect(0 100% var(--submenu-height) 0); /* stylelint-disable-line */
     transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic);
     border-radius: 8px;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    display: none;
   }
 
   /* Show the submenus on hover */
@@ -355,6 +356,8 @@
   .menu-list__list-item:hover > .menu-list__submenu {
     --submenu-content-opacity: 1;
     visibility: visible;
+    display: block !important;
+    z-index: 99999;
   }
 
   .menu-list__list-item:has([data-animating]) > .menu-list__submenu {
@@ -457,7 +460,8 @@
     transition: var(--submenu-content-animation);
     padding: 20px;
     min-width: 200px;
-    z-index: 10001;
+    z-index: 100000;
+    background-color: white;
   }
 
   .mega-menu__link {
@@ -474,6 +478,8 @@
     padding: 8px 12px;
     margin: 2px 0;
     transition: color var(--animation-speed) var(--animation-easing);
+    z-index: 100001;
+    position: relative;
 
     &:hover {
       color: var(--menu-child-active-font-color);
@@ -617,6 +623,8 @@
     grid-template-columns: subgrid;
     grid-column: span var(--menu-columns-tablet);
     gap: var(--menu-vertical-gap) var(--menu-horizontal-gap);
+    z-index: 100002;
+    position: relative;
 
     @media screen and (min-width: 990px) {
       grid-column: span var(--menu-columns-desktop);
