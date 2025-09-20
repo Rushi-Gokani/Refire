@@ -42,6 +42,28 @@ class HeaderMenu extends Component {
       }
     }, { signal: this.#abortController.signal });
 
+    // Add click handlers for submenu toggles
+    this.addEventListener('click', (event) => {
+      const link = event.target.closest('.menu-list__link--has-submenu');
+      if (link) {
+        event.preventDefault();
+        const submenu = link.parentElement.querySelector('.menu-list__submenu');
+        const isExpanded = link.getAttribute('aria-expanded') === 'true';
+        
+        // Toggle aria-expanded
+        link.setAttribute('aria-expanded', !isExpanded);
+        
+        // Toggle submenu visibility
+        if (submenu) {
+          if (isExpanded) {
+            submenu.setAttribute('hidden', '');
+          } else {
+            submenu.removeAttribute('hidden');
+          }
+        }
+      }
+    }, { signal: this.#abortController.signal });
+
     onDocumentLoaded(this.#preloadImages);
   }
 

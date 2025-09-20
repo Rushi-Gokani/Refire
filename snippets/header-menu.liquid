@@ -60,15 +60,34 @@
             class="menu-list__submenu-inner"
             style="{% render 'submenu-font-styles', settings: block_settings %}"
           >
-            {% assign list_id = 'MegaMenuList-' | append: forloop.index %}
-            {% render 'mega-menu',
-              section: section,
-              parent_link: link,
-              id: list_id,
-              menu_content_type: menu_content_type,
-              content_aspect_ratio: ratio,
-              image_border_radius: image_border_radius
-            %}
+            <ul class="mega-menu__list list-unstyled">
+              {% for child_link in link.links %}
+                <li class="mega-menu__column mega-menu__column--span-1">
+                  <div>
+                    <a
+                      href="{{ child_link.url }}"
+                      class="mega-menu__link{% if child_link.links != blank %} mega-menu__link--parent{% endif %}"
+                    >
+                      <span class="mega-menu__link-title">{{- child_link.title -}}</span>
+                    </a>
+                    {% if child_link.links != blank %}
+                      <ul class="list-unstyled">
+                        {% for grandchild_link in child_link.links %}
+                          <li>
+                            <a
+                              href="{{ grandchild_link.url }}"
+                              class="mega-menu__link"
+                            >
+                              <span class="mega-menu__link-title">{{- grandchild_link.title -}}</span>
+                            </a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    {% endif %}
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
           </div>
         </div>
       {%- endif -%}
