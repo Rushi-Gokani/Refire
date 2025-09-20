@@ -8,8 +8,8 @@
   class="modern-header-actions"
   {{- block.shopify_attributes -}}
 >
-  <!-- Search Icon - conditionally show based on settings -->
-  {% if settings.predictive_search_enabled or section.settings.show_search %}
+  <!-- Search Icon - only show if search is properly configured -->
+  {% if section.settings.show_search and settings.predictive_search_enabled %}
     <button
       class="header-actions__action header-actions__search"
       aria-label="{{ 'accessibility.search' | t }}"
