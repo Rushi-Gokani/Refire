@@ -246,26 +246,9 @@
 
     {% assign content = content | strip %}
     {% if content != blank %}
-      <!-- EcoFlow-style Two-Row Header Layout -->
-      <div class="header__row color-{{ section.settings.color_scheme_top }}">
-        <!-- Top Row: Logo (Center) + Actions (Right) -->
-        <div class="header__top-row">
-          <div class="header__mobile-menu-section mobile:block desktop:hidden">
-            {{ mobile_menu }}
-          </div>
-          <div class="header__logo-section">
-            {{ logo }}
-          </div>
-          <div class="header__actions-section">
-            {{ actions }}
-          </div>
-        </div>
-        
-        <!-- Bottom Row: Menu (Center) -->
-        <div class="header__bottom-row">
-          <div class="header__menu-section">
-            {{ menu }}
-          </div>
+      <div class="header__row {{ class }}" style="{{ style }}">
+        <div class="header__columns">
+          {{ content }}
         </div>
       </div>
     {% endif %}
@@ -482,14 +465,13 @@
   }
 
   .header__columns {
-    /* EcoFlow-style two-row layout */
     --header-template-columns: 1fr auto 1fr;
 
     /* Mobile layout */
     --header-mobile-bookend: 44px;
 
     display: grid;
-    grid-template-areas: 'left-actions center-logo right-actions';
+    grid-template-areas: 'left center right';
     grid-template-columns: var(--header-template-columns);
     align-items: center;
     padding: 0 40px;
@@ -504,115 +486,43 @@
     }
   }
 
-  /* New two-row header structure */
   .header__row {
     position: relative;
-    display: flex;
-    flex-direction: column;
     background-color: var(--header-bg-color, var(--color-background));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    min-height: 80px;
     z-index: 1000;
-
-    @media screen and (max-width: 749px) {
-      min-height: 60px;
-    }
   }
 
-  .header__top-row {
-    display: grid;
-    grid-template-areas: 'left-space center-logo right-actions';
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    padding: 20px 40px 16px;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-
-    @media screen and (max-width: 749px) {
-      padding: 16px 20px 12px;
-      grid-template-columns: auto 1fr auto;
-      grid-template-areas: 'mobile-menu center-logo right-actions';
-    }
+  /* If menu is in center column */
+  .header__columns:has(.header__column--center header-menu) {
+    --header-center: auto;
+    --header-left: minmax(max-content, 1fr);
+    --header-right: minmax(max-content, 1fr);
   }
 
-  .header__bottom-row {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 40px 20px;
-    max-width: 100%;
-    margin: 0 auto;
-    width: 100%;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
-    margin-top: -1px;
-
-    @media screen and (max-width: 749px) {
-      display: none;
-    }
-  }
-
-  .header__logo-section {
-    grid-area: center-logo;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .header__actions-section {
-    grid-area: right-actions;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-  .header__menu-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-
-  .header__mobile-menu-section {
-    grid-area: mobile-menu;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
+  /* If there is no center column, make the column the menu is in grow eagerly */
+  .header__columns:where(:not(:has(.header__column--center))) {
     @media screen and (min-width: 750px) {
-      display: none;
-    }
-  }
+      --header-template-columns: var(--header-left) var(--header-right);
 
-    /* If menu is in center column */
-    &:has(.header__column--center header-menu) {
-      --header-center: auto;
+      grid-template-areas: 'left right';
+    }
+
+    /* If the header-menu is in the right column */
+    &:has(.header__column--right header-menu) {
+      --header-right: auto;
       --header-left: minmax(max-content, 1fr);
+    }
+
+    /* If the header-menu is in the left column */
+    &:has(.header__column--left header-menu) {
+      --header-left: auto;
       --header-right: minmax(max-content, 1fr);
     }
+  }
 
-    /* If there is no center column, make the column the menu is in grow eagerly */
-    &:where(:not(:has(.header__column--center))) {
-      @media screen and (min-width: 750px) {
-        --header-template-columns: var(--header-left) var(--header-right);
-
-        grid-template-areas: 'left right';
-      }
-
-      /* If the header-menu is in the right column */
-      &:has(.header__column--right header-menu) {
-        --header-right: auto;
-        --header-left: minmax(max-content, 1fr);
-      }
-
-      /* If the header-menu is in the left column */
-      &:has(.header__column--left header-menu) {
-        --header-left: auto;
-        --header-right: minmax(max-content, 1fr);
-      }
-    }
-
-    @media screen and (max-width: 749px) {
+  @media screen and (max-width: 749px) {
+    .header__columns {
       --header-template-columns: var(--header-mobile-bookend) var(--header-mobile-bookend) 1fr
         var(--header-mobile-bookend) var(--header-mobile-bookend);
 
