@@ -182,12 +182,14 @@ FAQ — 6 Items (single-file section)
   document.body.addEventListener('click', function(event){
     const chevron = event.target.closest('[class*="faq-chevron-"]');
     if (!chevron) return;
-    const btn = chevron.closest('button') || chevron.closest('[data-faq-question]') || chevron.closest('div') && chevron.closest('div').querySelector('[data-faq-question]');
+    
+    // Find the button that contains this chevron
+    const btn = chevron.closest('button[data-faq-question]');
     if (btn){
-      if (event.target !== btn){
-        btn.click();
-        event.preventDefault();
-      }
+      // Trigger the button click to toggle the FAQ
+      btn.click();
+      event.preventDefault();
+      event.stopPropagation();
     }
   }, true);
 

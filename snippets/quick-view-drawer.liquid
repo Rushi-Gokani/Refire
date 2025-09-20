@@ -442,7 +442,12 @@
     white-space: nowrap;
     overflow: visible;
   }
-
+  @media screen and (max-width: 768px) {
+  
+  .quick-view-drawer__body {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0px);
+  }
+  }
   /* Desktop Responsive - Keep full width on desktop too */
   @media screen and (min-width: 768px) {
     .quick-view-drawer {
