@@ -9,6 +9,83 @@
  */
 {
   "sections": {
+    "17583493413eaf55f4": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_e1eeb99_hmzdna": {
+          "type": "ai_gen_block_e1eeb99",
+          "settings": {
+            "show_title": true,
+            "title": "Warranty Claim Form",
+            "alignment_center": true,
+            "desktop_columns": "2",
+            "mobile_columns": "1",
+            "show_full_name": true,
+            "require_full_name": true,
+            "show_phone": true,
+            "require_phone": true,
+            "show_email": true,
+            "require_email": true,
+            "show_model_name": true,
+            "require_model_name": true,
+            "show_serial_number": true,
+            "require_serial_number": true,
+            "show_purchase_date": true,
+            "require_purchase_date": true,
+            "show_invoice_upload": true,
+            "require_invoice_upload": false,
+            "show_description": true,
+            "require_description": false,
+            "show_media_upload": true,
+            "require_media_upload": false,
+            "show_privacy_checkbox": false,
+            "privacy_policy_link": "",
+            "input_border_radius": 8,
+            "input_padding": 12,
+            "font_size": 16,
+            "background_color": "#ffffff",
+            "text_color": "#000000",
+            "input_border_color": "#e1e5e9",
+            "input_background_color": "#ffffff",
+            "button_background_color": "#2f6f4e",
+            "button_text_color": "#ffffff",
+            "success_message": "Your warranty claim has been submitted successfully! We will contact you soon.",
+            "redirect_url": "shopify://pages/about-us"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_e1eeb99_hmzdna"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "1758281474df41ae84": {
       "type": "_blocks",
       "blocks": {
@@ -60,6 +137,7 @@
       "block_order": [
         "ai_gen_block_019d528_ABxDHQ"
       ],
+      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
@@ -233,6 +311,7 @@
     }
   },
   "order": [
+    "17583493413eaf55f4",
     "1758281474df41ae84",
     "main",
     "section_azXUpp"
