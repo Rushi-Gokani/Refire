@@ -781,7 +781,7 @@
             "text_color": "#666666",
             "text_size": 16,
             "button_text": "Learn more",
-            "button_link": "",
+            "button_link": "shopify://pages/about-us",
             "button_background_color": "#000000",
             "button_text_color": "#ffffff",
             "button_hover_background_color": "#333333",
