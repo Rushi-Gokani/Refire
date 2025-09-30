@@ -15,7 +15,7 @@
         "ai_gen_block_be56cb7_etw6zU": {
           "type": "ai_gen_block_be56cb7",
           "settings": {
-            "banner_height": 400,
+            "banner_height": 220,
             "mobile_banner_height": 300,
             "heading": "Welcome to our store",
             "show_breadcrumbs": true,
