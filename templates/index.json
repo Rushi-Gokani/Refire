@@ -998,8 +998,8 @@
             "testimonial_5_author_name": "Kavita Singh",
             "testimonial_5_author_title": "Verified Customer",
             "testimonial_5_rating": 5,
-            "testimonial_6_enabled": true,
-            "testimonial_6_quote": "Excellent customer support and an even better product. This company really cares about their customers!",
+            "testimonial_6_enabled": false,
+            "testimonial_6_quote": "",
             "testimonial_6_author_name": "James Wilson",
             "testimonial_6_author_title": "Loyal Customer",
             "testimonial_6_rating": 4
