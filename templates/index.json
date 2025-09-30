@@ -968,7 +968,7 @@
             "subtitle_color": "#666666",
             "card_background": "#ffffff",
             "card_border_color": "#e6e6e6",
-            "card_shadow_color": "rgba(0, 0, 0, 0.1)",
+            "card_shadow_color": "#0000001a",
             "quote_color": "#333333",
             "author_name_color": "#2f6f4e",
             "author_title_color": "#666666",
@@ -1102,7 +1102,6 @@
         "text_KeVVPd",
         "ai_gen_block_76919bb_XkU3MG"
       ],
-      "disabled": true,
       "settings": {
         "content_direction": "column",
         "vertical_on_mobile": true,
