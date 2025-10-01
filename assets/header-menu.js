@@ -92,17 +92,18 @@ class HeaderMenu extends Component {
         nestedList.removeAttribute('hidden');
 
         // Position nested submenu to the right of its parent item (side menu)
-        const container = nestedParent.closest('.menu-list__submenu-inner');
+        const container = nestedParent.closest('.menu-list__submenu');
+        const containerInner = nestedParent.closest('.menu-list__submenu-inner') || container;
         const parentListItem = nestedParent.closest('li');
 
-        if (container && parentListItem) {
+        if (containerInner && parentListItem) {
           // Ensure positioning context
-          if (getComputedStyle(container).position === 'static') {
-            container.style.position = 'relative';
+          if (getComputedStyle(containerInner).position === 'static') {
+            containerInner.style.position = 'relative';
           }
 
           const parentRect = parentListItem.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
+          const containerRect = containerInner.getBoundingClientRect();
 
           nestedList.style.position = 'absolute';
           nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
@@ -221,9 +222,13 @@ class HeaderMenu extends Component {
 
     const item = findMenuItem(event.target);
     const submenu = findSubmenu(item);
+    const related = /** @type {Element | null} */ (event.relatedTarget instanceof Element ? event.relatedTarget : null);
 
-    // Don't deactivate if hovering over the submenu
-    if (submenu && submenu.contains(event.relatedTarget)) {
+    // Don't deactivate if hovering over the submenu or any nested submenu
+    if (
+      (submenu && related && submenu.contains(related)) ||
+      (related && related.closest('.mega-menu__nested'))
+    ) {
       return;
     }
 
