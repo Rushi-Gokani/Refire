@@ -67,11 +67,23 @@
                     <a
                       href="{{ child_link.url }}"
                       class="mega-menu__link{% if child_link.links != blank %} mega-menu__link--parent{% endif %}"
+                      {%- if child_link.links != blank -%}
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="submenu-child-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+                      {%- endif -%}
                     >
                       <span class="mega-menu__link-title">{{- child_link.title -}}</span>
+                      {%- if child_link.links != blank -%}
+                        <span class="mega-menu__link-arrow">&#8250;</span>
+                      {%- endif -%}
                     </a>
                     {% if child_link.links != blank %}
-                      <ul class="list-unstyled">
+                      <ul
+                        id="submenu-child-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+                        class="list-unstyled mega-menu__nested"
+                        hidden
+                      >
                         {% for grandchild_link in child_link.links %}
                           <li>
                             <a
