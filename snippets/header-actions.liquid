@@ -34,8 +34,11 @@
         <circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
-    {% render 'account-popover' %}
-    {% render 'account-drawer' %}
+    {%- comment -%}
+      Removed extra account UI renders to avoid duplicate account icons in the header.
+      If you need popover/drawer functionality, integrate it into the single icon above
+      without adding another visible trigger.
+    {%- endcomment -%}
   {% endif %}
 
 

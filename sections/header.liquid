@@ -517,6 +517,11 @@
     @media screen and (max-width: 749px) {
       padding: 12px 20px;
     }
+
+    /* On desktop the left mobile menu is hidden, so balance columns to keep the logo truly centered */
+    @media screen and (min-width: 750px) {
+      grid-template-columns: 1fr 1fr auto;
+    }
   }
 
   .header__bottom-row {
