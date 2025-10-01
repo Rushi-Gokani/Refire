@@ -171,14 +171,6 @@ class HeaderMenu extends Component {
       }, NESTED_DEACTIVATE_DELAY);
     };
 
-    // Pointerleave on parent li
-    this.addEventListener('pointerleave', (event) => {
-      const li = event.target.closest('li');
-      if (!li) return;
-      // only if the li contains a nested parent link
-      if (li.querySelector('.mega-menu__link--parent')) scheduleClose();
-    }, { signal: this.#abortController.signal });
-
     // Cancel scheduled close when entering nested list; schedule when leaving it
     this.addEventListener('pointerenter', (event) => {
       if (event.target.closest('.mega-menu__nested')) {
@@ -186,19 +178,23 @@ class HeaderMenu extends Component {
       }
     }, { signal: this.#abortController.signal });
 
-    this.addEventListener('pointerleave', (event) => {
-      if (event.target.closest('.mega-menu__nested')) {
+    // Use pointerout (bubbling) to detect leaving key areas
+    this.addEventListener('pointerout', (event) => {
+      const from = event.target instanceof Element ? event.target : null;
+      const to = event.relatedTarget instanceof Element ? event.relatedTarget : null;
+      if (!from) return;
+
+      // Leaving a nested list entirely
+      if (from.closest('.mega-menu__nested') && (!to || !to.closest('.mega-menu__nested'))) {
+        scheduleClose();
+        return;
+      }
+
+      // Leaving the submenu container area entirely (not heading into nested list or another item within the same container)
+      const submenuContainer = from.closest('.menu-list__submenu-inner');
+      if (submenuContainer && (!to || !submenuContainer.contains(to))) {
         scheduleClose();
       }
-    }, { signal: this.#abortController.signal });
-
-    // Close when leaving the entire submenu container area
-    this.addEventListener('pointerleave', (event) => {
-      const submenuContainer = event.target.closest('.menu-list__submenu');
-      if (!submenuContainer) return;
-      const related = event.relatedTarget instanceof Element ? event.relatedTarget : null;
-      if (related && submenuContainer.contains(related)) return;
-      scheduleClose();
     }, { signal: this.#abortController.signal });
 
     // Close nested submenu on outside click
