@@ -93,6 +93,17 @@ class HeaderMenu extends Component {
         nestedList.style.maxHeight = '';
         nestedList.style.overflow = '';
       } else {
+        // Close any other open nested lists first
+        this.querySelectorAll('.mega-menu__nested:not([hidden])')
+          .forEach((openList) => {
+            openList.setAttribute('hidden', '');
+            const id = openList.getAttribute('id');
+            if (id) {
+              const openLink = this.querySelector(`[aria-controls="${CSS.escape(id)}"]`);
+              if (openLink) openLink.setAttribute('aria-expanded', 'false');
+            }
+          });
+
         nestedList.removeAttribute('hidden');
         // Position nested submenu to the right of its parent item relative to the submenu container
         const container = nestedParent.closest('.menu-list__submenu-inner');
@@ -115,6 +126,40 @@ class HeaderMenu extends Component {
           nestedList.style.overflow = 'visible';
         }
       }
+    }, { signal: this.#abortController.signal });
+
+    // Close nested submenu on outside click
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (!target) return;
+
+      // Ignore clicks on nested parent links or the nested lists themselves
+      if (target.closest('.mega-menu__link--parent') || target.closest('.mega-menu__nested')) return;
+
+      // If click is outside any nested menu, close all nested lists (keep main submenu open)
+      this.querySelectorAll('.mega-menu__nested:not([hidden])')
+        .forEach((openList) => {
+          openList.setAttribute('hidden', '');
+          const id = openList.getAttribute('id');
+          if (id) {
+            const openLink = this.querySelector(`[aria-controls="${CSS.escape(id)}"]`);
+            if (openLink) openLink.setAttribute('aria-expanded', 'false');
+          }
+        });
+    }, { signal: this.#abortController.signal });
+
+    // Close nested submenu on Escape key
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      this.querySelectorAll('.mega-menu__nested:not([hidden])')
+        .forEach((openList) => {
+          openList.setAttribute('hidden', '');
+          const id = openList.getAttribute('id');
+          if (id) {
+            const openLink = this.querySelector(`[aria-controls="${CSS.escape(id)}"]`);
+            if (openLink) openLink.setAttribute('aria-expanded', 'false');
+          }
+        });
     }, { signal: this.#abortController.signal });
 
     onDocumentLoaded(this.#preloadImages);
