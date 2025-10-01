@@ -129,3 +129,25 @@
     {% render 'overflow-list', class: class, ref: 'overflowMenu', children: children, minimum-items: 2, defer: true %}
   </div>
 </nav>
+
+{% stylesheet %}
+  /* Nested submenu flyout */
+  .mega-menu__nested {
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    padding: 12px 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mega-menu__nested > li > a.mega-menu__link {
+    display: block;
+    padding: 10px 16px;
+    white-space: nowrap;
+  }
+
+  .mega-menu__nested > li > a.mega-menu__link:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+{% endstylesheet %}
