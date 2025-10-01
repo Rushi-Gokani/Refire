@@ -192,6 +192,15 @@ class HeaderMenu extends Component {
       }
     }, { signal: this.#abortController.signal });
 
+    // Close when leaving the entire submenu container area
+    this.addEventListener('pointerleave', (event) => {
+      const submenuContainer = event.target.closest('.menu-list__submenu');
+      if (!submenuContainer) return;
+      const related = event.relatedTarget instanceof Element ? event.relatedTarget : null;
+      if (related && submenuContainer.contains(related)) return;
+      scheduleClose();
+    }, { signal: this.#abortController.signal });
+
     // Close nested submenu on outside click
     document.addEventListener('click', (event) => {
       const target = event.target instanceof Element ? event.target : null;
