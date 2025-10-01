@@ -4,6 +4,7 @@ import { MegaMenuHoverEvent } from '@theme/events';
 
 const ACTIVATE_DELAY = 0;
 const DEACTIVATE_DELAY = 350;
+const NESTED_DEACTIVATE_DELAY = 250;
 
 /**
  * A custom element that manages a header menu.
@@ -125,6 +126,69 @@ class HeaderMenu extends Component {
           nestedList.style.maxHeight = 'none';
           nestedList.style.overflow = 'visible';
         }
+      }
+    }, { signal: this.#abortController.signal });
+
+    // Hover open for nested submenus
+    this.addEventListener('pointerenter', (event) => {
+      const nestedParent = event.target.closest('.mega-menu__link--parent');
+      if (!nestedParent) return;
+
+      const controlsId = nestedParent.getAttribute('aria-controls');
+      if (!controlsId) return;
+      const nestedList = this.querySelector(`#${CSS.escape(controlsId)}`);
+      if (!nestedList) return;
+
+      // Open and position
+      nestedParent.setAttribute('aria-expanded', 'true');
+      nestedList.removeAttribute('hidden');
+      const container = nestedParent.closest('.menu-list__submenu-inner');
+      const parentListItem = nestedParent.closest('li');
+      if (container && parentListItem) {
+        const containerRect = container.getBoundingClientRect();
+        const parentRect = parentListItem.getBoundingClientRect();
+        if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
+        nestedList.style.position = 'absolute';
+        nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
+        nestedList.style.left = `${Math.max(0, parentRect.right - containerRect.left)}px`;
+        nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
+        nestedList.style.zIndex = '2';
+        nestedList.style.maxHeight = 'none';
+        nestedList.style.overflow = 'visible';
+      }
+    }, { signal: this.#abortController.signal });
+
+    // Close nested submenu when cursor leaves both parent li and nested list
+    let nestedCloseTimeout = null;
+    const scheduleClose = () => {
+      if (nestedCloseTimeout) clearTimeout(nestedCloseTimeout);
+      nestedCloseTimeout = setTimeout(() => {
+        this.querySelectorAll('.mega-menu__nested:not([hidden])').forEach((list) => {
+          list.setAttribute('hidden', '');
+          const id = list.getAttribute('id');
+          if (id) this.querySelector(`[aria-controls="${CSS.escape(id)}"]`)?.setAttribute('aria-expanded', 'false');
+        });
+      }, NESTED_DEACTIVATE_DELAY);
+    };
+
+    // Pointerleave on parent li
+    this.addEventListener('pointerleave', (event) => {
+      const li = event.target.closest('li');
+      if (!li) return;
+      // only if the li contains a nested parent link
+      if (li.querySelector('.mega-menu__link--parent')) scheduleClose();
+    }, { signal: this.#abortController.signal });
+
+    // Cancel scheduled close when entering nested list; schedule when leaving it
+    this.addEventListener('pointerenter', (event) => {
+      if (event.target.closest('.mega-menu__nested')) {
+        if (nestedCloseTimeout) clearTimeout(nestedCloseTimeout);
+      }
+    }, { signal: this.#abortController.signal });
+
+    this.addEventListener('pointerleave', (event) => {
+      if (event.target.closest('.mega-menu__nested')) {
+        scheduleClose();
       }
     }, { signal: this.#abortController.signal });
 
