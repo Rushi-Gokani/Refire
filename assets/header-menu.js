@@ -82,8 +82,35 @@ class HeaderMenu extends Component {
       nestedParent.setAttribute('aria-expanded', (!isExpanded).toString());
       if (isExpanded) {
         nestedList.setAttribute('hidden', '');
+        // Clear positioning when closing
+        nestedList.style.position = '';
+        nestedList.style.top = '';
+        nestedList.style.left = '';
+        nestedList.style.minWidth = '';
+        nestedList.style.zIndex = '';
       } else {
         nestedList.removeAttribute('hidden');
+
+        // Position nested submenu to the right of its parent item (side menu)
+        const container = nestedParent.closest('.menu-list__submenu-inner');
+        const parentListItem = nestedParent.closest('li');
+
+        if (container && parentListItem) {
+          // Ensure positioning context
+          if (getComputedStyle(container).position === 'static') {
+            container.style.position = 'relative';
+          }
+
+          const parentRect = parentListItem.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+
+          nestedList.style.position = 'absolute';
+          nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
+          nestedList.style.left = `${Math.max(0, parentRect.right - containerRect.left)}px`;
+          // Keep reasonable width and stacking above
+          nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
+          nestedList.style.zIndex = '2';
+        }
       }
     }, { signal: this.#abortController.signal });
 
