@@ -22,53 +22,7 @@ class HeaderMenu extends Component {
 
   #abortController = new AbortController();
 
-  /**
-   * Track currently opened nested submenu so we can reposition on scroll/resize
-   * @type {{ link: HTMLElement, list: HTMLElement } | null}
-   */
-  #openNested = null;
-
-  /**
-   * Position the open nested submenu relative to its parent item and keep it in viewport
-   */
-  #positionOpenNested = () => {
-    if (!this.#openNested) return;
-    const { link, list } = this.#openNested;
-
-    const parentListItem = link.closest('li');
-    const rect = parentListItem?.getBoundingClientRect();
-    if (!rect) return;
-
-    // Ensure the element is visible for measurement
-    list.style.visibility = 'hidden';
-    list.style.display = 'block';
-    const nestedWidth = Math.max(list.offsetWidth || 0, parseInt(list.style.minWidth || '0', 10) || 0, 220);
-    const nestedHeight = list.offsetHeight || 0;
-    list.style.display = '';
-    list.style.visibility = '';
-
-    let left = Math.round(rect.right);
-    let top = Math.round(rect.top);
-
-    const margin = 8;
-    // Flip to left if overflowing viewport on the right
-    if (left + nestedWidth + margin > window.innerWidth) {
-      left = Math.max(margin, Math.round(rect.left - nestedWidth));
-    }
-
-    // Clamp vertically to viewport
-    const maxTop = Math.max(margin, window.innerHeight - nestedHeight - margin);
-    top = Math.min(Math.max(top, margin), maxTop);
-
-    list.style.position = 'fixed';
-    list.style.left = `${left}px`;
-    list.style.top = `${top}px`;
-    list.style.minWidth = `${nestedWidth}px`;
-    list.style.zIndex = '9999';
-    const maxH = Math.max(200, window.innerHeight - 2 * margin);
-    list.style.maxHeight = `${maxH}px`;
-    list.style.overflow = 'auto';
-  };
+  // No scroll-based positioning needed
 
   connectedCallback() {
     super.connectedCallback();
@@ -138,19 +92,34 @@ class HeaderMenu extends Component {
         nestedList.style.zIndex = '';
         nestedList.style.maxHeight = '';
         nestedList.style.overflow = '';
-        this.#openNested = null;
       } else {
         nestedList.removeAttribute('hidden');
-        this.#openNested = { link: nestedParent, list: nestedList };
-        this.#positionOpenNested();
+        // Position nested submenu to the right of its parent item relative to the submenu container
+        const container = nestedParent.closest('.menu-list__submenu-inner');
+        const parentListItem = nestedParent.closest('li');
+        if (container && parentListItem) {
+          const containerRect = container.getBoundingClientRect();
+          const parentRect = parentListItem.getBoundingClientRect();
+
+          // Ensure positioning context for container
+          if (getComputedStyle(container).position === 'static') {
+            container.style.position = 'relative';
+          }
+
+          nestedList.style.position = 'absolute';
+          nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
+          nestedList.style.left = `${Math.max(0, parentRect.right - containerRect.left)}px`;
+          nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
+          nestedList.style.zIndex = '2';
+          nestedList.style.maxHeight = 'none';
+          nestedList.style.overflow = 'visible';
+        }
       }
     }, { signal: this.#abortController.signal });
 
     onDocumentLoaded(this.#preloadImages);
 
-    // Reposition nested submenu on scroll and resize so it stays anchored
-    window.addEventListener('scroll', this.#positionOpenNested, { passive: true, signal: this.#abortController.signal });
-    window.addEventListener('resize', this.#positionOpenNested, { passive: true, signal: this.#abortController.signal });
+    // No scroll/resize listeners needed when positioned relative to container
   }
 
   disconnectedCallback() {
