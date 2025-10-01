@@ -150,7 +150,9 @@ class HeaderMenu extends Component {
         if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
         nestedList.style.position = 'absolute';
         nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
-        nestedList.style.left = `${Math.max(0, parentRect.right - containerRect.left)}px`;
+        // Align flush to the right edge of the parent submenu container (side-by-side)
+        const leftOffset = Math.max(0, Math.round(containerRect.width));
+        nestedList.style.left = `${leftOffset}px`;
         nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
         nestedList.style.zIndex = '2';
         nestedList.style.maxHeight = 'none';
