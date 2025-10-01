@@ -140,23 +140,38 @@
 
   .mega-menu__nested {
     background: var(--color-background, #ffffff);
-    box-shadow: 0 8px 24px rgba(var(--color-foreground-rgb, 0, 0, 0), 0.12);
+    box-shadow: 0 10px 30px rgba(var(--color-foreground-rgb, 0, 0, 0), 0.12);
     border-radius: var(--radius-md, 8px);
-    padding: 12px 0;
+    padding: 6px 0;
     margin: 0;
     list-style: none;
     overflow: visible;
     z-index: 20;
     border: 1px solid var(--color-border, rgba(0,0,0,0.08));
+    min-width: 220px;
   }
 
   .mega-menu__nested > li > a.mega-menu__link {
-    display: block;
-    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
     white-space: nowrap;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .mega-menu__nested > li + li {
+    border-top: 1px solid rgb(var(--color-foreground-rgb, 0,0,0) / 0.06);
   }
 
   .mega-menu__nested > li > a.mega-menu__link:hover {
     background: rgb(var(--color-foreground-rgb, 0, 0, 0) / 0.06);
+  }
+
+  .mega-menu__link--parent .mega-menu__link-arrow {
+    margin-left: auto;
+    opacity: 0.7;
   }
 {% endstylesheet %}

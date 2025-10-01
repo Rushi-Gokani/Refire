@@ -150,8 +150,9 @@ class HeaderMenu extends Component {
         if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
         nestedList.style.position = 'absolute';
         nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
-        // Align flush to the right edge of the parent submenu container (side-by-side)
-        const leftOffset = Math.max(0, Math.round(containerRect.width));
+        // Align the flyout immediately to the right edge of the hovered row (side-by-side)
+        // Slightly overlap by 1px to avoid any visual gap that could cause hover flicker
+        const leftOffset = Math.max(0, Math.round(parentRect.right - containerRect.left - 1));
         nestedList.style.left = `${leftOffset}px`;
         nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
         nestedList.style.zIndex = '2';
