@@ -1,0 +1,839 @@
+{% doc %}
+  @prompt
+    i need a cool looking scrolling testimonial section, that is mobile optimized as well. i need the controls of all the text field, the colours used & the speed of the scroll, we cant have the customer image in the reviews. remove that. and make sure the alignment of the review text is done fine and left aligned, with respect to the entire section, please make the text review start from where the review stars are starting. right now it is too far away & misaligned
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-testimonial-scroller-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding }}px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ai-testimonial-scroller-container-{{ ai_gen_id }} {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .ai-testimonial-scroller-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: {{ block.settings.header_spacing }}px;
+  }
+
+  .ai-testimonial-scroller-title-{{ ai_gen_id }} {
+    color: {{ block.settings.title_color }};
+    font-size: {{ block.settings.title_size }}px;
+    margin: 0 0 {{ block.settings.title_spacing }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .ai-testimonial-scroller-subtitle-{{ ai_gen_id }} {
+    color: {{ block.settings.subtitle_color }};
+    font-size: {{ block.settings.subtitle_size }}px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .ai-testimonial-scroller-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.card_gap }}px;
+    animation: ai-testimonial-scroll-{{ ai_gen_id }} {{ block.settings.scroll_speed }}s linear infinite;
+    will-change: transform;
+  }
+
+  .ai-testimonial-scroller-track-{{ ai_gen_id }}:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes ai-testimonial-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-100% - {{ block.settings.card_gap }}px));
+    }
+  }
+
+  .ai-testimonial-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    padding: {{ block.settings.card_padding }}px;
+    min-width: {{ block.settings.card_width }}px;
+    flex-shrink: 0;
+    box-shadow: {{ block.settings.card_shadow_x }}px {{ block.settings.card_shadow_y }}px {{ block.settings.card_shadow_blur }}px {{ block.settings.card_shadow_color }};
+    border: {{ block.settings.card_border_width }}px solid {{ block.settings.card_border_color }};
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+    text-align: left;
+  }
+
+  .ai-testimonial-quote-{{ ai_gen_id }} {
+    color: {{ block.settings.quote_color }};
+    font-size: {{ block.settings.quote_size }}px;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+    font-style: italic;
+    flex-grow: 1;
+    text-align: left;
+  }
+
+  .ai-testimonial-author-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: auto;
+    text-align: left;
+  }
+
+  .ai-testimonial-author-name-{{ ai_gen_id }} {
+    color: {{ block.settings.author_name_color }};
+    font-size: {{ block.settings.author_name_size }}px;
+    font-weight: 600;
+    margin: 0;
+    text-align: left;
+  }
+
+  .ai-testimonial-author-title-{{ ai_gen_id }} {
+    color: {{ block.settings.author_title_color }};
+    font-size: {{ block.settings.author_title_size }}px;
+    margin: 0;
+    opacity: 0.8;
+    text-align: left;
+  }
+
+  .ai-testimonial-stars-{{ ai_gen_id }} {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 15px;
+    justify-content: flex-start;
+  }
+
+  .ai-testimonial-star-{{ ai_gen_id }} {
+    width: {{ block.settings.star_size }}px;
+    height: {{ block.settings.star_size }}px;
+    color: {{ block.settings.star_color }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-testimonial-scroller-container-{{ ai_gen_id }} {
+      padding: 0 15px;
+    }
+
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      min-width: {{ block.settings.card_width | times: 0.8 }}px;
+      padding: {{ block.settings.card_padding | times: 0.8 }}px;
+    }
+
+    .ai-testimonial-scroller-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-testimonial-scroller-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+
+    .ai-testimonial-quote-{{ ai_gen_id }} {
+      font-size: {{ block.settings.quote_size | times: 0.9 }}px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ai-testimonial-card-{{ ai_gen_id }} {
+      min-width: {{ block.settings.card_width | times: 0.7 }}px;
+    }
+  }
+{% endstyle %}
+
+<testimonial-scroller-{{ ai_gen_id }}
+  class="ai-testimonial-scroller-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-testimonial-scroller-container-{{ ai_gen_id }}">
+    {% if block.settings.title != blank or block.settings.subtitle != blank %}
+      <div class="ai-testimonial-scroller-header-{{ ai_gen_id }}">
+        {% if block.settings.title != blank %}
+          <h2 class="ai-testimonial-scroller-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+        {% endif %}
+        {% if block.settings.subtitle != blank %}
+          <p class="ai-testimonial-scroller-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="ai-testimonial-scroller-track-{{ ai_gen_id }}">
+      {% for i in (1..6) %}
+        {% liquid
+          assign testimonial_enabled_key = 'testimonial_' | append: i | append: '_enabled'
+          assign quote_key = 'testimonial_' | append: i | append: '_quote'
+          assign author_name_key = 'testimonial_' | append: i | append: '_author_name'
+          assign author_title_key = 'testimonial_' | append: i | append: '_author_title'
+          assign rating_key = 'testimonial_' | append: i | append: '_rating'
+
+          assign testimonial_enabled = block.settings[testimonial_enabled_key]
+          assign quote = block.settings[quote_key]
+          assign author_name = block.settings[author_name_key]
+          assign author_title = block.settings[author_title_key]
+          assign rating = block.settings[rating_key]
+        %}
+
+        {% if testimonial_enabled %}
+          <div class="ai-testimonial-card-{{ ai_gen_id }}">
+            {% if block.settings.show_stars and rating > 0 %}
+              <div class="ai-testimonial-stars-{{ ai_gen_id }}">
+                {% for star in (1..5) %}
+                  <svg
+                    class="ai-testimonial-star-{{ ai_gen_id }}"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="{% if star <= rating %}currentColor{% else %}none{% endif %}"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                  </svg>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if quote != blank %}
+              <blockquote class="ai-testimonial-quote-{{ ai_gen_id }}">
+                "{{ quote }}"
+              </blockquote>
+            {% endif %}
+
+            {% if author_name != blank or author_title != blank %}
+              <div class="ai-testimonial-author-{{ ai_gen_id }}">
+                {% if author_name != blank %}
+                  <div class="ai-testimonial-author-name-{{ ai_gen_id }}">{{ author_name }}</div>
+                {% endif %}
+                {% if author_title != blank %}
+                  <div class="ai-testimonial-author-title-{{ ai_gen_id }}">{{ author_title }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      {% for i in (1..6) %}
+        {% liquid
+          assign testimonial_enabled_key = 'testimonial_' | append: i | append: '_enabled'
+          assign quote_key = 'testimonial_' | append: i | append: '_quote'
+          assign author_name_key = 'testimonial_' | append: i | append: '_author_name'
+          assign author_title_key = 'testimonial_' | append: i | append: '_author_title'
+          assign rating_key = 'testimonial_' | append: i | append: '_rating'
+
+          assign testimonial_enabled = block.settings[testimonial_enabled_key]
+          assign quote = block.settings[quote_key]
+          assign author_name = block.settings[author_name_key]
+          assign author_title = block.settings[author_title_key]
+          assign rating = block.settings[rating_key]
+        %}
+
+        {% if testimonial_enabled %}
+          <div class="ai-testimonial-card-{{ ai_gen_id }}">
+            {% if block.settings.show_stars and rating > 0 %}
+              <div class="ai-testimonial-stars-{{ ai_gen_id }}">
+                {% for star in (1..5) %}
+                  <svg
+                    class="ai-testimonial-star-{{ ai_gen_id }}"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="{% if star <= rating %}currentColor{% else %}none{% endif %}"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                  </svg>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if quote != blank %}
+              <blockquote class="ai-testimonial-quote-{{ ai_gen_id }}">
+                "{{ quote }}"
+              </blockquote>
+            {% endif %}
+
+            {% if author_name != blank or author_title != blank %}
+              <div class="ai-testimonial-author-{{ ai_gen_id }}">
+                {% if author_name != blank %}
+                  <div class="ai-testimonial-author-name-{{ ai_gen_id }}">{{ author_name }}</div>
+                {% endif %}
+                {% if author_title != blank %}
+                  <div class="ai-testimonial-author-title-{{ ai_gen_id }}">{{ author_title }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</testimonial-scroller-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class TestimonialScroller{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('.ai-testimonial-scroller-track-{{ ai_gen_id }}');
+        this.setupInfiniteScroll();
+      }
+
+      setupInfiniteScroll() {
+        if (!this.track) return;
+
+        this.track.addEventListener('mouseenter', () => {
+          this.track.style.animationPlayState = 'paused';
+        });
+
+        this.track.addEventListener('mouseleave', () => {
+          this.track.style.animationPlayState = 'running';
+        });
+
+        this.track.addEventListener('touchstart', () => {
+          this.track.style.animationPlayState = 'paused';
+        });
+
+        this.track.addEventListener('touchend', () => {
+          this.track.style.animationPlayState = 'running';
+        });
+      }
+    }
+
+    customElements.define('testimonial-scroller-{{ ai_gen_id }}', TestimonialScroller{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Scrolling testimonials",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "What our customers say"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Don't just take our word for it - see what our amazing customers have to say about their experience."
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "title_spacing",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Title bottom spacing",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 20,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Header bottom spacing",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Scroll settings"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "s",
+      "label": "Scroll speed",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Card design"
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 250,
+      "max": 400,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card padding",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Card border width",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Shadow settings"
+    },
+    {
+      "type": "range",
+      "id": "card_shadow_x",
+      "min": -10,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Shadow horizontal offset",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_shadow_y",
+      "min": -10,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Shadow vertical offset",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "card_shadow_blur",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Shadow blur",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Star ratings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show star ratings",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Star size",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Text sizes"
+    },
+    {
+      "type": "range",
+      "id": "quote_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Quote text size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "author_name_size",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Author name size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "author_title_size",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Author title size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "min": 20,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Section padding",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#2f6f4e"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "card_shadow_color",
+      "label": "Card shadow color",
+      "default": "rgba(0, 0, 0, 0.1)"
+    },
+    {
+      "type": "color",
+      "id": "quote_color",
+      "label": "Quote text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "author_name_color",
+      "label": "Author name color",
+      "default": "#2f6f4e"
+    },
+    {
+      "type": "color",
+      "id": "author_title_color",
+      "label": "Author title color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#ffc107"
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_1_enabled",
+      "label": "Enable testimonial 1",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_1_quote",
+      "label": "Quote",
+      "default": "This product completely exceeded my expectations. The quality is outstanding and the customer service was amazing!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_author_name",
+      "label": "Author name",
+      "default": "Sarah Johnson"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_1_author_title",
+      "label": "Author title",
+      "default": "Verified Customer"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_1_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_2_enabled",
+      "label": "Enable testimonial 2",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_2_quote",
+      "label": "Quote",
+      "default": "I've been using this for months now and it's become an essential part of my daily routine. Highly recommend!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_author_name",
+      "label": "Author name",
+      "default": "Michael Chen"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_2_author_title",
+      "label": "Author title",
+      "default": "Happy Customer"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_2_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_3_enabled",
+      "label": "Enable testimonial 3",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_3_quote",
+      "label": "Quote",
+      "default": "The shipping was fast, the packaging was perfect, and the product quality is top-notch. Will definitely order again!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_author_name",
+      "label": "Author name",
+      "default": "Emma Rodriguez"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_3_author_title",
+      "label": "Author title",
+      "default": "Repeat Customer"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_3_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_4_enabled",
+      "label": "Enable testimonial 4",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_4_quote",
+      "label": "Quote",
+      "default": "Outstanding value for money. This has made such a difference in my life. Thank you for creating such an amazing product!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_4_author_name",
+      "label": "Author name",
+      "default": "David Thompson"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_4_author_title",
+      "label": "Author title",
+      "default": "Satisfied Customer"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_4_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_5_enabled",
+      "label": "Enable testimonial 5",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_5_quote",
+      "label": "Quote",
+      "default": "I was skeptical at first, but this product has completely won me over. The results speak for themselves!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_5_author_name",
+      "label": "Author name",
+      "default": "Lisa Park"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_5_author_title",
+      "label": "Author title",
+      "default": "Converted Skeptic"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_5_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Testimonial 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "testimonial_6_enabled",
+      "label": "Enable testimonial 6",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "testimonial_6_quote",
+      "label": "Quote",
+      "default": "Excellent customer support and an even better product. This company really cares about their customers!"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_6_author_name",
+      "label": "Author name",
+      "default": "James Wilson"
+    },
+    {
+      "type": "text",
+      "id": "testimonial_6_author_title",
+      "label": "Author title",
+      "default": "Loyal Customer"
+    },
+    {
+      "type": "range",
+      "id": "testimonial_6_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Star rating",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling testimonials"
+    }
+  ]
+}
+{% endschema %}

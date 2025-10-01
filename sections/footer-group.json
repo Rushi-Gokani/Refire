@@ -11,6 +11,66 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "17592179357aed6133": {
+      "type": "_blocks",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "1759219165a97a46f3": {
+      "type": "_blocks",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "footer_reference_dkK7me": {
       "type": "footer-reference",
       "custom_css": [
@@ -20,9 +80,9 @@
       "settings": {
         "section_width": "page-width",
         "contact_address": "Plot No. 38, Patparganj Industrial Area, Patparganj, New Delhi, 110092",
-        "contact_email": "services@dummy",
+        "contact_email": "info@refireindia.com",
         "contact_phone": "079-69590000",
-        "contact_direction_text": "Get direction",
+        "contact_direction_text": "",
         "contact_direction_url": "",
         "help_heading": "Help",
         "useful_links_heading": "Useful Links",
@@ -34,11 +94,11 @@
         "copyright_text": "All rights reserved. Developed by Scarft Studio",
         "privacy_link_text": "Privacy_policy",
         "privacy_link_url": "shopify://policies/privacy-policy",
-        "color_scheme": "scheme-1",
-        "facebook_url": "",
-        "instagram_url": "",
-        "youtube_url": "",
-        "linkedin_url": "",
+        "color_scheme": "scheme-5",
+        "facebook_url": "https://www.facebook.com/profile.php?id=61574412545643",
+        "instagram_url": "https://www.instagram.com/refireindia",
+        "youtube_url": "https://www.youtube.com/@RefireIndia",
+        "linkedin_url": "https://www.linkedin.com/company/refire-india/posts/?feedView=all",
         "padding-block-start": 40,
         "padding-block-end": 0
       }
@@ -376,6 +436,8 @@
     }
   },
   "order": [
+    "17592179357aed6133",
+    "1759219165a97a46f3",
     "footer_reference_dkK7me",
     "custom_section_76dqAh"
   ]
