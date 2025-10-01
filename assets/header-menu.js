@@ -147,12 +147,16 @@ class HeaderMenu extends Component {
       if (container && parentListItem) {
         const containerRect = container.getBoundingClientRect();
         const parentRect = parentListItem.getBoundingClientRect();
+        const columnEl = nestedParent.closest('.mega-menu__column');
+        const columnRect = columnEl ? columnEl.getBoundingClientRect() : null;
         if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
         nestedList.style.position = 'absolute';
         nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
         // Align the flyout immediately to the right edge of the hovered row (side-by-side)
         // Slightly overlap by 1px to avoid any visual gap that could cause hover flicker
-        const leftOffset = Math.max(0, Math.round(parentRect.right - containerRect.left - 1));
+        // Prefer aligning to the right edge of the whole column for true side-by-side
+        const referenceRight = columnRect ? columnRect.right : parentRect.right;
+        const leftOffset = Math.max(0, Math.round(referenceRight - containerRect.left - 1));
         nestedList.style.left = `${leftOffset}px`;
         nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
         nestedList.style.zIndex = '2';
