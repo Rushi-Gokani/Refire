@@ -88,29 +88,24 @@ class HeaderMenu extends Component {
         nestedList.style.left = '';
         nestedList.style.minWidth = '';
         nestedList.style.zIndex = '';
+        nestedList.style.maxHeight = '';
+        nestedList.style.overflow = '';
       } else {
         nestedList.removeAttribute('hidden');
 
-        // Position nested submenu to the right of its parent item (side menu)
-        const container = nestedParent.closest('.menu-list__submenu');
-        const containerInner = nestedParent.closest('.menu-list__submenu-inner') || container;
+        // Position nested submenu to the right of its parent item (side menu) using viewport coords
         const parentListItem = nestedParent.closest('li');
-
-        if (containerInner && parentListItem) {
-          // Ensure positioning context
-          if (getComputedStyle(containerInner).position === 'static') {
-            containerInner.style.position = 'relative';
-          }
-
-          const parentRect = parentListItem.getBoundingClientRect();
-          const containerRect = containerInner.getBoundingClientRect();
-
-          nestedList.style.position = 'absolute';
-          nestedList.style.top = `${Math.max(0, parentRect.top - containerRect.top)}px`;
-          nestedList.style.left = `${Math.max(0, parentRect.right - containerRect.left)}px`;
-          // Keep reasonable width and stacking above
-          nestedList.style.minWidth = `${Math.max(parentRect.width, 220)}px`;
-          nestedList.style.zIndex = '2';
+        const parentRect = parentListItem?.getBoundingClientRect();
+        if (parentRect) {
+          nestedList.style.position = 'fixed';
+          nestedList.style.top = `${Math.max(0, Math.round(parentRect.top))}px`;
+          nestedList.style.left = `${Math.round(parentRect.right)}px`;
+          nestedList.style.minWidth = `${Math.max(Math.round(parentRect.width), 220)}px`;
+          nestedList.style.zIndex = '9999';
+          // Keep list scrollable if it exceeds viewport height
+          const maxH = Math.max(200, window.innerHeight - 24);
+          nestedList.style.maxHeight = `${maxH}px`;
+          nestedList.style.overflow = 'auto';
         }
       }
     }, { signal: this.#abortController.signal });
