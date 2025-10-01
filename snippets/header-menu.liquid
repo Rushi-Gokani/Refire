@@ -132,6 +132,12 @@
 
 {% stylesheet %}
   /* Nested submenu flyout */
+  .menu-list__submenu,
+  .menu-list__submenu-inner {
+    overflow: visible;
+    position: relative;
+  }
+
   .mega-menu__nested {
     background: #ffffff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -140,6 +146,7 @@
     margin: 0;
     list-style: none;
     overflow: visible;
+    z-index: 10;
   }
 
   .mega-menu__nested > li > a.mega-menu__link {
