@@ -1,6 +1,187 @@
+{% doc %}
+  @prompt
+    Create a Shopify section with a full-width background image that changes for desktop and mobile. The section should have a centered heading "Mission & Vision" in bold white text and two paragraphs below it in white: first paragraph "Our vision is to power a new world. It’s a call to the future—an aspirational, technology-driven, eco-friendly future shared by everyone." and second paragraph "Our mission from day one is to provide smart and eco-friendly energy solutions for individuals, families, and society at large. We are, were, and will continue to be a reliable and trusted energy companion for users around the world." The desktop background image should use {{ section.settings.desktop_image | image_url }} and the mobile background image should use {{ section.settings.mobile_image | image_url }}. Add responsive CSS so the desktop image shows on screens wider than 768px and the mobile image shows on smaller screens. Overlay a semi-transparent dark gradient for text readability. Center all text vertically and horizontally with padding. Allow merchants to customize text color and background overlay opacity from the theme editor.
+    
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-mission-vision-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  .ai-mission-vision-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, {{ block.settings.overlay_opacity | divided_by: 100.0 }}) 0%,
+      rgba(0, 0, 0, {{ block.settings.overlay_opacity | divided_by: 100.0 | times: 0.8 }}) 100%
+    );
+    z-index: 1;
+  }
+
+  .ai-mission-vision-content-{{ ai_gen_id }} {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    padding: 60px 40px;
+    margin: 0 auto;
+  }
+
+  .ai-mission-vision-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 1.2;
+    margin: 0 0 40px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .ai-mission-vision-paragraph-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-family: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0 0 30px;
+    opacity: 0.95;
+  }
+
+  .ai-mission-vision-paragraph-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (min-width: 769px) {
+    .ai-mission-vision-{{ ai_gen_id }} {
+      {% if block.settings.desktop_image %}
+        background-image: url('{{ block.settings.desktop_image | image_url: width: 2000 }}');
+      {% endif %}
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-mission-vision-{{ ai_gen_id }} {
+      {% if block.settings.mobile_image %}
+        background-image: url('{{ block.settings.mobile_image | image_url: width: 1200 }}');
+      {% else %}
+        {% if block.settings.desktop_image %}
+          background-image: url('{{ block.settings.desktop_image | image_url: width: 1200 }}');
+        {% endif %}
+      {% endif %}
+      min-height: 80vh;
+    }
+
+    .ai-mission-vision-content-{{ ai_gen_id }} {
+      padding: 40px 20px;
+    }
+
+    .ai-mission-vision-heading-{{ ai_gen_id }} {
+      font-size: 32px;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+    }
+
+    .ai-mission-vision-paragraph-{{ ai_gen_id }} {
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .ai-mission-vision-heading-{{ ai_gen_id }} {
+      font-size: 28px;
+    }
+
+    .ai-mission-vision-paragraph-{{ ai_gen_id }} {
+      font-size: 15px;
+    }
+  }
+
+  {% unless block.settings.desktop_image or block.settings.mobile_image %}
+    .ai-mission-vision-{{ ai_gen_id }} {
+      background: linear-gradient(135deg, #2f6f4e 0%, #1b2a17 100%);
+    }
+  {% endunless %}
+{% endstyle %}
+
+<section
+  class="ai-mission-vision-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-mission-vision-content-{{ ai_gen_id }}">
+    <h2 class="ai-mission-vision-heading-{{ ai_gen_id }}">
+      Mission & Vision
+    </h2>
+    
+    <p class="ai-mission-vision-paragraph-{{ ai_gen_id }}">
+      Our vision is to power a new world. It's a call to the future—an aspirational, technology-driven, eco-friendly future shared by everyone.
+    </p>
+    
+    <p class="ai-mission-vision-paragraph-{{ ai_gen_id }}">
+      Our mission from day one is to provide smart and eco-friendly energy solutions for individuals, families, and society at large. We are, were, and will continue to be a reliable and trusted energy companion for users around the world.
+    </p>
+  </div>
+</section>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Mission & Vision",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background images"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile background image"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Background overlay opacity",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mission & Vision"
+    }
+  ]
+}
 {% endschema %}
