@@ -307,6 +307,13 @@
             "instagram_link": "https://www.instagram.com/reel/DKV6ETQOzMb/?igsh=MTl6dDg2b3RzNnFtcQ%3D%3D"
           }
         },
+        "video_tbnHzb": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/6af07a1c6efd46d49624c45b2219e7ee.mp4",
+            "instagram_link": "https://www.instagram.com/reel/DJqz2KbNWiX/?igsh=MWtpMG81eDN2NzEwaQ%3D%3D"
+          }
+        },
         "video_38DfHK": {
           "type": "video",
           "settings": {
@@ -321,15 +328,9 @@
             "instagram_link": "https://www.instagram.com/reel/DJhYBKOSFb4/?igsh=MWRna29zZDdsMThnZg%3D%3D"
           }
         },
-        "video_tbnHzb": {
-          "type": "video",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/6af07a1c6efd46d49624c45b2219e7ee.mp4",
-            "instagram_link": "https://www.instagram.com/reel/DJqz2KbNWiX/?igsh=MWtpMG81eDN2NzEwaQ%3D%3D"
-          }
-        },
         "video_mULNfP": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "video_url": "https://cdn.shopify.com/videos/c/o/v/d44a587dd08a42708dfca534ae84ae3b.mp4",
             "instagram_link": "https://www.instagram.com/reel/DK7kgINSDVp/?igsh=ZmZlMGYwcHNwMjRp"
@@ -337,6 +338,7 @@
         },
         "video_NDpMGP": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "video_url": "https://cdn.shopify.com/videos/c/o/v/e66254bc139b4c40bf2ea07ff591f6f0.mp4",
             "instagram_link": "https://www.instagram.com/reel/DKmGwIMsKDX/?igsh=MTJ2dXpja2twMjhvNw%3D%3D"
@@ -344,6 +346,7 @@
         },
         "video_diBcMp": {
           "type": "video",
+          "disabled": true,
           "settings": {
             "video_url": "https://cdn.shopify.com/videos/c/o/v/0bf9b3964ab6488cb6d8f26c5d63bb3a.mp4",
             "instagram_link": "https://www.instagram.com/reel/DLPkF8DSMiB/?igsh=MWhkMHlmMmE4OG4zdQ%3D%3D"
@@ -353,9 +356,9 @@
       "block_order": [
         "video_txaMEh",
         "video_qLn38i",
+        "video_tbnHzb",
         "video_38DfHK",
         "video_hTJ9cg",
-        "video_tbnHzb",
         "video_mULNfP",
         "video_NDpMGP",
         "video_diBcMp"
