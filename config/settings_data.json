@@ -91,7 +91,7 @@
       "scheme-2": {
         "settings": {
           "background": "#f1f1f1",
-          "foreground_heading": "#000000",
+          "foreground_heading": "#2f6f4e",
           "foreground": "#000000",
           "primary": "#000000",
           "primary_hover": "#000000",
