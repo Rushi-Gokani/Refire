@@ -236,13 +236,13 @@
             "heading": "Watch our videos",
             "heading_size": 32,
             "heading_color": "#2f6f4e",
-            "video_url_1": "https://youtu.be/KPshFGRqXhE?si=OP0yv7VIpsXUoiuT",
+            "video_url_1": "https://youtu.be/JT427ZEF55I?si=oUmICp8z2Y7b89ZH",
             "video_title_1": "",
-            "video_url_2": "https://youtu.be/3aUQ_ejtAFA?si=UGJWOxUVEHyfsqLN",
+            "video_url_2": "https://youtu.be/uJU4kGZ4Eyo?si=gO9mhemqE-UHFs9h",
             "video_title_2": "",
-            "video_url_3": "https://youtu.be/3S1Cq_IhPLg?si=bje9QpMHk4Q4uNsQ",
+            "video_url_3": "https://youtu.be/ZsW8i5hoQTU?si=bIdZde1Hlrr0FUzy",
             "video_title_3": "",
-            "video_url_4": "https://youtu.be/9N2LvG1dArA?si=mFp8huhR-r9dsgg_",
+            "video_url_4": "",
             "video_title_4": "",
             "video_url_5": "",
             "video_title_5": "",
@@ -364,7 +364,7 @@
         "video_diBcMp"
       ],
       "custom_css": [
-        ".video-preview-heading h2 {color:#2f6f4e !important; font-size: 32px !important;}"
+        ".video-preview-heading h2 {color: #2f6f4e !important; font-size: 32px !important;}"
       ],
       "name": "Our Reels",
       "settings": {
