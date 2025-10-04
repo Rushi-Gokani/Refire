@@ -159,17 +159,36 @@
   }
 
   .ai-b2b-contact__success-{{ ai_gen_id }} {
-    background-color: {{ block.settings.success_color }}20;
-    color: {{ block.settings.success_color }};
-    padding: 16px;
-    border-radius: {{ block.settings.input_border_radius }}px;
-    text-align: center;
-    margin-top: 20px;
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs, 0.5rem);
+    margin-top: var(--margin-lg, 1rem);
+    padding: var(--padding-sm, 0.7rem) 0;
+    color: var(--color-success, #006400);
+    font-size: var(--font-size--sm, 0.875rem);
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    visibility: hidden;
   }
 
   .ai-b2b-contact__success-{{ ai_gen_id }}.show {
-    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .ai-b2b-contact__success-icon-{{ ai_gen_id }} {
+    width: var(--icon-size-md, 20px);
+    height: var(--icon-size-md, 20px);
+    flex-shrink: 0;
+    color: var(--color-success, #006400);
+  }
+
+  .ai-b2b-contact__success-text-{{ ai_gen_id }} {
+    margin: 0;
+    font-weight: 500;
   }
 
   .ai-b2b-contact__loading-{{ ai_gen_id }} {
@@ -364,8 +383,16 @@
           </span>
         </button>
       </div>
-    </form><div class="ai-b2b-contact__success-{{ ai_gen_id }}">
-      {{ block.settings.success_message }}</div>
+    </form>
+    
+    <div class="ai-b2b-contact__success-{{ ai_gen_id }}" role="status" aria-live="polite">
+      <span class="ai-b2b-contact__success-icon-{{ ai_gen_id }}">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon-checkmark">
+          <path d="M4.75439 10.7485L7.68601 14.5888C7.79288 14.7288 7.84632 14.7988 7.91174 14.8242C7.96907 14.8466 8.03262 14.8469 8.09022 14.8253C8.15596 14.8007 8.21026 14.7314 8.31886 14.5927L15.2475 5.74658" stroke="currentColor" stroke-width="var(--icon-stroke-width, 1.5)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <p class="ai-b2b-contact__success-text-{{ ai_gen_id }}">{{ block.settings.success_message }}</p>
+    </div>
   </div>
 </b2b-contact-form-{{ ai_gen_id }}>
 
@@ -379,6 +406,7 @@
         this.submitText = this.querySelector('.ai-b2b-contact__submit-text-{{ ai_gen_id }}');
         this.loadingText = this.querySelector('.ai-b2b-contact__loading-{{ ai_gen_id }}');
         this.successMessage = this.querySelector('.ai-b2b-contact__success-{{ ai_gen_id }}');
+        this.successText = this.querySelector('.ai-b2b-contact__success-text-{{ ai_gen_id }}');
         this.redirectUrl = this.dataset.redirectUrl;
       }
 
@@ -614,8 +642,8 @@
         }
         
         // Show success message before redirect
-        if (this.successMessage) {
-          this.successMessage.textContent = 'Submitting form...';
+        if (this.successMessage && this.successText) {
+          this.successText.textContent = 'Submitting form...';
           this.successMessage.classList.add('show');
         }
         
