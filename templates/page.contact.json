@@ -289,11 +289,80 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "reel_customer_pgjfam": {
+      "type": "reel-customer",
+      "blocks": {
+        "video_txaMEh": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/56c55d26c4d44243910c083e44d86048.mp4",
+            "instagram_link": "https://www.instagram.com/reel/DKwryzVsllc/?igsh=eW16M25oNXVoZzQ0"
+          }
+        },
+        "video_qLn38i": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/763f1d1439bd4a3b89d7e19d30b48e75.mp4",
+            "instagram_link": "https://www.instagram.com/reel/DKV6ETQOzMb/?igsh=MTl6dDg2b3RzNnFtcQ%3D%3D"
+          }
+        },
+        "video_38DfHK": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/30c57e8ac0ac47baad6a1c1054f35579.mp4",
+            "instagram_link": "https://www.instagram.com/reel/DJ1Ps0_NmqM/?igsh=bnhncXpvYTJwOTg1"
+          }
+        },
+        "video_hTJ9cg": {
+          "type": "video",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4",
+            "instagram_link": "https://cdn.shopify.com/videos/c/o/v/13b945a1675d4b858b2be059632c5e0a.mp4"
+          }
+        },
+        "video_tbnHzb": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "instagram_link": ""
+          }
+        },
+        "video_mULNfP": {
+          "type": "video",
+          "settings": {
+            "video_url": "",
+            "instagram_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_txaMEh",
+        "video_qLn38i",
+        "video_38DfHK",
+        "video_hTJ9cg",
+        "video_tbnHzb",
+        "video_mULNfP"
+      ],
+      "name": "Our Reels",
+      "settings": {
+        "bg_color": "#ffffff",
+        "heading": "Watch Our Reels",
+        "heading_font_size": 32,
+        "subheading": "",
+        "subheading_font_size": 16,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "autoplay": true,
+        "controls": false,
+        "muted": true
+      }
     }
   },
   "order": [
     "17592185953068380c",
     "section",
-    "17592328823b421044"
+    "17592328823b421044",
+    "reel_customer_pgjfam"
   ]
 }
