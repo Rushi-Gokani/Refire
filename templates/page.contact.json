@@ -363,6 +363,9 @@
         "video_NDpMGP",
         "video_diBcMp"
       ],
+      "custom_css": [
+        ".video-preview-heading h2 {color:#2f6f4e !important; font-size: 32px !important;}"
+      ],
       "name": "Our Reels",
       "settings": {
         "bg_color": "#ffffff",
