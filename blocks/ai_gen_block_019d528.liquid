@@ -217,9 +217,6 @@
     {% endif %}
 
     <form class="ai-b2b-contact__form-{{ ai_gen_id }}" novalidate>
-      <!-- Hidden CAPTCHA field for Shopify -->
-      <input type="hidden" name="g-recaptcha-response" value="">
-      
       {% if block.settings.show_full_name %}
         <div class="ai-b2b-contact__field-{{ ai_gen_id }}">
           <label class="ai-b2b-contact__label-{{ ai_gen_id }}" for="full-name-{{ ai_gen_id }}">
@@ -389,7 +386,7 @@
         if (!this.form) return;
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
         this.setupRealTimeValidation();
-        this.initializeCaptcha();
+        this.ensureFormStructure();
       }
 
       setupRealTimeValidation() {
@@ -471,12 +468,6 @@
         return phoneRegex.test(cleanPhone);
       }
 
-      initializeCaptcha() {
-        // For Shopify contact forms, we need to ensure proper form structure
-        // The CAPTCHA token will be handled by Shopify's built-in system
-        this.ensureFormStructure();
-      }
-
       ensureFormStructure() {
         // Ensure the form has the proper action and method for Shopify
         if (this.form) {
@@ -500,17 +491,6 @@
             this.form.appendChild(utf8Input);
           }
         }
-      }
-
-      getCaptchaToken() {
-        // For Shopify, try to get the token from the hidden field
-        const captchaInput = this.form.querySelector('input[name="g-recaptcha-response"]');
-        if (captchaInput && captchaInput.value) {
-          return captchaInput.value;
-        }
-        
-        // Return empty string if no token found (Shopify will handle validation)
-        return '';
       }
 
       async handleSubmit(event) {
@@ -550,12 +530,6 @@
           // Ensure required fields are present
           if (!formData.has('form_type')) formData.append('form_type', 'contact');
           if (!formData.has('utf8')) formData.append('utf8', '✓');
-          
-          // Add CAPTCHA token if available
-          const captchaToken = this.getCaptchaToken();
-          if (captchaToken) {
-            formData.append('g-recaptcha-response', captchaToken);
-          }
 
           let response = await fetch('/contact', {
             method: 'POST',
@@ -586,20 +560,9 @@
           console.error('Form submission error:', error);
           const userMsg = error && error.message ? error.message : 'There was an error submitting the form.';
           
-          // If it's a CAPTCHA error, try traditional form submission
-          if (userMsg.includes('CAPTCHA') || userMsg.includes('captcha')) {
-            console.log('CAPTCHA error detected, trying traditional form submission...');
-            this.submitFormTraditionally();
-            return;
-          }
-          
-          if (this.successMessage) {
-            this.successMessage.textContent = `Submission error: ${userMsg}`;
-            this.successMessage.classList.add('show');
-            setTimeout(() => this.successMessage.classList.remove('show'), 8000);
-          } else {
-            alert(`Submission error: ${userMsg}`);
-          }
+          // If AJAX fails, try traditional form submission
+          console.log('AJAX submission failed, trying traditional form submission...');
+          this.submitFormTraditionally();
         } finally {
           this.setLoading(false);
         }
@@ -648,6 +611,12 @@
           utf8Input.name = 'utf8';
           utf8Input.value = '✓';
           this.form.appendChild(utf8Input);
+        }
+        
+        // Show success message before redirect
+        if (this.successMessage) {
+          this.successMessage.textContent = 'Submitting form...';
+          this.successMessage.classList.add('show');
         }
         
         // Submit the form traditionally
