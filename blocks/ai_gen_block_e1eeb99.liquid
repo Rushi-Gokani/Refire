@@ -162,12 +162,34 @@
   }
 
   .ai-warranty-form-success-{{ ai_gen_id }} {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 16px;
-    border-radius: {{ block.settings.input_border_radius }}px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-top: 16px;
-    text-align: center;
+    padding: 16px;
+    background-color: #f0f9f0;
+    border: 1px solid #2f6f4e;
+    border-radius: {{ block.settings.input_border_radius }}px;
+    color: #2f6f4e;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    visibility: hidden;
+  }
+
+  .ai-warranty-form-success-{{ ai_gen_id }}.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .ai-warranty-form-success-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #2f6f4e;
   }
 
   .ai-warranty-form-loading-{{ ai_gen_id }} {
@@ -196,6 +218,8 @@
 
     {% form 'contact' %}
       <input type="hidden" name="contact[warranty_claim]" value="true">
+      <input type="hidden" name="form_type" value="contact">
+      <input type="hidden" name="utf8" value="✓">
       <div class="ai-warranty-form-grid-{{ ai_gen_id }}">
         {% if block.settings.show_full_name %}
           <div class="ai-warranty-form-field-{{ ai_gen_id }}">
@@ -430,8 +454,12 @@
       </div>
 
       {% if form.posted_successfully? %}
-        <div class="ai-warranty-form-success-{{ ai_gen_id }}">
-          {{ block.settings.success_message }}{% if block.settings.redirect_url != blank %}
+        <div class="ai-warranty-form-success-{{ ai_gen_id }} show">
+          <span class="ai-warranty-form-success-icon-{{ ai_gen_id }}">
+            {{ 'icon-checkmark.svg' | inline_asset_content }}
+          </span>
+          <span>{{ block.settings.success_message }}</span>
+          {% if block.settings.redirect_url != blank %}
             <script>
               setTimeout(function() {
                 window.location.href = "{{ block.settings.redirect_url }}";
@@ -501,16 +529,21 @@
     async submitFormAjax() {
       const formData = new FormData(this.form);
       
+      // Ensure required fields are present for Shopify contact form
+      if (!formData.has('form_type')) formData.append('form_type', 'contact');
+      if (!formData.has('utf8')) formData.append('utf8', '✓');
+      
       this.submitButton.disabled = true;
       this.submitButton.style.display = 'none';
       this.loadingDiv.style.display = 'block';
 
       try {
-        const response = await fetch(this.form.action, {
+        const response = await fetch('/contact', {
           method: 'POST',
           body: formData,
           headers: {
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
           }
         });
 
@@ -519,9 +552,12 @@
           this.form.reset();
           this.resetFileInputs();
         } else {
+          const responseText = await response.text();
+          console.error('Form submission failed:', responseText);
           throw new Error('Form submission failed');
         }
       } catch (error) {
+        console.error('Form submission error:', error);
         this.showError('There was an error submitting your claim. Please try again.');
       } finally {
         this.submitButton.disabled = false;
@@ -533,9 +569,23 @@
     showSuccess() {
       const successDiv = document.createElement('div');
       successDiv.className = 'ai-warranty-form-success-{{ ai_gen_id }}';
-      successDiv.textContent = this.getAttribute('data-success-message') || 'Your warranty claim has been submitted successfully!';
+      
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'ai-warranty-form-success-icon-{{ ai_gen_id }}';
+      iconSpan.innerHTML = '{{ "icon-checkmark.svg" | inline_asset_content }}';
+      
+      const textSpan = document.createElement('span');
+      textSpan.textContent = this.getAttribute('data-success-message') || 'Your warranty claim has been submitted successfully!';
+      
+      successDiv.appendChild(iconSpan);
+      successDiv.appendChild(textSpan);
       
       this.form.parentNode.insertBefore(successDiv, this.form.nextSibling);
+      
+      // Trigger the show animation
+      setTimeout(() => {
+        successDiv.classList.add('show');
+      }, 100);
 
       const redirectUrl = this.getAttribute('data-redirect-url');
       if (redirectUrl) {
@@ -930,7 +980,7 @@
       "type": "text",
       "id": "success_message",
       "label": "Success message",
-      "default": "Your warranty claim has been submitted successfully! We will contact you soon."
+      "default": "Thank you! Your warranty claim has been submitted successfully. We will review your claim and contact you within 2-3 business days."
     },
     {
       "type": "url",
