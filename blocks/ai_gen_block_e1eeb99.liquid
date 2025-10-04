@@ -93,6 +93,7 @@
     cursor: pointer;
     transition: border-color 0.3s ease;
     color: {{ block.settings.text_color }};
+    position: relative;
   }
 
   .ai-warranty-form-file-input-{{ ai_gen_id }}:hover {
@@ -101,6 +102,56 @@
 
   .ai-warranty-form-file-input-{{ ai_gen_id }} input[type="file"] {
     display: none;
+  }
+
+  .ai-warranty-form-file-preview-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .ai-warranty-form-file-preview-item-{{ ai_gen_id }} {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+  }
+
+  .ai-warranty-form-file-preview-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ai-warranty-form-file-preview-name-{{ ai_gen_id }} {
+    padding: 8px;
+    font-size: 12px;
+    color: {{ block.settings.text_color }};
+    text-align: center;
+    word-break: break-word;
+  }
+
+  .ai-warranty-form-file-remove-{{ ai_gen_id }} {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-warranty-form-file-remove-{{ ai_gen_id }}:hover {
+    background-color: rgba(0, 0, 0, 0.9);
   }
 
   .ai-warranty-form-help-text-{{ ai_gen_id }} {
@@ -383,9 +434,11 @@
               >
               <span>Click to upload invoice</span>
             </div>
+            <div id="invoice-upload-preview-{{ ai_gen_id }}" class="ai-warranty-form-file-preview-{{ ai_gen_id }}"></div>
             <div id="invoice-upload-help-{{ ai_gen_id }}" class="ai-warranty-form-help-text-{{ ai_gen_id }}">
               Accepted formats: PDF, JPEG, PNG (max 10MB)
-            </div><div id="invoice-upload-error-{{ ai_gen_id }}" class="ai-warranty-form-error-{{ ai_gen_id }}" role="alert">
+            </div>
+            <div id="invoice-upload-error-{{ ai_gen_id }}" class="ai-warranty-form-error-{{ ai_gen_id }}" role="alert">
               {% if form.errors contains 'invoice' %}{{ form.errors.messages.invoice }}{% endif %}
             </div>
           </div>
@@ -409,6 +462,7 @@
               >
               <span>Click to upload photos/videos</span>
             </div>
+            <div id="media-upload-preview-{{ ai_gen_id }}" class="ai-warranty-form-file-preview-{{ ai_gen_id }}"></div>
             <div id="media-upload-help-{{ ai_gen_id }}" class="ai-warranty-form-help-text-{{ ai_gen_id }}">
               Accepted formats: Images and videos (max 20MB each, multiple files allowed)
             </div>
@@ -493,14 +547,87 @@
           const files = Array.from(e.target.files);
           const wrapper = e.target.closest('.ai-warranty-form-file-input-{{ ai_gen_id }}');
           const span = wrapper.querySelector('span');
+          const previewContainer = this.querySelector(`#${e.target.id.replace('upload', 'upload-preview')}`);
           
           if (files.length > 0) {
             span.textContent = files.length === 1 ? files[0].name : `${files.length} files selected`;
+            this.showFilePreviews(files, previewContainer);
           } else {
             span.textContent = e.target.name.includes('invoice') ? 'Click to upload invoice' : 'Click to upload photos/videos';
+            this.clearFilePreviews(previewContainer);
           }
         });
       });
+    }
+
+    showFilePreviews(files, previewContainer) {
+      previewContainer.innerHTML = '';
+      
+      files.forEach((file, index) => {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'ai-warranty-form-file-preview-item-{{ ai_gen_id }}';
+        
+        if (file.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.className = 'ai-warranty-form-file-preview-image-{{ ai_gen_id }}';
+          img.src = URL.createObjectURL(file);
+          previewItem.appendChild(img);
+        } else {
+          const icon = document.createElement('div');
+          icon.className = 'ai-warranty-form-file-preview-image-{{ ai_gen_id }}';
+          icon.style.display = 'flex';
+          icon.style.alignItems = 'center';
+          icon.style.justifyContent = 'center';
+          icon.style.backgroundColor = '#e0e0e0';
+          icon.style.fontSize = '24px';
+          icon.textContent = '📄';
+          previewItem.appendChild(icon);
+        }
+        
+        const fileName = document.createElement('div');
+        fileName.className = 'ai-warranty-form-file-preview-name-{{ ai_gen_id }}';
+        fileName.textContent = file.name;
+        previewItem.appendChild(fileName);
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'ai-warranty-form-file-remove-{{ ai_gen_id }}';
+        removeBtn.innerHTML = '×';
+        removeBtn.type = 'button';
+        removeBtn.addEventListener('click', () => {
+          this.removeFileFromInput(file, previewItem);
+        });
+        previewItem.appendChild(removeBtn);
+        
+        previewContainer.appendChild(previewItem);
+      });
+    }
+
+    clearFilePreviews(previewContainer) {
+      previewContainer.innerHTML = '';
+    }
+
+    removeFileFromInput(fileToRemove, previewItem) {
+      const fileInput = previewItem.closest('.ai-warranty-form-field-{{ ai_gen_id }}').querySelector('input[type="file"]');
+      const dt = new DataTransfer();
+      const files = Array.from(fileInput.files);
+      
+      files.forEach(file => {
+        if (file !== fileToRemove) {
+          dt.items.add(file);
+        }
+      });
+      
+      fileInput.files = dt.files;
+      previewItem.remove();
+      
+      // Update the upload area text
+      const wrapper = fileInput.closest('.ai-warranty-form-file-input-{{ ai_gen_id }}');
+      const span = wrapper.querySelector('span');
+      if (fileInput.files.length === 0) {
+        span.textContent = fileInput.name.includes('invoice') ? 'Click to upload invoice' : 'Click to upload photos/videos';
+      } else {
+        span.textContent = fileInput.files.length === 1 ? fileInput.files[0].name : `${fileInput.files.length} files selected`;
+      }
     }
 
     setupValidation() {
@@ -533,6 +660,30 @@
       if (!formData.has('form_type')) formData.append('form_type', 'contact');
       if (!formData.has('utf8')) formData.append('utf8', '✓');
       
+      // Handle file uploads by including file information in the message
+      const fileInputs = this.querySelectorAll('input[type="file"]');
+      let fileInfo = '';
+      
+      fileInputs.forEach(input => {
+        if (input.files && input.files.length > 0) {
+          const files = Array.from(input.files);
+          const fileType = input.name.includes('invoice') ? 'Invoice' : 'Media';
+          fileInfo += `\n\n--- ${fileType} Files ---\n`;
+          files.forEach(file => {
+            fileInfo += `• ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)\n`;
+          });
+        }
+      });
+      
+      // Add file information to the body
+      const currentBody = formData.get('contact[body]') || '';
+      formData.set('contact[body]', currentBody + fileInfo);
+      
+      // Remove file inputs from form data as Shopify contact form doesn't handle them
+      fileInputs.forEach(input => {
+        formData.delete(input.name);
+      });
+      
       this.submitButton.disabled = true;
       this.submitButton.style.display = 'none';
       this.loadingDiv.style.display = 'block';
@@ -548,6 +699,8 @@
         });
 
         if (response.ok) {
+          // Send files separately via email using a different approach
+          await this.sendFilesViaEmail();
           this.showSuccess();
           this.form.reset();
           this.resetFileInputs();
@@ -563,6 +716,54 @@
         this.submitButton.disabled = false;
         this.submitButton.style.display = 'block';
         this.loadingDiv.style.display = 'none';
+      }
+    }
+
+    async sendFilesViaEmail() {
+      const fileInputs = this.querySelectorAll('input[type="file"]');
+      const files = [];
+      
+      fileInputs.forEach(input => {
+        if (input.files && input.files.length > 0) {
+          files.push(...Array.from(input.files));
+        }
+      });
+      
+      if (files.length === 0) return;
+      
+      // Convert files to base64 and send via a separate contact form submission
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        
+        reader.onload = async (e) => {
+          const base64 = e.target.result;
+          const fileType = file.type.startsWith('image/') ? 'Image' : 'File';
+          
+          // Create a separate form submission for each file
+          const fileFormData = new FormData();
+          fileFormData.append('form_type', 'contact');
+          fileFormData.append('utf8', '✓');
+          fileFormData.append('contact[email]', 'file-upload@yourstore.com'); // Use a dedicated email
+          fileFormData.append('contact[subject]', `Warranty Claim File: ${file.name}`);
+          fileFormData.append('contact[body]', `
+File Name: ${file.name}
+File Size: ${(file.size / 1024 / 1024).toFixed(2)}MB
+File Type: ${fileType}
+Base64 Data: ${base64}
+          `);
+          
+          try {
+            await fetch('/contact', {
+              method: 'POST',
+              body: fileFormData
+            });
+          } catch (error) {
+            console.error('Error sending file:', file.name, error);
+          }
+        };
+        
+        reader.readAsDataURL(file);
       }
     }
 
