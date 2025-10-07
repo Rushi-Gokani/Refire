@@ -285,7 +285,9 @@
     justify-content: center;
     background: none;
     border: none;
-    padding: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border-radius: 50%;
     transition: all 0.2s ease;
     color: #333;
@@ -301,6 +303,7 @@
     width: 20px;
     height: 20px;
     stroke-width: 1.5;
+    display: block;
 
     @media screen and (max-width: 749px) {
       width: 18px;
@@ -315,6 +318,13 @@
     height: 20px;
     line-height: 20px;
     display: inline-block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .header-actions__action {
+      width: 32px;
+      height: 32px;
+    }
   }
 
   .header-actions__icon-wrapper {
