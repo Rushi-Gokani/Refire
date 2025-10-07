@@ -969,14 +969,14 @@ summary::-webkit-details-marker {
   grid-template-columns: 1fr 1fr;
   gap: var(--product-grid-gap);
   margin: auto;
-  padding: 0;
+  padding: 20px;
   list-style: none;
 }
 
 @media screen and (min-width: 750px) {
   .product-grid {
     grid-template-columns: var(--product-grid-columns-desktop);
-    padding: 20px;
+    
   }
 }
 
