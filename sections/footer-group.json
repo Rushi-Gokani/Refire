@@ -103,6 +103,9 @@
         "linkedin_url": "https://www.linkedin.com/company/refire-india/posts/?feedView=all",
         "twitter_url": "",
         "tiktok_url": "",
+        "visa_icon": "shopify://shop_images/icons8-visa-96.png",
+        "mastercard_icon": "shopify://shop_images/icons8-credit-card-96.png",
+        "amex_icon": "shopify://shop_images/icons8-paypal-64.png",
         "padding-block-start": 40,
         "padding-block-end": 0
       }
