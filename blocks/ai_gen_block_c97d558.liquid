@@ -147,6 +147,26 @@
     z-index: 2;
   }
 
+  /* Pagination dots (hidden by default; shown on mobile) */
+  .ai-why-buy-dots-{{ ai_gen_id }} {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .ai-why-buy-dot-{{ ai_gen_id }} {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.25);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .ai-why-buy-dot-{{ ai_gen_id }}.is-active { background-color: {{ block.settings.icon_color }}; }
+  .ai-why-buy-dot-{{ ai_gen_id }}:focus { outline: 2px solid {{ block.settings.icon_color }}; outline-offset: 2px; }
+
   .ai-why-buy-sr-only-{{ ai_gen_id }} {
     position:absolute;
     width:1px;
@@ -200,6 +220,9 @@
 
     .ai-why-buy-carousel-item-{{ ai_gen_id }}.centered { transform: none; }
     .ai-why-buy-carousel-track-{{ ai_gen_id }} { box-sizing: border-box; will-change: transform; }
+
+    /* Show dots on mobile only */
+    .ai-why-buy-dots-{{ ai_gen_id }} { display: flex; }
   }
 
   @media screen and (max-width: 480px) {
@@ -384,6 +407,7 @@
       </div>
 
       <div class="ai-why-buy-sr-only-{{ ai_gen_id }}" aria-live="polite" aria-atomic="true"></div>
+      <div class="ai-why-buy-dots-{{ ai_gen_id }}" role="tablist" aria-label="Carousel pagination"></div>
     </div>
   </div>
 </why-buy-carousel-{{ ai_gen_id }}>
@@ -406,11 +430,14 @@
         this._resizeTimer = null;
         this.srLiveRegion = null;
         this._autoTimer = null;
+        this.dotsContainer = null;
+        this.dots = [];
       }
 
       connectedCallback() {
         this.track = this.querySelector('.ai-why-buy-carousel-track-{{ ai_gen_id }}');
         this.srLiveRegion = this.querySelector('.ai-why-buy-sr-only-{{ ai_gen_id }}');
+        this.dotsContainer = this.querySelector('.ai-why-buy-dots-{{ ai_gen_id }}');
         if (!this.track) return;
 
         // If clones not created yet, build them
@@ -430,6 +457,8 @@
         this.setupEventListeners();
         this.updateCentered();
         this.announceCurrent();
+        this.buildDots();
+        this.updateDots();
       }
 
       disconnectedCallback() {
@@ -605,6 +634,7 @@
           this.track.style.transition = 'transform ' + this.transitionDuration + 'ms ease';
         }
         this.updateCentered();
+        this.updateDots();
       }
 
       updateCentered() {
@@ -634,12 +664,14 @@
         this.currentIndex += 1;
         this.updatePosition();
         this.announceCurrent();
+        this.updateDots();
       }
 
       prev() {
         this.currentIndex -= 1;
         this.updatePosition();
         this.announceCurrent();
+        this.updateDots();
       }
 
       // When transition ends, fix up if we moved into cloned region
@@ -675,6 +707,7 @@
         }
         // finally ensure classes/tabs synced
         this.updateCentered();
+        this.updateDots();
       }
 
       // Announce for screen readers
@@ -691,6 +724,41 @@
       }
       stopAuto() {
         if (this._autoTimer) { clearInterval(this._autoTimer); this._autoTimer = null; }
+      }
+
+      // Build mobile dots
+      buildDots() {
+        if (!this.dotsContainer) return;
+        this.dotsContainer.innerHTML = '';
+        this.dots = [];
+        for (let i = 0; i < this.originalCount; i += 1) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'ai-why-buy-dot-{{ ai_gen_id }}';
+          btn.setAttribute('role', 'tab');
+          btn.setAttribute('aria-label', 'Go to feature ' + (i + 1));
+          btn.addEventListener('click', () => {
+            this.currentIndex = this.originalCount + i; // map to original item region
+            this.updatePosition();
+            this.updateDots();
+            this.announceCurrent();
+            this.stopAuto();
+          });
+          this.dotsContainer.appendChild(btn);
+          this.dots.push(btn);
+        }
+      }
+
+      // Sync active dot with logical index
+      updateDots() {
+        if (!this.dots || !this.dots.length) return;
+        const logicalIndex = ((this.currentIndex - this.originalCount) % this.originalCount + this.originalCount) % this.originalCount;
+        this.dots.forEach((btn, idx) => {
+          const isActive = idx === logicalIndex;
+          btn.classList.toggle('is-active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          btn.tabIndex = isActive ? 0 : -1;
+        });
       }
     }
 
