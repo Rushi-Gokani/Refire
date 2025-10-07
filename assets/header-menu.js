@@ -150,6 +150,17 @@ class HeaderMenu extends Component {
 
       // Open and position
       nestedParent.setAttribute('aria-expanded', 'true');
+      // Close any other open nested lists first (instant switch when hovering different parent)
+      this.querySelectorAll('.mega-menu__nested:not([hidden])')
+        .forEach((openList) => {
+          if (openList === nestedList) return;
+          openList.setAttribute('hidden', '');
+          const id = openList.getAttribute('id');
+          if (id) {
+            const openLink = this.querySelector(`[aria-controls="${CSS.escape(id)}"]`);
+            if (openLink) openLink.setAttribute('aria-expanded', 'false');
+          }
+        });
       nestedList.removeAttribute('hidden');
       const container = /** @type {HTMLElement | null} */ (nestedParent.closest('.menu-list__submenu-inner'));
       const parentListItem = nestedParent.closest('li');
