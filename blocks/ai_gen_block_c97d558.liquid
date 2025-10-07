@@ -456,6 +456,11 @@
         this.announceCurrent();
         this.buildDots();
         this.updateDots();
+
+        // Disable auto sliding on mobile
+        if (window.matchMedia('(max-width: 749px)').matches) {
+          this.stopAuto();
+        }
       }
 
       disconnectedCallback() {
@@ -599,6 +604,12 @@
         this._resizeTimer = setTimeout(() => {
           this.calculateItemWidth();
           this.updatePosition(true);
+          // Rebuild dots if breakpoint changed
+          if (window.matchMedia('(max-width: 749px)').matches) {
+            this.stopAuto();
+          } else {
+            this.startAuto();
+          }
         }, 120);
       }
 
@@ -718,6 +729,8 @@
 
       // Auto-scroll helpers
       startAuto() {
+        // Do not auto-slide on mobile
+        if (window.matchMedia('(max-width: 749px)').matches) return;
         this.stopAuto();
         this._autoTimer = setInterval(()=> { this.next(); }, 4000);
       }
