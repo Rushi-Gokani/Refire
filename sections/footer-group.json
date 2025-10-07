@@ -96,9 +96,13 @@
         "privacy_link_url": "shopify://policies/privacy-policy",
         "color_scheme": "scheme-5",
         "facebook_url": "https://www.facebook.com/profile.php?id=61574412545643",
+        "facebook_icon": "shopify://shop_images/icons8-facebook-100.png",
         "instagram_url": "https://www.instagram.com/refireindia",
+        "instagram_icon": "shopify://shop_images/icons8-instagram-100.png",
         "youtube_url": "https://www.youtube.com/@RefireIndia",
         "linkedin_url": "https://www.linkedin.com/company/refire-india/posts/?feedView=all",
+        "twitter_url": "",
+        "tiktok_url": "",
         "padding-block-start": 40,
         "padding-block-end": 0
       }
