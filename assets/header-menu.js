@@ -33,29 +33,34 @@ class HeaderMenu extends Component {
     });
 
     // Add hover listeners to submenus to prevent deactivation
-    this.addEventListener('pointerenter', (event) => {
-      if (event.target.closest('.menu-list__submenu')) {
+    this.addEventListener('pointerover', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target && target.closest('.menu-list__submenu')) {
         this.#debouncedDeactivate.cancel();
       }
     }, { signal: this.#abortController.signal });
 
     this.addEventListener('pointerleave', (event) => {
-      if (event.target.closest('.menu-list__submenu')) {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target && target.closest('.menu-list__submenu')) {
         this.#debouncedDeactivate();
       }
     }, { signal: this.#abortController.signal });
 
     // Add click handlers for submenu toggles (mobile/touch only)
     this.addEventListener('click', (event) => {
-      const link = event.target.closest('.menu-list__link--has-submenu');
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest('.menu-list__link--has-submenu');
       if (link) {
         if (!this.#isTouchLikeDevice()) return;
         event.preventDefault();
-        const submenu = link.parentElement.querySelector('.menu-list__submenu');
+        const parentEl = link.parentElement;
+        if (!parentEl) return;
+        const submenu = parentEl.querySelector('.menu-list__submenu');
         const isExpanded = link.getAttribute('aria-expanded') === 'true';
         
         // Toggle aria-expanded
-        link.setAttribute('aria-expanded', !isExpanded);
+        link.setAttribute('aria-expanded', (!isExpanded).toString());
         
         // Toggle submenu visibility
         if (submenu) {
@@ -70,13 +75,14 @@ class HeaderMenu extends Component {
 
     // Add click handlers for nested mega menu parent links (mobile/touch only)
     this.addEventListener('click', (event) => {
-      const nestedParent = event.target.closest('.mega-menu__link--parent');
+      const target = event.target instanceof Element ? event.target : null;
+      const nestedParent = target?.closest('.mega-menu__link--parent');
       if (!nestedParent) return;
 
       const controlsId = nestedParent.getAttribute('aria-controls');
       if (!controlsId) return;
 
-      const nestedList = this.querySelector(`#${CSS.escape(controlsId)}`);
+      const nestedList = /** @type {HTMLElement | null} */ (this.querySelector(`#${CSS.escape(controlsId)}`));
       if (!nestedList) return;
 
       if (!this.#isTouchLikeDevice()) return;
@@ -109,15 +115,15 @@ class HeaderMenu extends Component {
 
         nestedList.removeAttribute('hidden');
         // Position nested submenu to the right of its parent item relative to the submenu container
-        const container = nestedParent.closest('.menu-list__submenu-inner');
+        const containerEl = /** @type {HTMLElement | null} */ (nestedParent.closest('.menu-list__submenu-inner'));
         const parentListItem = nestedParent.closest('li');
-        if (container && parentListItem) {
-          const containerRect = container.getBoundingClientRect();
+        if (containerEl && parentListItem) {
+          const containerRect = containerEl.getBoundingClientRect();
           const parentRect = parentListItem.getBoundingClientRect();
 
           // Ensure positioning context for container
-          if (getComputedStyle(container).position === 'static') {
-            container.style.position = 'relative';
+          if (getComputedStyle(containerEl).position === 'static') {
+            containerEl.style.position = 'relative';
           }
 
           nestedList.style.position = 'absolute';
@@ -132,19 +138,20 @@ class HeaderMenu extends Component {
     }, { signal: this.#abortController.signal });
 
     // Hover open for nested submenus
-    this.addEventListener('pointerenter', (event) => {
-      const nestedParent = event.target.closest('.mega-menu__link--parent');
+    this.addEventListener('pointerover', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const nestedParent = target?.closest('.mega-menu__link--parent');
       if (!nestedParent) return;
 
       const controlsId = nestedParent.getAttribute('aria-controls');
       if (!controlsId) return;
-      const nestedList = this.querySelector(`#${CSS.escape(controlsId)}`);
+      const nestedList = /** @type {HTMLElement | null} */ (this.querySelector(`#${CSS.escape(controlsId)}`));
       if (!nestedList) return;
 
       // Open and position
       nestedParent.setAttribute('aria-expanded', 'true');
       nestedList.removeAttribute('hidden');
-      const container = nestedParent.closest('.menu-list__submenu-inner');
+      const container = /** @type {HTMLElement | null} */ (nestedParent.closest('.menu-list__submenu-inner'));
       const parentListItem = nestedParent.closest('li');
       if (container && parentListItem) {
         const containerRect = container.getBoundingClientRect();
@@ -168,6 +175,7 @@ class HeaderMenu extends Component {
     }, { signal: this.#abortController.signal });
 
     // Close nested submenu when cursor leaves both parent li and nested list
+    /** @type {number | null} */
     let nestedCloseTimeout = null;
     const scheduleClose = () => {
       if (nestedCloseTimeout) clearTimeout(nestedCloseTimeout);
@@ -182,7 +190,8 @@ class HeaderMenu extends Component {
 
     // Cancel scheduled close when entering nested list; schedule when leaving it
     this.addEventListener('pointerenter', (event) => {
-      if (event.target.closest('.mega-menu__nested')) {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target && target.closest('.mega-menu__nested')) {
         if (nestedCloseTimeout) clearTimeout(nestedCloseTimeout);
       }
     }, { signal: this.#abortController.signal });
