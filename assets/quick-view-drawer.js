@@ -213,32 +213,6 @@ export class QuickViewDrawer extends DialogComponent {
   }
 
   /**
-   * Builds variant options HTML
-   * @param {Object} product - The product data
-   * @returns {string} Variant options HTML
-   */
-  #buildVariantOptions(product) {
-    if (!product.options || product.options.length === 0) return '';
-    
-    return `
-      <div class="quick-view-variants">
-        ${product.options.map((option, index) => `
-          <div class="quick-view-variant-group" data-option-index="${index}">
-            <div class="quick-view-variant-label">${option.name}</div>
-            <div class="quick-view-variant-options">
-              ${option.values.map(value => `
-                <button type="button" class="quick-view-variant-option" data-value="${value}">
-                  ${value}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
-  /**
    * Formats price display
    * @param {number} price - Current price
    * @param {number} comparePrice - Compare at price
