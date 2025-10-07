@@ -221,7 +221,7 @@ export class QuickViewDrawer extends DialogComponent {
     if (!product.options || product.options.length === 0) return '';
     
     return `
-      <div class="quick-view-variants">
+      <div class="quick-view-variants" style="display:none">
         ${product.options.map((option, index) => `
           <div class="quick-view-variant-group" data-option-index="${index}">
             <div class="quick-view-variant-label">${option.name}</div>

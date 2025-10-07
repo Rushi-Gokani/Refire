@@ -309,14 +309,14 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",
-                "type_preset": "rte",
+                "type_preset": "h3",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
-                "color": "var(--color-foreground)",
+                "color": "var(--color-foreground-heading)",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -774,7 +774,7 @@
             "image": "shopify://shop_images/5_f2f4b2a5-fdb9-4101-b278-3dd3d080aa36.jpg",
             "image_border_radius": 8,
             "headline": "Our Story",
-            "headline_color": "#000000",
+            "headline_color": "#2f6f4e",
             "headline_size": 36,
             "headline_weight": "600",
             "paragraph": "<p>Refire Product/service Portable Power Stations 🔋 Powering life anywhere anytime! revolutionising the way India stays powered ⚡ #refiretheworld Delhi, India</p>",
@@ -915,7 +915,7 @@
             "column_4_title": "Multi-channel Support",
             "column_4_description": "Contact us via email, phone or online customer service",
             "background_color": "#f1f1f1",
-            "title_color": "#000000",
+            "title_color": "#2f6f4e",
             "subtitle_color": "#666666",
             "column_background_color": "#ffffff",
             "column_title_color": "#000000",
@@ -1145,7 +1145,7 @@
             "horizontal_alignment": "flex-start",
             "vertical_alignment": "center",
             "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
+            "horizontal_alignment_flex_direction_column": "center",
             "vertical_alignment_flex_direction_column": "center",
             "gap": 12,
             "width": "fill",
@@ -1182,14 +1182,14 @@
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "rte",
+                "type_preset": "h3",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
-                "color": "var(--color-foreground)",
+                "color": "var(--color-foreground-heading)",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -1273,7 +1273,6 @@
       "block_order": [
         "group_VXmUgR"
       ],
-      "disabled": true,
       "name": "t:names.collections_carousel",
       "settings": {
         "collection_list": [
@@ -1295,7 +1294,7 @@
         "icons_shape": "circle",
         "section_width": "page-width",
         "gap": 12,
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "padding-block-start": 48,
         "padding-block-end": 48
       }
@@ -1351,14 +1350,14 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "center",
-                "type_preset": "rte",
+                "type_preset": "h3",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
-                "color": "var(--color-foreground)",
+                "color": "var(--color-foreground-heading)",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -1442,6 +1441,7 @@
       "block_order": [
         "group_tbMjTj"
       ],
+      "disabled": true,
       "name": "t:names.collections_bento",
       "settings": {
         "collection_list": [
@@ -1507,7 +1507,8 @@
         "video_kkpNrF"
       ],
       "custom_css": [
-        "@media screen and (max-width: 749px) {.video-preview-section {padding-left: 15px; }}"
+        "@media screen and (max-width: 749px) {.video-preview-section {padding-left: 15px; }}",
+        ".video-preview-heading h2 {color: #2f6f4e !important; font-size: 32px !important;}"
       ],
       "name": "Our Reels",
       "settings": {
@@ -1728,6 +1729,9 @@
         "faq_item_GVCiMB",
         "faq_item_JYex3g",
         "faq_item_KAcbC8"
+      ],
+      "custom_css": [
+        ".ai-faq-heading {color: #2f6f4e;}"
       ],
       "name": "ingredients-faq",
       "settings": {}
