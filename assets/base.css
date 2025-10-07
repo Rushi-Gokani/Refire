@@ -976,6 +976,7 @@ summary::-webkit-details-marker {
 @media screen and (min-width: 750px) {
   .product-grid {
     grid-template-columns: var(--product-grid-columns-desktop);
+    padding: 20px;
   }
 }
 
