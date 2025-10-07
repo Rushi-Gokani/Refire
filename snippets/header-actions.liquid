@@ -42,7 +42,13 @@
   {% endif %}
 
 
-  <a href="#swym-wishlist" class="swym-wishlist"> <i aria-hidden="true" focusable="false" role="presentation" class="fa fa-heart"></i> </a>
+  <a
+    href="#swym-wishlist"
+    class="header-actions__action header-actions__wishlist swym-wishlist"
+    aria-label="Wishlist"
+  >
+    <i aria-hidden="true" focusable="false" role="presentation" class="fa fa-heart"></i>
+  </a>
 
   <!-- Cart Icon -->
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
@@ -298,6 +304,15 @@
       width: 18px;
       height: 18px;
     }
+  }
+
+  /* Match Font Awesome icon sizing to SVG icons */
+  .header-actions__action .fa {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
   }
 
   .header-actions__icon-wrapper {
