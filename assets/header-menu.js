@@ -45,10 +45,11 @@ class HeaderMenu extends Component {
       }
     }, { signal: this.#abortController.signal });
 
-    // Add click handlers for submenu toggles
+    // Add click handlers for submenu toggles (mobile/touch only)
     this.addEventListener('click', (event) => {
       const link = event.target.closest('.menu-list__link--has-submenu');
       if (link) {
+        if (!this.#isTouchLikeDevice()) return;
         event.preventDefault();
         const submenu = link.parentElement.querySelector('.menu-list__submenu');
         const isExpanded = link.getAttribute('aria-expanded') === 'true';
@@ -67,7 +68,7 @@ class HeaderMenu extends Component {
       }
     }, { signal: this.#abortController.signal });
 
-    // Add click handlers for nested mega menu parent links
+    // Add click handlers for nested mega menu parent links (mobile/touch only)
     this.addEventListener('click', (event) => {
       const nestedParent = event.target.closest('.mega-menu__link--parent');
       if (!nestedParent) return;
@@ -78,6 +79,7 @@ class HeaderMenu extends Component {
       const nestedList = this.querySelector(`#${CSS.escape(controlsId)}`);
       if (!nestedList) return;
 
+      if (!this.#isTouchLikeDevice()) return;
       event.preventDefault();
       event.stopPropagation();
 
@@ -398,6 +400,19 @@ class HeaderMenu extends Component {
   #preloadImages = () => {
     const images = this.querySelectorAll('img[loading="lazy"]');
     images?.forEach((image) => image.removeAttribute('loading'));
+  };
+
+  // Treat coarse pointers or no-hover environments as touch-like
+  #isTouchLikeDevice = () => {
+    try {
+      return (
+        window.matchMedia('(hover: none)').matches ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.innerWidth <= 749
+      );
+    } catch {
+      return window.innerWidth <= 749;
+    }
   };
 }
 
