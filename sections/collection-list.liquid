@@ -25,6 +25,7 @@
     section-resource-list
     spacing-style
     gap-style
+    spacing123
   "
   style="
     {% render 'spacing-style', settings: section.settings %}
@@ -70,6 +71,19 @@
   %}
 </div>
 
+{% stylesheet %}
+  .spacing123{
+    padding-left:10% ;
+    padding-right:10% ;
+
+  }
+  @media (max-width: 768px) {
+  .spacing123 {
+    padding-left: 0%;
+    padding-right: 0%;
+  }
+}
+{% endstylesheet %}
 {% schema %}
 {
   "name": "t:names.collection_list",
