@@ -118,7 +118,7 @@
         "height": "700",
         "show_arrows": true,
         "show_dots": true,
-        "show_side_list": true,
+        "show_side_list": false,
         "accent_color": "#2f6f4e",
         "overlay_color": "rgba(0,0,0,0.45)",
         "padding_top": 60,
