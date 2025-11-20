@@ -62,13 +62,13 @@
         "slide_D7Vaja": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/5.jpg",
+            "image": "shopify://shop_images/Banner-Main.jpg",
             "eyebrow": "",
-            "title": "Powering communities with reliable energy",
-            "subtitle": "Utility-scale generation, storage, and grid ops — engineered for resilience.",
-            "cta_label": "Shop Now",
+            "title": "",
+            "subtitle": "",
+            "cta_label": "",
             "cta_link": "shopify://collections/all",
-            "cta2_label": "Buy Now",
+            "cta2_label": "",
             "cta2_link": "",
             "side_label": "",
             "side_subtext": ""
@@ -77,13 +77,13 @@
         "slide_8jVD98": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/6.jpg",
+            "image": "shopify://shop_images/Banner-Main-2.jpg",
             "eyebrow": "",
-            "title": "Powering communities with reliable energy",
-            "subtitle": "Utility-scale generation, storage, and grid ops — engineered for resilience.",
-            "cta_label": "Learn more",
+            "title": "",
+            "subtitle": "",
+            "cta_label": "",
             "cta_link": "shopify://collections/all",
-            "cta2_label": "Buy Now",
+            "cta2_label": "",
             "cta2_link": "",
             "side_label": "",
             "side_subtext": ""
@@ -92,12 +92,27 @@
         "slide_8tkpLA": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/3.jpg",
+            "image": "shopify://shop_images/Banner-Main-4.jpg",
             "eyebrow": "",
-            "title": "Powering communities with reliable energy",
-            "subtitle": "Utility-scale generation, storage, and grid ops — engineered for resilience.",
-            "cta_label": "Learn more",
+            "title": "",
+            "subtitle": "",
+            "cta_label": "",
             "cta_link": "shopify://collections/all",
+            "cta2_label": "Buy Now",
+            "cta2_link": "",
+            "side_label": "",
+            "side_subtext": ""
+          }
+        },
+        "slide_9Kqk9x": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Banner-Main-3.jpg",
+            "eyebrow": "",
+            "title": "",
+            "subtitle": "",
+            "cta_label": "",
+            "cta_link": "",
             "cta2_label": "Buy Now",
             "cta2_link": "",
             "side_label": "",
@@ -109,13 +124,14 @@
         "slide_mQeQkK",
         "slide_D7Vaja",
         "slide_8jVD98",
-        "slide_8tkpLA"
+        "slide_8tkpLA",
+        "slide_9Kqk9x"
       ],
       "name": "Hero slider (creative)",
       "settings": {
         "autoplay": false,
         "interval": 5000,
-        "height": "700",
+        "height": "full",
         "show_arrows": true,
         "show_dots": true,
         "show_side_list": false,
