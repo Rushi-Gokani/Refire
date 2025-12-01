@@ -76,6 +76,7 @@
         },
         "slide_8jVD98": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Banner-Main-2.jpg",
             "eyebrow": "",
@@ -91,6 +92,7 @@
         },
         "slide_8tkpLA": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Banner-Main-4.jpg",
             "eyebrow": "",
@@ -106,6 +108,7 @@
         },
         "slide_9Kqk9x": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "image": "shopify://shop_images/Banner-Main-3.jpg",
             "eyebrow": "",
