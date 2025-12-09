@@ -1839,7 +1839,7 @@
         "faq_item_JYex3g": {
           "type": "faq_item",
           "settings": {
-            "question": "Are Refire power stations suitable for Indian conditions (frequent outages, blackouts, remote areas)?",
+            "question": "Are Refire power stations suitable for Indian conditions?",
             "answer": "<p>Yes — portable power stations are especially useful in India, where power cuts and grid instability are common. Their portability, solar-charging options, and ability to power essentials (lights, fans, routers, phones, laptops) make them well-suited for:</p><ul><li>Backup power during load-shedding or grid failure<br/></li><li>Remote or off-grid homes, cabins, rural locations<br/></li><li>Travel, camping, road trips, outdoor activities<br/></li><li>Emergencies, natural disasters, outdoor work sites</li></ul>",
             "open_by_default": false,
             "heading_color": "",
