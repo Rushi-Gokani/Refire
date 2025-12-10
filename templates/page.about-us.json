@@ -186,7 +186,7 @@
             "layout": "image_left",
             "background_color": "#ffffff",
             "section_padding": 60,
-            "image": "shopify://shop_images/Mini-Banner-About.jpg",
+            "image": "shopify://shop_images/Mini-Banner-About_1.jpg",
             "image_border_radius": 8,
             "headline": "Who We Are",
             "headline_color": "#000000",
