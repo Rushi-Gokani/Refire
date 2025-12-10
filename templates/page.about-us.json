@@ -569,10 +569,10 @@
         "ai_gen_block_82f3b48_iqAqEa": {
           "type": "ai_gen_block_82f3b48",
           "settings": {
-            "desktop_image": "shopify://shop_images/mission.png",
-            "mobile_image": "shopify://shop_images/ChatGPT_Image_Oct_4_2025_12_15_13_PM.png",
+            "desktop_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg",
+            "mobile_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg",
             "text_color": "#ffffff",
-            "overlay_opacity": 40
+            "overlay_opacity": 50
           },
           "blocks": {}
         }
