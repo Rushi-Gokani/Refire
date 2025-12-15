@@ -1796,21 +1796,11 @@
     "faq_kHtNq6": {
       "type": "faq",
       "blocks": {
-        "faq_item_Tckh9M": {
-          "type": "faq_item",
-          "settings": {
-            "question": "What is a Refire Portable Power Station?",
-            "answer": "<p>A Refire Portable Power Station is a compact, rechargeable energy storage device — essentially a powerful “battery + inverter + outputs” all in one. Once charged, it delivers AC, DC, and USB power just like a wall outlet, so you can power lights, fans, laptops, phones, small appliances, and more — even in places with no grid electricity. <br/>Portable power stations store energy in their internal battery (often lithium-ion or similar), then convert that stored DC power to usable AC or DC output for your devices.</p>",
-            "open_by_default": true,
-            "heading_color": "",
-            "text_color": ""
-          }
-        },
         "faq_item_9wCCfQ": {
           "type": "faq_item",
           "settings": {
-            "question": "How long will a power station run my devices?",
-            "answer": "<p>That depends on two main things:</p><ol><li><strong>Battery Capacity (Wh — watt-hours)</strong>: Higher Wh means more stored energy. <br/></li><li><strong>Device Power Draw (W — watts)</strong>: The wattage your devices consume.</li></ol><p>As a rough estimate: if a power station is rated 500 Wh, then a 50 W device could run for about <strong>8–10 hours</strong> (500 ÷ 50 = 10h, minus some efficiency loss).</p>",
+            "question": "What is Refire?",
+            "answer": "<p>Refire is an energy solutions brand focused on portable power stations and solar products designed to provide clean, reliable, and portable power for homes, travel, outdoor activities, and emergencies.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1819,8 +1809,8 @@
         "faq_item_wTc9T4": {
           "type": "faq_item",
           "settings": {
-            "question": "What types of devices can I power with it?",
-            "answer": "<p>Refire power stations — if matched to the right capacity — can power a wide range:</p><ul><li>Smartphones, tablets, laptops, cameras (via USB or AC)<br/></li><li>LED lights, fans, routers, small home appliances<br/></li><li>Some small refrigerators or mini-fridges (depending on wattage and runtime needed)<br/></li><li>Outdoor equipment, tools, or devices during camping/travel</li></ul>",
+            "question": "What products does Refire offer?",
+            "answer": "<p>Refire offers portable power stations, foldable solar panels, and related power accessories designed for both indoor and outdoor use.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1829,8 +1819,8 @@
         "faq_item_GVCiMB": {
           "type": "faq_item",
           "settings": {
-            "question": "How do I recharge the power station?",
-            "answer": "<p>Refire portable power stations can usually be recharged in multiple ways — whichever suits your situation:</p><ul><li><strong>Wall outlet (AC charger):</strong> Plug in at home, office — fastest and easiest.<br/></li><li><strong>Car 12V socket / Car charger:</strong> Handy for travel, road trips.<br/></li><li><strong>Solar panel (compatible models):</strong> Great for off-grid use, camping, or sustainable charging when outdoors.</li></ul>",
+            "question": "Who are Refire products made for?",
+            "answer": "<p>Refire products are ideal for households facing power cuts, outdoor enthusiasts, professionals working remotely, travelers, campers, and anyone needing reliable backup or off-grid power.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1839,14 +1829,54 @@
         "faq_item_JYex3g": {
           "type": "faq_item",
           "settings": {
-            "question": "Are Refire power stations suitable for Indian conditions?",
-            "answer": "<p>Yes — portable power stations are especially useful in India, where power cuts and grid instability are common. Their portability, solar-charging options, and ability to power essentials (lights, fans, routers, phones, laptops) make them well-suited for:</p><ul><li>Backup power during load-shedding or grid failure<br/></li><li>Remote or off-grid homes, cabins, rural locations<br/></li><li>Travel, camping, road trips, outdoor activities<br/></li><li>Emergencies, natural disasters, outdoor work sites</li></ul>",
+            "question": "What is a portable power station?",
+            "answer": "<p>A portable power station is a rechargeable battery-powered device that provides AC, DC, and USB power to run electronics and small appliances without fuel, noise, or emissions.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
           }
         },
         "faq_item_KAcbC8": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What devices can I run with a Refire power station?",
+            "answer": "<p>Depending on the model, you can power:</p><ul><li>Mobile phones, tablets, laptops<br/></li><li>Wi-Fi routers, LED lights, fans<br/></li><li>Cameras, speakers, TVs (small)<br/></li><li>Medical devices and small appliances<br/><br/>Always check the wattage requirements of your devices.</li></ul>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_9dVYyj": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How can I charge a Refire power station?",
+            "answer": "<p>You can charge Refire power stations using:</p><ul><li>Wall socket (AC power)<br/></li><li>Car charger (12V)<br/></li><li>Compatible solar panels</li></ul>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_zAhTa3": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are Refire power stations solar compatible?",
+            "answer": "<p>Yes. Refire power stations are designed to work with compatible solar panels within the supported voltage and wattage range.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_3m4ELi": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What are Refire foldable solar panels used for?",
+            "answer": "<p>Refire solar panels convert sunlight into electricity to charge power stations or devices, making them ideal for camping, outdoor work, travel, and off-grid use.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_fgLYAT": {
           "type": "faq_item",
           "settings": {
             "question": "What is your return policy?",
@@ -1858,12 +1888,15 @@
         }
       },
       "block_order": [
-        "faq_item_Tckh9M",
         "faq_item_9wCCfQ",
         "faq_item_wTc9T4",
         "faq_item_GVCiMB",
         "faq_item_JYex3g",
-        "faq_item_KAcbC8"
+        "faq_item_KAcbC8",
+        "faq_item_9dVYyj",
+        "faq_item_zAhTa3",
+        "faq_item_3m4ELi",
+        "faq_item_fgLYAT"
       ],
       "custom_css": [
         ".ai-faq-heading {color: #2f6f4e;}"
