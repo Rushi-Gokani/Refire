@@ -1819,16 +1819,6 @@
         "faq_item_GVCiMB": {
           "type": "faq_item",
           "settings": {
-            "question": "Who are Refire products made for?",
-            "answer": "<p>Refire products are ideal for households facing power cuts, outdoor enthusiasts, professionals working remotely, travelers, campers, and anyone needing reliable backup or off-grid power.</p>",
-            "open_by_default": false,
-            "heading_color": "",
-            "text_color": ""
-          }
-        },
-        "faq_item_JYex3g": {
-          "type": "faq_item",
-          "settings": {
             "question": "What is a portable power station?",
             "answer": "<p>A portable power station is a rechargeable battery-powered device that provides AC, DC, and USB power to run electronics and small appliances without fuel, noise, or emissions.</p>",
             "open_by_default": false,
@@ -1839,8 +1829,8 @@
         "faq_item_KAcbC8": {
           "type": "faq_item",
           "settings": {
-            "question": "What devices can I run with a Refire power station?",
-            "answer": "<p>Depending on the model, you can power:</p><ul><li>Mobile phones, tablets, laptops<br/></li><li>Wi-Fi routers, LED lights, fans<br/></li><li>Cameras, speakers, TVs (small)<br/></li><li>Medical devices and small appliances<br/><br/>Always check the wattage requirements of your devices.</li></ul>",
+            "question": "Who should choose the Rover Series?",
+            "answer": "<p>The Rover Series is ideal for users who need portable power for smartphones, laptops, routers, lights, fans, cameras, and small electronic devices.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1849,8 +1839,8 @@
         "faq_item_9dVYyj": {
           "type": "faq_item",
           "settings": {
-            "question": "How can I charge a Refire power station?",
-            "answer": "<p>You can charge Refire power stations using:</p><ul><li>Wall socket (AC power)<br/></li><li>Car charger (12V)<br/></li><li>Compatible solar panels</li></ul>",
+            "question": "What is the Refire Titan Series?",
+            "answer": "<p>The Titan Series is Refire’s high-capacity, high-output portable power station range built for extended backup, heavy usage, and demanding power needs.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1859,8 +1849,8 @@
         "faq_item_zAhTa3": {
           "type": "faq_item",
           "settings": {
-            "question": "Are Refire power stations solar compatible?",
-            "answer": "<p>Yes. Refire power stations are designed to work with compatible solar panels within the supported voltage and wattage range.</p>",
+            "question": "Can Titan Series power stations run home appliances?",
+            "answer": "<p>Yes. Depending on the model, Titan Series power stations can run appliances such as refrigerators, TVs, routers, fans, lights, and other essential electronics.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
@@ -1869,14 +1859,44 @@
         "faq_item_3m4ELi": {
           "type": "faq_item",
           "settings": {
-            "question": "What are Refire foldable solar panels used for?",
-            "answer": "<p>Refire solar panels convert sunlight into electricity to charge power stations or devices, making them ideal for camping, outdoor work, travel, and off-grid use.</p>",
+            "question": "What makes the Alpha Series different?",
+            "answer": "<p>Alpha Series models focus on advanced safety systems, efficient power delivery, and optimized charging for modern electronics and appliances.</p>",
             "open_by_default": false,
             "heading_color": "",
             "text_color": ""
           }
         },
         "faq_item_fgLYAT": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Does Alpha Series support multiple charging options?",
+            "answer": "<p>Yes. Alpha Series power stations can be charged via wall socket, car charger, and compatible solar panels.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_UbHfC4": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Are Refire solar panels compatible with all Refire power stations?",
+            "answer": "<p>Yes. Refire solar panels are designed to be compatible with Rover, Titan, and Alpha Series power stations, provided input specifications are met.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_ckTTyX": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do solar panels work on cloudy days?",
+            "answer": "<p>Yes, but the charging speed will be slower depending on sunlight availability and weather conditions.</p>",
+            "open_by_default": false,
+            "heading_color": "",
+            "text_color": ""
+          }
+        },
+        "faq_item_xT3KqD": {
           "type": "faq_item",
           "settings": {
             "question": "What is your return policy?",
@@ -1891,12 +1911,14 @@
         "faq_item_9wCCfQ",
         "faq_item_wTc9T4",
         "faq_item_GVCiMB",
-        "faq_item_JYex3g",
         "faq_item_KAcbC8",
         "faq_item_9dVYyj",
         "faq_item_zAhTa3",
         "faq_item_3m4ELi",
-        "faq_item_fgLYAT"
+        "faq_item_fgLYAT",
+        "faq_item_UbHfC4",
+        "faq_item_ckTTyX",
+        "faq_item_xT3KqD"
       ],
       "custom_css": [
         ".ai-faq-heading {color: #2f6f4e;}"
