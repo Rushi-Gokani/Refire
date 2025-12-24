@@ -569,10 +569,10 @@
         "ai_gen_block_82f3b48_iqAqEa": {
           "type": "ai_gen_block_82f3b48",
           "settings": {
-            "desktop_image": "shopify://shop_images/Big-About-Us-Our-Vision_2.jpg",
-            "mobile_image": "shopify://shop_images/Big-About-Us-Our-Vision_2.jpg",
+            "desktop_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg-2.jpg",
+            "mobile_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg-2.jpg",
             "text_color": "#ffffff",
-            "overlay_opacity": 10
+            "overlay_opacity": 5
           },
           "blocks": {}
         }
