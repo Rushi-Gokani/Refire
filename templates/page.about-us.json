@@ -572,7 +572,7 @@
             "desktop_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg-2.jpg",
             "mobile_image": "shopify://shop_images/Big-About-Us-Our-Vision.jpg-2.jpg",
             "text_color": "#ffffff",
-            "overlay_opacity": 5
+            "overlay_opacity": 50
           },
           "blocks": {}
         }
